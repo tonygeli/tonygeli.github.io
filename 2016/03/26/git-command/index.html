@@ -4,12 +4,15 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hello World | Laiqun</title>
+    <title>Git 常用命令 | Laiqun</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Laiqun">
     
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in ">
+    <meta name="description" content="Git的结构
+Git的操作環境大致區分成三大塊：Working Directory、Staging Area與Repository。
+1. 工作區
+Working Directory、Working Tree：一般翻譯為工作區，Working Directory是由CVS時代就是這樣稱呼的，也就是目">
     
     
     
@@ -67,15 +70,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/03/22/hello-world/" title="Hello World" itemprop="url">Hello World</a>
+      <a href="/2016/03/26/git-command/" title="Git 常用命令" itemprop="url">Git 常用命令</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Laiqun">Laiqun</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-03-22T03:01:15.000Z" itemprop="datePublished">2016-03-22</time>
-    Updated:<time datetime="2016-03-22T03:01:15.000Z" itemprop="dateModified">2016-03-22</time>
+    <time datetime="2016-03-25T16:44:52.000Z" itemprop="datePublished">2016-03-26</time>
+    Updated:<time datetime="2016-03-25T16:55:25.000Z" itemprop="dateModified">2016-03-26</time>
     
   </p>
 </header>
@@ -84,28 +87,139 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+		
 		</div>
 		
-		<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+		<p><strong>Git的结构</strong></p>
+<p>Git的操作環境大致區分成三大塊：Working Directory、Staging Area與Repository。</p>
+<p><strong>1. 工作區</strong></p>
+<p>Working Directory、Working Tree：一般翻譯為工作區，Working Directory是由CVS時代就是這樣稱呼的，也就是目前程式的主要工作區域。</p>
+<p><strong>2.  整裝區</strong></p>
+<p>Staging Area、Index：Staging area一般翻譯為暫存區，但我覺得這個翻譯很容易對初學者造成混淆，它其實是扮演中介的角色，記錄着我們準備要提交到本地版本庫（Repository）裡存放的檔案的物件引用（Reference）的地方，因為是放引用而不是實體檔案，所以才又被稱為「索引」。Staging area的原意「【軍】集結待命地區」還比較符合它的實際用途，因此「整裝區」或「整備區」應該較符原意。</p>
+<p><strong>3. 版本庫</strong></p>
+<p>第三個區域就是存放所有檔案與其修改快照的儲存區，稱為倉庫（Repository），通常意譯為「版本庫」。</p>
+<p><img src="/images/git1.png" alt="Repository"></p>
+<p>取得Git仓库</p>
+<p>初始化一个版本仓库</p>
+<blockquote>
+<p>git init</p>
+</blockquote>
+<p>Clone远程版本库</p>
+<blockquote>
+<p>git clone git@aaa.com</p>
+</blockquote>
+<p>添加远程版本库origin，语法为 git remote add [shortname] [url]</p>
+<blockquote>
+<p>git remote add origin git@aaa.com</p>
+</blockquote>
+<p>查看远程仓库</p>
+<blockquote>
+<p>git remote -v</p>
+</blockquote>
+<p>提交你的修改</p>
+<p>添加当前修改的文件到暂存区</p>
+<blockquote>
+<p>git add .</p>
+</blockquote>
+<p>如果你自动追踪文件，包括你已经手动删除的，状态为Deleted的文件</p>
+<blockquote>
+<p>git add -u</p>
+</blockquote>
+<p>提交你的修改</p>
+<blockquote>
+<p>git commit –m “你的注释”</p>
+</blockquote>
+<p>推送你的更新到远程服务器,语法为 git push [远程名] [本地分支]:[远程分支]</p>
+<blockquote>
+<p>git push origin master</p>
+</blockquote>
+<p>查看文件状态</p>
+<blockquote>
+<p>git status</p>
+</blockquote>
+<p>跟踪新文件</p>
+<blockquote>
+<p>git add readme.txt</p>
+</blockquote>
+<p>从当前跟踪列表移除文件，并完全删除</p>
+<blockquote>
+<p>git rm readme.txt</p>
+</blockquote>
+<p>仅在暂存区删除，保留文件在当前目录，不再跟踪</p>
+<blockquote>
+<p>git rm –cached readme.txt</p>
+</blockquote>
+<p>重命名文件</p>
+<blockquote>
+<p>git mv reademe.txt readme</p>
+</blockquote>
+<p>查看提交的历史记录</p>
+<blockquote>
+<p>git log</p>
+</blockquote>
+<p>修改最后一次提交注释的，利用–amend参数</p>
+<blockquote>
+<p>git commit –amend</p>
+</blockquote>
+<p>忘记提交某些修改，下面的三条命令只会得到一个提交。</p>
+<blockquote>
+<p>git commit –m &quot;add readme.txt&quot;<br>git add readme_forgotten<br>git commit –amend<br>假设你已经使用git add .，将修改过的文件a、b加到暂存区</p>
+</blockquote>
+<p>现在你只想提交a文件，不想提交b文件，应该这样</p>
+<blockquote>
+<p>git reset HEAD b<br>取消对文件的修改<br>git checkout –- readme.txt</p>
+</blockquote>
+<p><strong>基本的分支管理</strong><br>创建一个分支</p>
+<blockquote>
+<p>git branch iss53</p>
+</blockquote>
+<p>切换工作目录到iss53</p>
+<blockquote>
+<p>git chekcout iss53</p>
+</blockquote>
+<p>将上面的命令合在一起，创建iss53分支并切换到iss53</p>
+<blockquote>
+<p>git chekcout –b iss53</p>
+</blockquote>
+<p>合并iss53分支，当前工作目录为master</p>
+<blockquote>
+<p>git merge iss53</p>
+</blockquote>
+<p>合并完成后，没有出现冲突，删除iss53分支</p>
+<blockquote>
+<p>git branch –d iss53</p>
+</blockquote>
+<p>拉去远程仓库的数据，语法为 git fetch [remote-name]</p>
+<blockquote>
+<p>git fetch</p>
+</blockquote>
+<p>fetch 会拉去最新的远程仓库数据，但不会自动到当前目录下，要自动合并</p>
+<blockquote>
+<p>git pull</p>
+</blockquote>
+<p>查看远程仓库的信息</p>
+<blockquote>
+<p>git remote show origin</p>
+</blockquote>
+<p>建立本地的dev分支追踪远程仓库的develop分支</p>
+<blockquote>
+<p>git checkout –b dev origin/develop</p>
+</blockquote>
   
 	</div>
 		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/git/">git</a>
+  </div>
 
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2016/03/22/hello-world/" data-title="Hello World | Laiqun" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2016/03/26/git-command/" data-title="Git 常用命令 | Laiqun" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -114,14 +228,14 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/03/23/新手-如何配置Hexo到Github/" title="Hello World">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Hello World</span>
+
+<div class="next">
+<a href="/2016/03/25/NodeJS-Mac/"  title="Mac环境下安装node.js、npm、express">
+ <strong>NEXT:</strong><br/> 
+ <span>Mac环境下安装node.js、npm、express
+</span>
 </a>
 </div>
-
 
 </nav>
 
@@ -135,7 +249,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+  
   </div>
 
 <div id="asidepart">
