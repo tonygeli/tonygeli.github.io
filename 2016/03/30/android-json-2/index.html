@@ -4,12 +4,16 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>Hello World | Laiqun</title>
+    <title>android-json-2 | Laiqun</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Laiqun">
     
-    <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in ">
+    <meta name="description" content="Android-JSON Parser2JSON是輕量級，层次分明，易于解析和读取。 JSON是当你的Android应用需要与你的服务器交换数据以XML最佳替代品。
+
+這篇文章詳細描述如何解析通過HTTP請求返回的JSON數據
+
+JSON樣例以下是簡單的JSON格式數據:以下數據可以通過http:/">
     
     
     
@@ -67,15 +71,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/03/23/新手-如何配置Hexo到Github/" title="Hello World" itemprop="url">Hello World</a>
+      <a href="/2016/03/30/android-json-2/" title="android-json-2" itemprop="url">android-json-2</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Laiqun">Laiqun</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-03-23T13:39:13.000Z" itemprop="datePublished">2016-03-23</time>
-    Updated:<time datetime="2016-03-23T13:39:13.000Z" itemprop="dateModified">2016-03-23</time>
+    <time datetime="2016-03-30T15:09:26.000Z" itemprop="datePublished">2016-03-30</time>
+    Updated:<time datetime="2016-03-30T15:10:03.000Z" itemprop="dateModified">2016-03-30</time>
     
   </p>
 </header>
@@ -84,28 +88,90 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-JSON-Parser2"><span class="toc-number">1.</span> <span class="toc-text">Android-JSON Parser2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON樣例"><span class="toc-number">1.0.1.</span> <span class="toc-text">JSON樣例</span></a></li></ol></li></ol></li></ol>
 		</div>
 		
-		<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+		<h1 id="Android-JSON-Parser2"><a href="#Android-JSON-Parser2" class="headerlink" title="Android-JSON Parser2"></a>Android-JSON Parser2</h1><p>JSON是輕量級，层次分明，易于解析和读取。 JSON是当你的Android应用需要与你的服务器交换数据以XML最佳替代品。</p>
+<blockquote>
+<p>這篇文章詳細描述如何解析通過HTTP請求返回的JSON數據</p>
+</blockquote>
+<h3 id="JSON樣例"><a href="#JSON樣例" class="headerlink" title="JSON樣例"></a>JSON樣例</h3><p>以下是簡單的JSON格式數據:<br>以下數據可以通過<a href="http://api.androidhive.info/contacts/" target="_blank" rel="external">http://api.androidhive.info/contacts/</a>獲取</p>
+<pre>
+{
+    "contacts": [
+        {
+                "id": "c200",
+                "name": "Ravi Tamada",
+                "email": "ravi@gmail.com",
+                "address": "xx-xx-xxxx,x - street, x - country",
+                "gender" : "male",
+                "phone": {
+                    "mobile": "+91 0000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        {
+                "id": "c201",
+                "name": "Johnny Depp",
+                "email": "johnny_depp@gmail.com",
+                "address": "xx-xx-xxxx,x - street, x - country",
+                "gender" : "male",
+                "phone": {
+                    "mobile": "+91 0000000000",
+                    "home": "00 000000",
+                    "office": "00 000000"
+                }
+        },
+        .
+        .
+        .
+        .
+  ]
+}
+</pre>
+
+<table>
+<thead>
+<tr>
+<th>結構</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array([)</td>
+<td>中括號代表JSON數組</td>
+</tr>
+<tr>
+<td>Object({)</td>
+<td>大括號代表JSON對象</td>
+</tr>
+<tr>
+<td>Key</td>
+<td>JSON對象包含一個字符串 鍵。鍵值對組成了JSON對象</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>每一個鍵都對應一個值</td>
+</tr>
+</tbody>
+</table>
   
 	</div>
 		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Android/">Android</a><a href="/tags/Json/">Json</a>
+  </div>
 
 
 
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2016/03/23/新手-如何配置Hexo到Github/" data-title="Hello World | Laiqun" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2016/03/30/android-json-2/" data-title="android-json-2 | Laiqun" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -114,19 +180,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/03/25/NodeJS-Mac/" title="Mac环境下安装node.js、npm、express">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  Mac环境下安装node.js、npm、express</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/03/22/hello-world/"  title="Hello World">
+<a href="/2016/03/30/android-netconnect-1/"  title="android-netconnect-1">
  <strong>NEXT:</strong><br/> 
- <span>Hello World
+ <span>android-netconnect-1
 </span>
 </a>
 </div>
@@ -143,7 +201,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Quick-Start"><span class="toc-number">1.</span> <span class="toc-text">Quick Start</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Create-a-new-post"><span class="toc-number">1.1.</span> <span class="toc-text">Create a new post</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Run-server"><span class="toc-number">1.2.</span> <span class="toc-text">Run server</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-static-files"><span class="toc-number">1.3.</span> <span class="toc-text">Generate static files</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Deploy-to-remote-sites"><span class="toc-number">1.4.</span> <span class="toc-text">Deploy to remote sites</span></a></li></ol></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-JSON-Parser2"><span class="toc-number">1.</span> <span class="toc-text">Android-JSON Parser2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JSON樣例"><span class="toc-number">1.0.1.</span> <span class="toc-text">JSON樣例</span></a></li></ol></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
@@ -157,9 +215,9 @@
 	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
 		
-			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+			<li><a href="/tags/Android/" title="Android">Android<sup>3</sup></a></li>
 		
-			<li><a href="/tags/Json/" title="Json">Json<sup>1</sup></a></li>
+			<li><a href="/tags/Json/" title="Json">Json<sup>2</sup></a></li>
 		
 			<li><a href="/tags/Nodejs/" title="Nodejs">Nodejs<sup>1</sup></a></li>
 		
