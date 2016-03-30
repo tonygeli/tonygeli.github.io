@@ -76,7 +76,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-03-30T15:07:45.000Z" itemprop="datePublished">2016-03-30</time>
-    Updated:<time datetime="2016-03-30T15:19:35.000Z" itemprop="dateModified">2016-03-30</time>
+    Updated:<time datetime="2016-03-30T16:14:51.000Z" itemprop="dateModified">2016-03-31</time>
     
   </p>
 </header>
@@ -89,7 +89,7 @@
 		</div>
 		
 		<h1 id="Android-Network-Connection"><a href="#Android-Network-Connection" class="headerlink" title="Android Network Connection"></a>Android Network Connection</h1><p>安卓設備可以有不同的網絡連接，本文主要檢查Wi-Fi和移動網絡連接</p>
-<h3 id="檢查網絡連接"><a href="#檢查網絡連接" class="headerlink" title="檢查網絡連接"></a>檢查網絡連接</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ConnectivityManager check = (ConnectivityManager) </span><br><span class="line">this.context.getSystemService(Context.CONNECTIVITY_SERVICE);</span><br><span class="line">NetworkInfo[] info = check.getAllNetworkInfo();</span><br><span class="line">for (int i = 0; i&lt;info.length; i++)&#123;</span><br><span class="line">   if (info[i].getState() == NetworkInfo.State.CONNECTED)&#123;</span><br><span class="line">      Toast.makeText(context, "Internet is connected</span><br><span class="line">      Toast.LENGTH_SHORT).show();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="檢查網絡連接"><a href="#檢查網絡連接" class="headerlink" title="檢查網絡連接"></a>檢查網絡連接</h3><figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ConnectivityManager<span class="built_in"> check </span>= (ConnectivityManager) </span><br><span class="line">this.context.getSystemService(Context.CONNECTIVITY_SERVICE);</span><br><span class="line">NetworkInfo[] info = check.getAllNetworkInfo();</span><br><span class="line">for (int i = 0; i&lt;info.length; i++)&#123;</span><br><span class="line">  <span class="built_in"> if </span>(info[i].getState() == NetworkInfo.State.CONNECTED)&#123;</span><br><span class="line">      Toast.makeText(context, <span class="string">"Internet is connected</span><br><span class="line">      Toast.LENGTH_SHORT).show();</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span></span><br></pre></td></tr></table></figure>
 <table>
 <thead>
 <tr>
