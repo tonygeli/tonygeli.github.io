@@ -6,13 +6,15 @@
   <meta name="baidu-site-verification" content="Iq4cjjvM41" />
   <meta name="google-site-verification" content="Y0p0cRzridCgLFQgIImX31CBsNf0cfiAJ8stXDCNFAc" />
   
-    <title>Linux FTP | Laiqun</title>
+    <title>快速排序 | Laiqun</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Laiqun">
     
-    <meta name="description" content="vim .netrcmachine host-2chmod 600 .netrcftp host-2open host-2
-1234567FTP常用参数-v #显示远程服务器的所有响应信息-i #多个文件传送时关闭提示-n #禁止自动登录到初始连接-g #禁止文件名和路径中的通配符（＊和？）-s #">
+    <meta name="description" content="算法步骤：
+1 从数列中挑出一个元素，称为 “基准”（pivot），
+2 重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作。
+3 递归地（recursi">
     
     
     
@@ -70,15 +72,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/07/05/linux-ftp/" title="Linux FTP" itemprop="url">Linux FTP</a>
+      <a href="/2016/07/16/20160716-3/" title="快速排序" itemprop="url">快速排序</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Laiqun">Laiqun</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-07-05T14:50:37.000Z" itemprop="datePublished">2016-07-05</time>
-    更新日期:<time datetime="2016-07-05T16:13:38.000Z" itemprop="dateModified">2016-07-06</time>
+    <time datetime="2016-07-15T18:19:03.000Z" itemprop="datePublished">2016-07-16</time>
+    更新日期:<time datetime="2016-07-15T18:19:53.000Z" itemprop="dateModified">2016-07-16</time>
     
   </p>
 </header>
@@ -87,49 +89,22 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FTP虚拟用户"><span class="toc-number">1.</span> <span class="toc-text">FTP虚拟用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟FTP服务"><span class="toc-number">2.</span> <span class="toc-text">虚拟FTP服务</span></a></li></ol>
+		
 		</div>
 		
-		<p>vim .netrc<br>machine host-2<br>chmod 600 .netrc<br>ftp host-2<br>open host-2</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FTP常用参数</span><br><span class="line">-v #显示远程服务器的所有响应信息</span><br><span class="line">-i #多个文件传送时关闭提示</span><br><span class="line">-n #禁止自动登录到初始连接</span><br><span class="line">-g #禁止文件名和路径中的通配符（＊和？）</span><br><span class="line">-s #制定包含FTP命令的文本文件</span><br><span class="line">-d #启动调试，显示客户端和服务器之间传递的所有FTP命令</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FTP常用命令</span><br><span class="line">help</span><br><span class="line">cd</span><br><span class="line">cdup</span><br><span class="line">ls</span><br><span class="line">pwd</span><br><span class="line">delete</span><br><span class="line">mkdir</span><br><span class="line">![command] #!echo $HOSTNAME</span><br><span class="line">get        #</span><br><span class="line">mget       #download multiple files</span><br><span class="line">put</span><br><span class="line">mput       #upload multiple files</span><br><span class="line">close      #断开连接</span><br><span class="line">bye,quit   #退出FTP</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FTP命令自动化</span><br><span class="line">两种方式</span><br><span class="line">ftp -s filename    #FTP启动后，命令将自动运行</span><br><span class="line">输入重定向</span><br><span class="line">ftp&lt;&lt;EOF</span><br><span class="line">......</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FTP错误代码 类似HTTP</span><br><span class="line">200 #命令执行正常结束</span><br><span class="line">220 #新连接的用户服务以及就绪</span><br><span class="line">227 #进入被动模式</span><br><span class="line">230 Login successful</span><br><span class="line">530 Please login with USER and PASS</span><br><span class="line">550 Failed to open file</span><br><span class="line">3xx File permission</span><br><span class="line">5xx Server problems</span><br></pre></td></tr></table></figure>
-<h2 id="FTP虚拟用户"><a href="#FTP虚拟用户" class="headerlink" title="FTP虚拟用户"></a>FTP虚拟用户</h2><ol>
-<li>生成虚拟用户口令库文件<blockquote>
-<p>创建login.txt<br>vim login.txt<br>guest #user<br>guest #psw</p>
-</blockquote>
-</li>
-<li>配置生成VSFTPD的认证文件<blockquote>
-<p>使用db_load命令生成口令库文件<br>db_load -T -t hash -f login.txt /etc/vsftpd/vsftpd_login.db<br>修改文件权限<br>chmod 600 /etc/vsftpd/vsftpd_login.db<br>注：无db_load命令，使用yum install db4*<br>编辑PAM配置文件<br>vim /etc/pam.d/vsftpd<br>将所有内容注释后，添加如下两行：<br>auth required /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login<br>account required /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login</p>
-</blockquote>
-</li>
-<li>建立虚拟用户的访问权限<blockquote>
-<p>建立虚拟用户virtual并设置目录及权限<br>useradd -d /home/ftp virtual<br>chmod 700 /home/ftp</p>
-</blockquote>
-</li>
-<li>建立配置文件<blockquote>
-<p>VSFTPD主配置文件中修改：<br>local_enable=YES<br>guest_enable=YES     //启动虚拟用户<br>guest_username=virtual //映射到本地virtual用户<br>service vsftpd restart</p>
-</blockquote>
-</li>
-</ol>
-<h2 id="虚拟FTP服务"><a href="#虚拟FTP服务" class="headerlink" title="虚拟FTP服务"></a>虚拟FTP服务</h2><ol>
-<li>创建虚拟FTP服务器的根目录<blockquote>
-<p>创建/var/newftp/newpub 并将目录所有者设为root，权限为755<br>mkdir -p /var/newftp/newpub<br>chmod 755 /var/newftp -R</p>
-</blockquote>
-</li>
-<li>添加虚拟FTP服务器的匿名用户帐号<blockquote>
-<p>useradd -d /var/newftp - M newftp<br>原来FTP服务匿名用户帐号为ftp<br>虚拟FTP服务匿名用户帐号为newftp<br>复制原来的vsftpd.conf 作为虚拟FTP服务器的配置文件，并修改相关参数<br>cp /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd2.conf<br>listen=YES<br>listen_address=192.168.1.13<br>ftp_username=newftp<br>在原来的vsftpd.conf中添加<br>listen_address=192.168.1.11</p>
-</blockquote>
-</li>
-</ol>
+		<p>算法步骤：</p>
+<p>1 从数列中挑出一个元素，称为 “基准”（pivot），</p>
+<p>2 重新排序数列，所有元素比基准值小的摆放在基准前面，所有元素比基准值大的摆在基准的后面（相同的数可以到任一边）。在这个分区退出之后，该基准就处于数列的中间位置。这个称为分区（partition）操作。</p>
+<p>3 递归地（recursive）把小于基准值元素的子数列和大于基准值元素的子数列排序。</p>
+<p>递归的最底部情形，是数列的大小是零或一，也就是永远都已经被排序好了。虽然一直递归下去，但是这个算法总会退出，因为在每次的迭代（iteration）中，它至少会把一个元素摆到它最后的位置去。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">void swap(int* a, int* b)&#123;</span><br><span class="line">	int temp = *a;</span><br><span class="line">	*a = *b;</span><br><span class="line">	*b = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int partition(int data[], int l, int h)</span><br><span class="line">&#123;</span><br><span class="line">	int i = l-1;    //i和j都从最低low开始</span><br><span class="line">	int pivot = data[h];</span><br><span class="line">	for(int j=l; j&lt;h ;j++)&#123;</span><br><span class="line">		if(data[j] &lt;= pivot)&#123;   //相等也扔到左边</span><br><span class="line">			i++;</span><br><span class="line">			swap(data[i], data[j]);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	swap(data[i+1], data[h]);</span><br><span class="line">	return i+1;</span><br><span class="line">&#125;</span><br><span class="line">void quicksort(int data[], int l, int h)&#123;</span><br><span class="line">	if(l&lt;h)&#123;</span><br><span class="line">		int k = partition(data, l, h);</span><br><span class="line">		quicksort(data, l, k-1);</span><br><span class="line">		quicksort(data, k+1, h);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">	int data[] = &#123;5,4,3,2,1&#125;; </span><br><span class="line">	quicksort(data, 0, 4);</span><br><span class="line"> </span><br><span class="line">	for(int i=0; i&lt; 5; i++)&#123;</span><br><span class="line">		cout&lt;&lt;data[i]&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/linux/">Linux</a><a href="/tags/ftp/">FTP</a>
+  <span></span> <a href="/tags/algorithm/">Algorithm</a>
   </div>
 
 
@@ -137,7 +112,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2016/07/05/linux-ftp/" data-title="Linux FTP | Laiqun" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2016/07/16/20160716-3/" data-title="快速排序 | Laiqun" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -146,19 +121,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2016/07/16/20160716/" title="如何在CentOS下配置VSFTPD">
-  <strong>PREVIOUS:</strong><br/>
-  <span>
-  如何在CentOS下配置VSFTPD</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/07/05/hexo-tutorial/"  title="Hexo useful commands">
+<a href="/2016/07/16/20160716-2/"  title="堆排序">
  <strong>NEXT:</strong><br/> 
- <span>Hexo useful commands
+ <span>堆排序
 </span>
 </a>
 </div>
@@ -175,7 +142,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FTP虚拟用户"><span class="toc-number">1.</span> <span class="toc-text">FTP虚拟用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟FTP服务"><span class="toc-number">2.</span> <span class="toc-text">虚拟FTP服务</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">

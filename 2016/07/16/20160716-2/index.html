@@ -6,13 +6,13 @@
   <meta name="baidu-site-verification" content="Iq4cjjvM41" />
   <meta name="google-site-verification" content="Y0p0cRzridCgLFQgIImX31CBsNf0cfiAJ8stXDCNFAc" />
   
-    <title>Linux FTP | Laiqun</title>
+    <title>堆排序 | Laiqun</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
     
     <meta name="author" content="Laiqun">
     
-    <meta name="description" content="vim .netrcmachine host-2chmod 600 .netrcftp host-2open host-2
-1234567FTP常用参数-v #显示远程服务器的所有响应信息-i #多个文件传送时关闭提示-n #禁止自动登录到初始连接-g #禁止文件名和路径中的通配符（＊和？）-s #">
+    <meta name="description" content="堆排序算法步骤：首先，用原始数据构建成一个大(小)堆作为原始无序区，然后，每次取出堆顶元素，放入有序区。由于堆顶元素被取出来了，我们用堆中最后一个元素放入堆顶，如此，堆的性质就被破坏了。我们需要重新对堆进行调整，如此继续N次，那么无序区的N个元素都被放入有序区了，也就完成了排序过程。
+算法细节：堆排">
     
     
     
@@ -70,15 +70,15 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/07/05/linux-ftp/" title="Linux FTP" itemprop="url">Linux FTP</a>
+      <a href="/2016/07/16/20160716-2/" title="堆排序" itemprop="url">堆排序</a>
   </h1>
   <p class="article-author">By
     
       <a href="http://yoursite.com" title="Laiqun">Laiqun</a>
     </p>
   <p class="article-time">
-    <time datetime="2016-07-05T14:50:37.000Z" itemprop="datePublished">2016-07-05</time>
-    更新日期:<time datetime="2016-07-05T16:13:38.000Z" itemprop="dateModified">2016-07-06</time>
+    <time datetime="2016-07-15T18:17:18.000Z" itemprop="datePublished">2016-07-16</time>
+    更新日期:<time datetime="2016-07-15T18:18:30.000Z" itemprop="dateModified">2016-07-16</time>
     
   </p>
 </header>
@@ -87,49 +87,27 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目录</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FTP虚拟用户"><span class="toc-number">1.</span> <span class="toc-text">FTP虚拟用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟FTP服务"><span class="toc-number">2.</span> <span class="toc-text">虚拟FTP服务</span></a></li></ol>
+		
 		</div>
 		
-		<p>vim .netrc<br>machine host-2<br>chmod 600 .netrc<br>ftp host-2<br>open host-2</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FTP常用参数</span><br><span class="line">-v #显示远程服务器的所有响应信息</span><br><span class="line">-i #多个文件传送时关闭提示</span><br><span class="line">-n #禁止自动登录到初始连接</span><br><span class="line">-g #禁止文件名和路径中的通配符（＊和？）</span><br><span class="line">-s #制定包含FTP命令的文本文件</span><br><span class="line">-d #启动调试，显示客户端和服务器之间传递的所有FTP命令</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FTP常用命令</span><br><span class="line">help</span><br><span class="line">cd</span><br><span class="line">cdup</span><br><span class="line">ls</span><br><span class="line">pwd</span><br><span class="line">delete</span><br><span class="line">mkdir</span><br><span class="line">![command] #!echo $HOSTNAME</span><br><span class="line">get        #</span><br><span class="line">mget       #download multiple files</span><br><span class="line">put</span><br><span class="line">mput       #upload multiple files</span><br><span class="line">close      #断开连接</span><br><span class="line">bye,quit   #退出FTP</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">FTP命令自动化</span><br><span class="line">两种方式</span><br><span class="line">ftp -s filename    #FTP启动后，命令将自动运行</span><br><span class="line">输入重定向</span><br><span class="line">ftp&lt;&lt;EOF</span><br><span class="line">......</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FTP错误代码 类似HTTP</span><br><span class="line">200 #命令执行正常结束</span><br><span class="line">220 #新连接的用户服务以及就绪</span><br><span class="line">227 #进入被动模式</span><br><span class="line">230 Login successful</span><br><span class="line">530 Please login with USER and PASS</span><br><span class="line">550 Failed to open file</span><br><span class="line">3xx File permission</span><br><span class="line">5xx Server problems</span><br></pre></td></tr></table></figure>
-<h2 id="FTP虚拟用户"><a href="#FTP虚拟用户" class="headerlink" title="FTP虚拟用户"></a>FTP虚拟用户</h2><ol>
-<li>生成虚拟用户口令库文件<blockquote>
-<p>创建login.txt<br>vim login.txt<br>guest #user<br>guest #psw</p>
-</blockquote>
-</li>
-<li>配置生成VSFTPD的认证文件<blockquote>
-<p>使用db_load命令生成口令库文件<br>db_load -T -t hash -f login.txt /etc/vsftpd/vsftpd_login.db<br>修改文件权限<br>chmod 600 /etc/vsftpd/vsftpd_login.db<br>注：无db_load命令，使用yum install db4*<br>编辑PAM配置文件<br>vim /etc/pam.d/vsftpd<br>将所有内容注释后，添加如下两行：<br>auth required /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login<br>account required /lib/security/pam_userdb.so db=/etc/vsftpd/vsftpd_login</p>
-</blockquote>
-</li>
-<li>建立虚拟用户的访问权限<blockquote>
-<p>建立虚拟用户virtual并设置目录及权限<br>useradd -d /home/ftp virtual<br>chmod 700 /home/ftp</p>
-</blockquote>
-</li>
-<li>建立配置文件<blockquote>
-<p>VSFTPD主配置文件中修改：<br>local_enable=YES<br>guest_enable=YES     //启动虚拟用户<br>guest_username=virtual //映射到本地virtual用户<br>service vsftpd restart</p>
-</blockquote>
-</li>
+		<p>堆排序<br>算法步骤：<br>首先，用原始数据构建成一个大(小)堆作为原始无序区，然后，每次取出堆顶元素，放入有序区。由于堆顶元素被取出来了，我们用堆中最后一个元素放入堆顶，如此，堆的性质就被破坏了。我们需要重新对堆进行调整，如此继续N次，那么无序区的N个元素都被放入有序区了，也就完成了排序过程。</p>
+<p>算法细节：<br>堆排序的数组下标从0开始，此时左子为2i+1，右子为2i+2，父节点为(i+1)/2<br>最大化过程中，选出父节点和左右节点中最大的数组下标，如果不是父节点的下标，就互换。然后对这个最大数组下标节点递归找到转换后的最大值。</p>
+<p>堆排序为不稳定排序，不适合记录较少的排序。时间复杂度为O(N * logN)</p>
+<p>如果不递归，每次都只找出最大值<br>举例int arr[10]={1,4,6,2,5,8,7,6,9,12};  </p>
+<ol>
+<li>最大化一次结果：12 1 8 9 4 6 7 6 2 5</li>
+<li>首尾互换：5 1 8 9 4 6 7 6 2 12</li>
+<li></li>
 </ol>
-<h2 id="虚拟FTP服务"><a href="#虚拟FTP服务" class="headerlink" title="虚拟FTP服务"></a>虚拟FTP服务</h2><ol>
-<li>创建虚拟FTP服务器的根目录<blockquote>
-<p>创建/var/newftp/newpub 并将目录所有者设为root，权限为755<br>mkdir -p /var/newftp/newpub<br>chmod 755 /var/newftp -R</p>
-</blockquote>
-</li>
-<li>添加虚拟FTP服务器的匿名用户帐号<blockquote>
-<p>useradd -d /var/newftp - M newftp<br>原来FTP服务匿名用户帐号为ftp<br>虚拟FTP服务匿名用户帐号为newftp<br>复制原来的vsftpd.conf 作为虚拟FTP服务器的配置文件，并修改相关参数<br>cp /etc/vsftpd/vsftpd.conf /etc/vsftpd/vsftpd2.conf<br>listen=YES<br>listen_address=192.168.1.13<br>ftp_username=newftp<br>在原来的vsftpd.conf中添加<br>listen_address=192.168.1.11</p>
-</blockquote>
-</li>
-</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">1((0))--&gt;2((1))</span><br><span class="line">1((0))--&gt;3((2))</span><br><span class="line">2((1))--&gt;4((3))</span><br><span class="line">2((1))--&gt;5((4))</span><br><span class="line">3((2))--&gt;6((5))</span><br><span class="line">3((2))--&gt;7((6))</span><br><span class="line">4((3))--&gt;8((7))</span><br><span class="line">4((3))--&gt;9((8))</span><br><span class="line">5((4))--&gt;10((9))</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#define PARENT(i) (i)/2</span><br><span class="line">#define LEFT(i) 2*(i)+1</span><br><span class="line">#define RIGHT(i) 2*(i+1)</span><br><span class="line"> </span><br><span class="line">void swap(int *a,int *b)</span><br><span class="line">&#123;</span><br><span class="line">    *a=*a^*b;  </span><br><span class="line">    *b=*a^*b;  </span><br><span class="line">    *a=*a^*b;  </span><br><span class="line">&#125;</span><br><span class="line">void max_heapify(int *arr,int index,int len)</span><br><span class="line">&#123;</span><br><span class="line">    int l=LEFT(index);</span><br><span class="line">    int r=RIGHT(index);</span><br><span class="line">    int largest;</span><br><span class="line">    if(l&lt;len &amp;&amp; arr[l]&gt;arr[index])</span><br><span class="line">        largest=l;</span><br><span class="line">    else</span><br><span class="line">        largest=index;</span><br><span class="line">    if(r&lt;len &amp;&amp; arr[r]&gt;arr[largest])</span><br><span class="line">        largest=r;</span><br><span class="line">    if(largest != index)&#123;//将最大元素提升，并递归</span><br><span class="line">        swap(&amp;arr[largest],&amp;arr[index]);</span><br><span class="line">        max_heapify(arr,largest,len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">void build_maxheap(int *arr,int len)</span><br><span class="line">&#123;</span><br><span class="line">    int i;</span><br><span class="line">    if(arr==NULL || len&lt;=1)</span><br><span class="line">        return;</span><br><span class="line">    for(i=len/2+1;i&gt;=0;--i)</span><br><span class="line">        max_heapify(arr,i,len);</span><br><span class="line">&#125;</span><br><span class="line">void heap_sort(int *arr,int len)</span><br><span class="line">&#123;</span><br><span class="line">    int i;</span><br><span class="line">    if(arr==NULL || len&lt;=1)</span><br><span class="line">        return;</span><br><span class="line">    build_maxheap(arr,len);</span><br><span class="line"> </span><br><span class="line">    for(i=len-1;i&gt;=1;--i)&#123;</span><br><span class="line">        swap(&amp;arr[0],&amp;arr[i]);</span><br><span class="line">        max_heapify(arr,0,--len);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int arr[10]=&#123;1,4,6,2,5,8,7,6,9,12&#125;;</span><br><span class="line">    int i;</span><br><span class="line">    heap_sort(arr,10);</span><br><span class="line">    for(i=0;i&lt;10;++i)</span><br><span class="line">        printf(&quot;%d &quot;,arr[i]);</span><br><span class="line">    system(&quot;pause&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/linux/">Linux</a><a href="/tags/ftp/">FTP</a>
+  <span></span> <a href="/tags/algorithm/">Algorithm</a>
   </div>
 
 
@@ -137,7 +115,7 @@
 
 <div class="article-share" id="share">
 
-  <div data-url="http://yoursite.com/2016/07/05/linux-ftp/" data-title="Linux FTP | Laiqun" data-tsina="null" class="share clearfix">
+  <div data-url="http://yoursite.com/2016/07/16/20160716-2/" data-title="堆排序 | Laiqun" data-tsina="null" class="share clearfix">
   </div>
 
 </div>
@@ -147,18 +125,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2016/07/16/20160716/" title="如何在CentOS下配置VSFTPD">
+ <a href="/2016/07/16/20160716-3/" title="快速排序">
   <strong>PREVIOUS:</strong><br/>
   <span>
-  如何在CentOS下配置VSFTPD</span>
+  快速排序</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2016/07/05/hexo-tutorial/"  title="Hexo useful commands">
+<a href="/2016/07/16/20160716/"  title="如何在CentOS下配置VSFTPD">
  <strong>NEXT:</strong><br/> 
- <span>Hexo useful commands
+ <span>如何在CentOS下配置VSFTPD
 </span>
 </a>
 </div>
@@ -175,7 +153,7 @@
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目录</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FTP虚拟用户"><span class="toc-number">1.</span> <span class="toc-text">FTP虚拟用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟FTP服务"><span class="toc-number">2.</span> <span class="toc-text">虚拟FTP服务</span></a></li></ol>
+  
   </div>
 
 <div id="asidepart">
