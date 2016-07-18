@@ -45,7 +45,7 @@
 				<h1 class="site-name"><a href="/" title="Laiqun">Laiqun</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -60,7 +60,7 @@
 					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
 						<input type="hidden" name="q" value="site:yoursite.com">
 					</form>
 					
@@ -84,7 +84,7 @@
     </p>
   <p class="article-time">
     <time datetime="2016-07-15T18:14:04.000Z" itemprop="datePublished">2016-07-16</time>
-    更新日期:<time datetime="2016-07-15T18:16:25.000Z" itemprop="dateModified">2016-07-16</time>
+    Updated:<time datetime="2016-07-15T18:16:25.000Z" itemprop="dateModified">2016-07-16</time>
     
   </p>
 </header>
@@ -92,7 +92,7 @@
 		
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目录</strong>
+			<strong class="toc-title">Contents</strong>
 		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#CentOS-的-vsftpd-預設值-用来参考"><span class="toc-number">1.</span> <span class="toc-text">CentOS 的 vsftpd 預設值(用来参考)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#針對實體帳號的設定"><span class="toc-number">2.</span> <span class="toc-text">針對實體帳號的設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立歡迎訊息："><span class="toc-number">3.</span> <span class="toc-text">建立歡迎訊息：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立限制系統帳號登入的檔案"><span class="toc-number">4.</span> <span class="toc-text">建立限制系統帳號登入的檔案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#測試結果："><span class="toc-number">5.</span> <span class="toc-text">測試結果：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#實體帳號的-SELinux-議題"><span class="toc-number">6.</span> <span class="toc-text">實體帳號的 SELinux 議題</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#對使用者-包括未來新增用戶-進行-chroot"><span class="toc-number">7.</span> <span class="toc-text">對使用者 (包括未來新增用戶) 進行 chroot</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立嚴格的可使用-FTP-的帳號列表"><span class="toc-number">8.</span> <span class="toc-text">建立嚴格的可使用 FTP 的帳號列表</span></a></li></ol>
 		</div>
 		
@@ -166,22 +166,22 @@
 </section>
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目录</strong>
+  <strong class="toc-title">Contents</strong>
   <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#CentOS-的-vsftpd-預設值-用来参考"><span class="toc-number">1.</span> <span class="toc-text">CentOS 的 vsftpd 預設值(用来参考)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#針對實體帳號的設定"><span class="toc-number">2.</span> <span class="toc-text">針對實體帳號的設定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立歡迎訊息："><span class="toc-number">3.</span> <span class="toc-text">建立歡迎訊息：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立限制系統帳號登入的檔案"><span class="toc-number">4.</span> <span class="toc-text">建立限制系統帳號登入的檔案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#測試結果："><span class="toc-number">5.</span> <span class="toc-text">測試結果：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#實體帳號的-SELinux-議題"><span class="toc-number">6.</span> <span class="toc-text">實體帳號的 SELinux 議題</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#對使用者-包括未來新增用戶-進行-chroot"><span class="toc-number">7.</span> <span class="toc-text">對使用者 (包括未來新增用戶) 進行 chroot</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#建立嚴格的可使用-FTP-的帳號列表"><span class="toc-number">8.</span> <span class="toc-text">建立嚴格的可使用 FTP 的帳號列表</span></a></li></ol>
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 
   
 
   
 <div class="tagslist">
-	<p class="asidetitle">标签</p>
+	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
 		
 			<li><a href="/tags/algorithm/" title="Algorithm">Algorithm<sup>2</sup></a></li>
@@ -206,13 +206,13 @@
 
   
   <div class="archiveslist">
-    <p class="asidetitle"><a href="/archives">归档</a></p>
+    <p class="asidetitle"><a href="/archives">Archives</a></p>
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/07/">七月 2016</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">四月 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a><span class="archive-list-count">5</span></li></ul>
   </div>
 
 
   <div class="rsspart">
-	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+	<a href="null" target="_blank" title="rss">RSS</a>
 </div>
 
 </aside>
