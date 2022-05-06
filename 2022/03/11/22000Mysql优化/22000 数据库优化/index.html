@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hexo"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hexo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="数据库优化[TOC] 一.索引优化 「覆盖索引」，减少「回表」所消耗的时间。意味着，我们在 select 的时候，一定要指明对应的列，而不是 select *； 「联合索引」。如果组建「联合索引」，尽量将区分度最高的放在最左边，并且需要考虑「最左匹配原则」； 索引列不参与计算，索引失效：3.1 对索引进行函数操作或者表达式计算会导致索引失效；3.2 不符合最左匹配原则3.3 字段进行了隐形数据类型"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="http://example.com/2022/03/11/22000Mysql%E4%BC%98%E5%8C%96/22000%20%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="数据库优化[TOC] 一.索引优化 「覆盖索引」，减少「回表」所消耗的时间。意味着，我们在 select 的时候，一定要指明对应的列，而不是 select *； 「联合索引」。如果组建「联合索引」，尽量将区分度最高的放在最左边，并且需要考虑「最左匹配原则」； 索引列不参与计算，索引失效：3.1 对索引进行函数操作或者表达式计算会导致索引失效；3.2 不符合最左匹配原则3.3 字段进行了隐形数据类型"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://example.com/images/640-1212302.jpeg"><meta property="article:published_time" content="2022-03-11T06:21:14.000Z"><meta property="article:modified_time" content="2022-04-29T06:47:18.718Z"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/../../images/640-1212302.jpeg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2022/03/11/22000Mysql%E4%BC%98%E5%8C%96/22000%20%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/"},"headline":"Hexo","image":[],"datePublished":"2022-03-11T06:21:14.000Z","dateModified":"2022-04-29T06:47:18.718Z","author":{"@type":"Person","name":"John Doe"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"数据库优化[TOC] 一.索引优化 「覆盖索引」，减少「回表」所消耗的时间。意味着，我们在 select 的时候，一定要指明对应的列，而不是 select *； 「联合索引」。如果组建「联合索引」，尽量将区分度最高的放在最左边，并且需要考虑「最左匹配原则」； 索引列不参与计算，索引失效：3.1 对索引进行函数操作或者表达式计算会导致索引失效；3.2 不符合最左匹配原则3.3 字段进行了隐形数据类型"}</script><link rel="canonical" href="http://example.com/2022/03/11/22000Mysql%E4%BC%98%E5%8C%96/22000%20%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2022-03-11T06:21:14.000Z" title="2022/3/11 下午2:21:14">2022-03-11</time></span><span class="level-item">Updated&nbsp;<time dateTime="2022-04-29T06:47:18.718Z" title="2022/4/29 下午2:47:18">2022-04-29</time></span><span class="level-item">11 minutes read (About 1613 words)</span></div></div><div class="content"><h1 id="数据库优化"><a href="#数据库优化" class="headerlink" title="数据库优化"></a>数据库优化</h1><p>[TOC]</p>
+<h2 id="一-索引优化"><a href="#一-索引优化" class="headerlink" title="一.索引优化"></a>一.索引优化</h2><ol>
+<li>「覆盖索引」，减少「回表」所消耗的时间。意味着，我们在 select 的时候，一定要指明对应的列，而不是 select *；</li>
+<li>「联合索引」。如果组建「联合索引」，尽量将区分度最高的放在最左边，并且需要考虑「最左匹配原则」；</li>
+<li>索引列不参与计算，索引失效：<br>3.1 对索引进行函数操作或者表达式计算会导致索引失效；<br>3.2 不符合最左匹配原则<br>3.3 字段进行了隐形数据类型转换<br>3.4 走索引没有走全表扫描效率高</li>
+<li>子查询优化超多分页场景。比如 limit offset , n 在 MySQL 是获取 offset + n 的记录，再返回 n 条。而利用子查询则是查出 n 条，通过 ID 检索对应的记录出来，提高查询效率；</li>
+<li>通过 explain 命令来查看 SQL 的执行计划，看看自己写的 SQL 是否走了索引，走了什么索引。通过 show profile 来查看 SQL 对系统资源的损耗情况（不过一般还是比较少用到的）；</li>
+<li>在开启事务后，在事务内尽可能只操作数据库，并有意识地减少锁的持有时间。比如在事务内需要插入并修改数据，那可以先插入后修改。因为修改是更新操作，会加行锁。如果先更新，那并发下可能会导致多个事务的请求等待行锁释放。</li>
+</ol>
+<h3 id="即便走对了索引，线上查询还是慢？"><a href="#即便走对了索引，线上查询还是慢？" class="headerlink" title="即便走对了索引，线上查询还是慢？"></a>即便走对了索引，线上查询还是慢？</h3><p>表的数据量实在是太大了。1.考虑能不能把「旧的数据」给”删掉”。对于我们公司而言，我们都会把数据同步到 Hive。2.走一层缓存（Redis）要看业务能不能忍受读取的「非真正实时」的数据（毕竟 Redis 和 MySQL 的数据一致性需要保证）。如果查询条件相对复杂且多变的话（涉及各种group by 和 sum），那走缓存也不是一种好的办法，维护起来就不方便了……</p>
+<p>再看看是不是有「字符串」检索的场景导致查询低效，如果是的话，可以考虑把表的数据导入至 Elasticsearch 类的搜索引擎，后续的线上查询就直接走 Elasticsearch 了。MySQL-&gt;Elasticsearch 需要有对应的同步程序（一般就是监听 MySQL 的 binlog，解析 binlog 后导入到 Elasticsearch)。</p>
+<p>如果还不是的话，那考虑要不要根据查询条件的维度，做相对应的聚合表。线上的请求就查询聚合表的数据，不走原表。比如，用户下单后有一份订单明细，而订单明细表的量级太大。但在产品侧（前台）透出的查询功能是以「天」维度来展示的，那就可以将每个用户的每天数据聚合起来，在聚合表就是一个用户一天只有一条汇总后的数据。查询走聚合后的表，那速度肯定杠杠的（聚合后的表数据量肯定比原始表要少很多）。思路大致的就是「以空间换时间」，相同的数据换别的地方也存储一份，提高查询效率。</p>
+<p><img src="/../../images/640-1212302.jpeg" alt="图片"></p>
+<h3 id="除了读之外，写性能同样有瓶颈，怎么办？"><a href="#除了读之外，写性能同样有瓶颈，怎么办？" class="headerlink" title="除了读之外，写性能同样有瓶颈，怎么办？"></a>除了读之外，写性能同样有瓶颈，怎么办？</h3><p>在 MySQL 读写都有瓶颈，那首先看下目前 MySQL 的架构是怎么样的。</p>
+<p>1.如果是单库的，那是不是可以考虑升级至主从架构，实现读写分离。<br>简单理解就是主库接收写请求，从库接收读请求。从库的数据由主库发送的 binlog 进而更新，实现主从数据一致（在一般场景下，主从的数据是通过异步来保证最终一致性的）。</p>
+<p>2.主从架构下，读写仍存在瓶颈，那就要考虑是否要分库分表了。用户维度分表</p>
+<h3 id="分库分表后的-ID-是怎么生成的？"><a href="#分库分表后的-ID-是怎么生成的？" class="headerlink" title="分库分表后的 ID 是怎么生成的？"></a>分库分表后的 ID 是怎么生成的？</h3><ol>
+<li>MySQL 自增的 2.借助 Redis 自增的 3.基于「雪花算法」自增的</li>
+</ol>
+<h3 id="数据迁移"><a href="#数据迁移" class="headerlink" title="数据迁移"></a>数据迁移</h3><p>采取「双写」的方式来进行迁移</p>
+<ol>
+<li>增量的消息各自往新表和旧表写一份；</li>
+<li>将旧表的数据迁移至新库；</li>
+<li>迟早新表的数据都会追得上旧表（在某个节点上数据是同步的）；</li>
+<li>校验新表和老表的数据是否正常（主要看能不能对得上）；</li>
+<li>开启双读（一部分流量走新表，一部分流量走老表），相当于灰度上线的过程；</li>
+<li>读流量全部切新表，停止老表的写入；</li>
+<li>提前准备回滚机制，临时切换失败能恢复正常业务以及有修数据的相关程序。</li>
+</ol>
+<h3 id="1-Explain字段"><a href="#1-Explain字段" class="headerlink" title="1.Explain字段"></a>1.Explain字段</h3><table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>select_type</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>table</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>partitions</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>type</td>
+<td><a href="#Type%E8%AE%BF%E9%97%AE%E6%96%B9%E6%B3%95">访问方法</a></td>
+<td>const、ref、ref_or_null、index</td>
+</tr>
+<tr>
+<td>Possible_keys</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><strong>Type访问方法</strong></p>
+<ul>
+<li>const 索引一次命中，匹配一行数据</li>
+<li>system 只有一行</li>
+<li>eq_ref</li>
+<li>ref 非唯一索引，二级索引列与常数等值比较，采用二级索引来执行查询的访问方法</li>
+<li>range</li>
+<li>index  遍历索引树</li>
+<li>all 全表</li>
+</ul>
+<p><strong>Extra：</strong></p>
+<ul>
+<li>using filesort 对结果进行外部排序</li>
+<li>using index  覆盖索引扫描</li>
+<li>using temporary 临时表排序</li>
+<li>using where where过滤，效率高</li>
+</ul>
+<h3 id="2-ACID是靠什么保证的？"><a href="#2-ACID是靠什么保证的？" class="headerlink" title="2.ACID是靠什么保证的？"></a>2.ACID是靠什么保证的？</h3><p>原子性A：由undolog日志来保证，它记录了需要回滚的日志信息，事务回滚时撤销已经执行成功的sql</p>
+<p>一致性C：由其他三大特性保证，程序保证业务上的一致性</p>
+<p>隔离性I：由MVCC保证</p>
+<p>持久性D：由redolog来保证，mysql修改数据的时候会在redolog中记录一份日志数据，就算数据没有保存成功，只要日志保存成功了，数据仍不会丢失。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3></div><div class="article-licensing box"><div class="licensing-title"><p><a href="http://example.com/2022/03/11/22000Mysql优化/22000 数据库优化/">http://example.com/2022/03/11/22000Mysql优化/22000 数据库优化/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>John Doe</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2022-03-11</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2022-04-29</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2022/03/11/36000Zookeeper/26001%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E5%92%8C%E8%8A%82%E7%82%B9%E7%B1%BB%E5%9E%8B/"><i class="level-item fas fa-chevron-left"></i><span class="level-item"> </span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/03/10/22000Mysql%E4%BC%98%E5%8C%96/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"><span class="level-item"> </span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">133</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">5</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">Follow</a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:22:12.940Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90002%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3TCP%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">90002 快速了解TCP的流量控制与拥塞控制</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:05:30.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90001%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">90001 分布式事务</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"> </a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">May 2022</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">April 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">March 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">February 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">December 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">November 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">September 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">August 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">July 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">June 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">March 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">February 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">January 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">November 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/"><span class="tag">事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"><span class="tag">分布式</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2022 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

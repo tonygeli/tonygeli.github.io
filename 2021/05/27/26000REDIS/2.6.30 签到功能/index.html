@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hexo"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hexo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="2.6.30 签到功能常见的场景如下：  给一个 userId ，判断用户登陆状态； 显示用户某个月的签到次数和首次签到时间； 两亿用户最近 7 天的签到情况，统计 7 天内连续签到的用户总数；  通常情况下，我们面临的用户数量以及访问量都是巨大的，比如百万、千万级别的用户数量，或者千万级别、甚至亿级别的访问信息。 所以，我们必须要选择能够非常高效地统计大量数据（例如亿级）的集合类型。 如何选择合"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="http://example.com/2021/05/27/26000REDIS/2.6.30%20%E7%AD%BE%E5%88%B0%E5%8A%9F%E8%83%BD/"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="2.6.30 签到功能常见的场景如下：  给一个 userId ，判断用户登陆状态； 显示用户某个月的签到次数和首次签到时间； 两亿用户最近 7 天的签到情况，统计 7 天内连续签到的用户总数；  通常情况下，我们面临的用户数量以及访问量都是巨大的，比如百万、千万级别的用户数量，或者千万级别、甚至亿级别的访问信息。 所以，我们必须要选择能够非常高效地统计大量数据（例如亿级）的集合类型。 如何选择合"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://example.com/images/1389f0f4d72e4575a9e4aacdc4720f64.png"><meta property="og:image" content="http://example.com/images/bad86e4a31e145caa9f5c891a8ad3141.jpeg"><meta property="og:image" content="http://example.com/images/df9a85c4301b46c28e3cc5eda4fe4cec.png"><meta property="og:image" content="http://example.com/images/13b56db85d50458caf2cd87e21a87949.png"><meta property="article:published_time" content="2021-05-27T11:39:07.000Z"><meta property="article:modified_time" content="2021-05-27T11:39:07.000Z"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/../../images/1389f0f4d72e4575a9e4aacdc4720f64.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/05/27/26000REDIS/2.6.30%20%E7%AD%BE%E5%88%B0%E5%8A%9F%E8%83%BD/"},"headline":"Hexo","image":["http://example.com/images/1389f0f4d72e4575a9e4aacdc4720f64.png","http://example.com/images/df9a85c4301b46c28e3cc5eda4fe4cec.png","http://example.com/images/13b56db85d50458caf2cd87e21a87949.png"],"datePublished":"2021-05-27T11:39:07.000Z","dateModified":"2021-05-27T11:39:07.000Z","author":{"@type":"Person","name":"John Doe"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"2.6.30 签到功能常见的场景如下：  给一个 userId ，判断用户登陆状态； 显示用户某个月的签到次数和首次签到时间； 两亿用户最近 7 天的签到情况，统计 7 天内连续签到的用户总数；  通常情况下，我们面临的用户数量以及访问量都是巨大的，比如百万、千万级别的用户数量，或者千万级别、甚至亿级别的访问信息。 所以，我们必须要选择能够非常高效地统计大量数据（例如亿级）的集合类型。 如何选择合"}</script><link rel="canonical" href="http://example.com/2021/05/27/26000REDIS/2.6.30%20%E7%AD%BE%E5%88%B0%E5%8A%9F%E8%83%BD/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-27T11:39:07.000Z" title="2021/5/27 下午7:39:07">2021-05-27</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-27T11:39:07.000Z" title="2021/5/27 下午7:39:07">2021-05-27</time></span><span class="level-item">17 minutes read (About 2560 words)</span></div></div><div class="content"><h1 id="2-6-30-签到功能"><a href="#2-6-30-签到功能" class="headerlink" title="2.6.30 签到功能"></a>2.6.30 签到功能</h1><p>常见的场景如下：</p>
+<ul>
+<li>给一个 userId ，判断用户登陆状态；</li>
+<li>显示用户某个月的签到次数和首次签到时间；</li>
+<li>两亿用户最近 7 天的签到情况，统计 7 天内连续签到的用户总数；</li>
+</ul>
+<p>通常情况下，我们面临的用户数量以及访问量都是巨大的，比如百万、千万级别的用户数量，或者千万级别、甚至亿级别的访问信息。</p>
+<p>所以，我们必须要选择能够非常高效地统计大量数据（例如亿级）的集合类型。</p>
+<p><strong>如何选择合适的数据集合，我们首先要了解常用的统计模式，并运用合理的数据类型来解决实际问题。</strong></p>
+<p>四种统计类型：</p>
+<ol>
+<li>二值状态统计；</li>
+<li>聚合统计；</li>
+<li>排序统计；</li>
+<li>基数统计。</li>
+</ol>
+<p>本文将由<strong>二值状态统计类型</strong>作为实战篇系列的开篇，文中将用到 String、Set、Zset、List、hash 以外的拓展数据类型 Bitmap 来实现。</p>
+<p>文章涉及到的指令可以通过在线 Redis 客户端运行调试，地址：<a target="_blank" rel="noopener" href="https://try.redis.io/%EF%BC%8C%E8%B6%85%E6%96%B9%E4%BE%BF%E7%9A%84%E8%AF%B4%E3%80%82">https://try.redis.io/，超方便的说。</a></p>
+<h1 id="寄语"><a href="#寄语" class="headerlink" title="寄语"></a>寄语</h1><blockquote>
+<p>❝</p>
+<p>多分享多付出，前期多给别人创造价值并且不计回报，从长远来看，这些付出都会成倍的回报你。</p>
+<p>特别是刚开始跟别人合作的时候，不要去计较短期的回报，没有太大意义，更多的是锻炼自己的视野、视角以及解决问题的能力。</p>
+</blockquote>
+<h1 id="二值状态统计"><a href="#二值状态统计" class="headerlink" title="二值状态统计"></a>二值状态统计</h1><blockquote>
+<p>❝</p>
+<p>码哥，什么是二值状态统计呀？</p>
+</blockquote>
+<p>也就是集合中的元素的值只有 0 和 1 两种，在签到打卡和用户是否登陆的场景中，只需记录签到(1)或 未签到(0)，已登录(1)或未登陆(0)。</p>
+<p>假如我们在判断用户是否登陆的场景中使用 Redis 的 String 类型实现（<strong>key -&gt; userId，value -&gt; 0 表示下线，1 - 登陆</strong>），假如存储 100 万个用户的登陆状态，如果以字符串的形式存储，就需要存储 100 万个字符串了，内存开销太大。</p>
+<blockquote>
+<p>❝</p>
+<p>码哥，为什么 String 类型内存开销大？</p>
+</blockquote>
+<p>String 类型除了记录实际数据以外，还需要额外的内存记录数据长度、空间使用等信息。</p>
+<p>当保存的数据包含字符串，String 类型就使用简单动态字符串（SDS）结构体来保存，如下图所示：</p>
+<p><img src="/../../images/1389f0f4d72e4575a9e4aacdc4720f64.png" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>SDS</p>
+<ul>
+<li><strong>len</strong>：占 4 个字节，表示 buf 的已用长度。</li>
+<li><strong>alloc</strong>：占 4 个字节，表示 buf 实际分配的长度，通常 &gt; len。</li>
+<li><strong>buf</strong>：字节数组，保存实际的数据，Redis 自动在数组最后加上一个 “\0”，额外占用一个字节的开销。</li>
+</ul>
+<p>所以，在 SDS 中除了 buf 保存实际的数据， len 与 alloc 就是额外的开销。</p>
+<p>另外，还有一个 <strong>RedisObject 结构的开销</strong>，因为 Redis 的数据类型有很多，而且，不同数据类型都有些相同的元数据要记录（比如最后一次访问的时间、被引用的次数等）。</p>
+<p>所以，Redis 会用一个 RedisObject 结构体来统一记录这些元数据，同时指向实际数据。</p>
+<p><img src="/../../images/bad86e4a31e145caa9f5c891a8ad3141.jpeg" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>对于二值状态场景，我们就可以利用 Bitmap 来实现。比如登陆状态我们用一个 bit 位表示，一亿个用户也只占用 一亿 个 bit 位内存 ≈ （100000000 &#x2F; 8&#x2F; 1024&#x2F;1024）12 MB。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">大概的空间占用计算公式是：($offset/8/1024/1024) MB</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>❝</p>
+<p>什么是 Bitmap 呢？</p>
+</blockquote>
+<p>Bitmap 的底层数据结构用的是 String 类型的 SDS 数据结构来保存位数组，Redis 把每个字节数组的 8 个 bit 位利用起来，每个 bit 位 表示一个元素的二值状态（不是 0 就是 1）。</p>
+<p>可以将 Bitmap 看成是一个 bit 为单位的数组，数组的每个单元只能存储 0 或者 1，数组的下标在 Bitmap 中叫做 offset 偏移量。</p>
+<p>为了直观展示，我们可以理解成 buf 数组的每个字节用一行表示，每一行有 8 个 bit 位，8 个格子分别表示这个字节中的 8 个 bit 位，如下图所示：</p>
+<p><img src="/../../images/df9a85c4301b46c28e3cc5eda4fe4cec.png" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>Bitmap</p>
+<p><strong>8 个 bit 组成一个 Byte，所以 Bitmap 会极大地节省存储空间。</strong> 这就是 Bitmap 的优势。</p>
+<h1 id="判断用户登陆态"><a href="#判断用户登陆态" class="headerlink" title="判断用户登陆态"></a>判断用户登陆态</h1><blockquote>
+<p>❝</p>
+<p>怎么用 Bitmap 来判断海量用户中某个用户是否在线呢？</p>
+</blockquote>
+<p>Bitmap 提供了 GETBIT、SETBIT 操作，通过一个偏移值 offset 对 bit 数组的 offset 位置的 bit 位进行读写操作，需要注意的是 offset 从 0 开始。</p>
+<p>只需要一个 key &#x3D; login_status 表示存储用户登陆状态集合数据， 将用户 ID 作为 offset，在线就设置为 1，下线设置 0。通过 GETBIT判断对应的用户是否在线。50000 万 用户只需要 6 MB 的空间。</p>
+<p><strong>SETBIT 命令</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT &lt;key&gt; &lt;offset&gt; &lt;value&gt;</span><br></pre></td></tr></table></figure>
+
+<p>设置或者清空 key 的 value 在 offset 处的 bit 值（只能是 0 或者 1）。</p>
+<p><strong>GETBIT 命令</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GETBIT &lt;key&gt; &lt;offset&gt;</span><br></pre></td></tr></table></figure>
+
+<p>获取 key 的 value 在 offset 处的 bit 位的值，当 key 不存在时，返回 0。</p>
+<p>假如我们要判断 ID &#x3D; 10086 的用户的登陆情况：</p>
+<p>第一步，执行以下指令，表示用户已登录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT login_status 10086 1</span><br></pre></td></tr></table></figure>
+
+<p>第二步，检查该用户是否登陆，返回值 1 表示已登录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GETBIT login_status 10086</span><br></pre></td></tr></table></figure>
+
+<p>第三步，登出，将 offset 对应的 value 设置成 0。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT login_status 10086 0</span><br></pre></td></tr></table></figure>
+
+<h1 id="用户每个月的签到情况"><a href="#用户每个月的签到情况" class="headerlink" title="用户每个月的签到情况"></a>用户每个月的签到情况</h1><p>在签到统计中，每个用户每天的签到用 1 个 bit 位表示，一年的签到只需要 365 个 bit 位。一个月最多只有 31 天，只需要 31 个 bit 位即可。</p>
+<blockquote>
+<p>❝</p>
+<p>比如统计编号 89757 的用户在 2021 年 5 月份的打卡情况要如何进行？</p>
+</blockquote>
+<p>key 可以设计成 uid:sign:{userId}:{yyyyMM}，月份的每一天的值 - 1 可以作为 offset（因为 offset 从 0 开始，所以 offset &#x3D; 日期 - 1）。</p>
+<p>第一步，执行下面指令表示记录用户在 2021 年 5 月 16 号打卡。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT uid:sign:89757:202105 15 1</span><br></pre></td></tr></table></figure>
+
+<p>第二步，判断编号 89757 用户在 2021 年 5 月 16 号是否打卡。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GETBIT uid:sign:89757:202105 15</span><br></pre></td></tr></table></figure>
+
+<p>第三步，统计该用户在 5 月份的打卡次数，使用 BITCOUNT 指令。该指令用于统计给定的 bit 数组中，值 &#x3D; 1 的 bit 位的数量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BITCOUNT uid:sign:89757:202105</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就可以实现用户每个月的打卡情况了，是不是很赞。</p>
+<blockquote>
+<p>❝</p>
+<p>如何统计这个月首次打卡时间呢？</p>
+</blockquote>
+<p>Redis 提供了 BITPOS key bitValue [start] [end]指令，返回数据表示 Bitmap 中第一个值为 bitValue 的 offset 位置。</p>
+<p>在默认情况下， 命令将检测整个位图， 用户可以通过可选的 start 参数和 end 参数指定要检测的范围。</p>
+<p>所以我们可以通过执行以下指令来获取 userID &#x3D; 89757 在 2021 年 5 月份<strong>首次打卡</strong>日期：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BITPOS uid:sign:89757:202105 1</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，我们需要将返回的 value + 1 ，因为 offset 从 0 开始。</p>
+<h1 id="连续签到用户总数"><a href="#连续签到用户总数" class="headerlink" title="连续签到用户总数"></a>连续签到用户总数</h1><blockquote>
+<p>❝</p>
+<p>在记录了一个亿的用户连续 7 天的打卡数据，如何统计出这连续 7 天连续打卡用户总数呢？</p>
+</blockquote>
+<p>我们把每天的日期作为 Bitmap 的 key，userId 作为 offset，若是打卡则将 offset 位置的 bit 设置成 1。</p>
+<p>key 对应的集合的每个 bit 位的数据则是一个用户在该日期的打卡记录。</p>
+<p>一共有 7 个这样的 Bitmap，如果我们能对这 7 个 Bitmap 的对应的 bit 位做 『与』运算。</p>
+<p>同样的 UserID offset 都是一样的，当一个 userID 在 7 个 Bitmap 对应对应的 offset 位置的 bit &#x3D; 1 就说明该用户 7 天连续打卡。</p>
+<p>结果保存到一个新 Bitmap 中，我们再通过 BITCOUNT 统计 bit &#x3D; 1 的个数便得到了连续打卡 7 天的用户总数了。</p>
+<p>Redis 提供了 BITOP operation destkey key [key …]这个指令用于对一个或者多个 键 &#x3D; key 的 Bitmap 进行位元操作。</p>
+<p>opration 可以是 and、OR、NOT、XOR。当 BITOP 处理不同长度的字符串时，较短的那个字符串所缺少的部分会被看作 0 。空的 key 也被看作是包含 0 的字符串序列。</p>
+<p>便于理解，如下图所示：</p>
+<p><img src="/../../images/13b56db85d50458caf2cd87e21a87949.png" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>BITOP</p>
+<p>3 个 Bitmap，对应的 bit 位做「与」操作，结果保存到新的 Bitmap 中。</p>
+<p>操作指令表示将 三个 bitmap 进行 AND 操作，并将结果保存到 destmap 中。接着对 destmap 执行 BITCOUNT 统计。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 与操作</span><br><span class="line">BITOP AND destmap bitmap:01 bitmap:02 bitmap:03</span><br><span class="line">// 统计 bit 位 =  1 的个数</span><br><span class="line">BITCOUNT destmap</span><br></pre></td></tr></table></figure>
+
+<p>简单计算下 一个一亿个位的 Bitmap占用的内存开销，大约占 12 MB 的内存（10^8&#x2F;8&#x2F;1024&#x2F;1024），7 天的 Bitmap 的内存开销约为 84 MB。同时我们最好给 Bitmap 设置过期时间，让 Redis 删除过期的打卡数据，节省内存。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>思路才是最重要，当我们遇到的统计场景只需要统计数据的二值状态，比如用户是否存在、 ip 是否是黑名单、以及签到打卡统计等场景就可以考虑使用 Bitmap。</p>
+<p>只需要一个 bit 位就能表示 0 和 1。在统计海量数据的时候将大大减少内存占用。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p><a href="http://example.com/2021/05/27/26000REDIS/2.6.30 签到功能/">http://example.com/2021/05/27/26000REDIS/2.6.30 签到功能/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>John Doe</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-05-27</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-05-27</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/05/28/26000REDIS/2.6.31%E9%9B%86%E7%BE%A4%E6%A8%A1%E5%BC%8F/"><i class="level-item fas fa-chevron-left"></i><span class="level-item"> </span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/05/27/204JAVA/2.9.2%20ThreadLocal/"><span class="level-item"> </span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">133</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">5</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">Follow</a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:22:12.940Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90002%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3TCP%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">90002 快速了解TCP的流量控制与拥塞控制</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:05:30.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90001%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">90001 分布式事务</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"> </a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">May 2022</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">April 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">March 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">February 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">December 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">November 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">September 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">August 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">July 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">June 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">March 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">February 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">January 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">November 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/"><span class="tag">事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"><span class="tag">分布式</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2022 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

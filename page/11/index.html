@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hexo"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hexo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="http://example.com/"><meta property="og:site_name" content="Hexo"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://example.com/img/og_image.png"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com"},"headline":"Hexo","image":["http://example.com/img/og_image.png"],"author":{"@type":"Person","name":"John Doe"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-17T07:11:35.000Z" title="2021/5/17 下午3:11:35">2021-05-17</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-17T07:11:35.000Z" title="2021/5/17 下午3:11:35">2021-05-17</time></span><span class="level-item">3 minutes read (About 434 words)</span></div></div><div class="content"><h2 id="在并发场景中，如何内存分配过程的线程安全性？如果两个线程先后把对象引用指向了同一个内存区域，怎么办。"><a href="#在并发场景中，如何内存分配过程的线程安全性？如果两个线程先后把对象引用指向了同一个内存区域，怎么办。" class="headerlink" title="在并发场景中，如何内存分配过程的线程安全性？如果两个线程先后把对象引用指向了同一个内存区域，怎么办。"></a>在并发场景中，如何内存分配过程的线程安全性？如果两个线程先后把对象引用指向了同一个内存区域，怎么办。</h2><h2 id="线程TLAB局部缓存区域Thread-Local-Allocation-Buffer"><a href="#线程TLAB局部缓存区域Thread-Local-Allocation-Buffer" class="headerlink" title="线程TLAB局部缓存区域Thread Local Allocation Buffer"></a>线程TLAB局部缓存区域Thread Local Allocation Buffer</h2><p>1.堆是JVM中所有线程共享的，因此在其上进行对象内存的分配均需要进行加锁，这也导致了new对象的开销是比较大的2.Sun Hotspot JVM为了提升对象内存分配的效率，对于所创建的线程都会分配一块独立的空间TLAB（Thread Local Allocation Buffer），其大小由JVM根据运行的情况计算而得，在TLAB上分配对象时不需要加锁，因此JVM在给线程的对象分配内存时会尽量的在TLAB上分配，在这种情况下JVM中分配对象内存的性能和C基本是一样高效的，但如果对象过大的话则仍然是直接使用堆空间分配<br>3.TLAB仅作用于新生代的Eden Space，因此在编写Java程序时，通常多个小的对象比大的对象分配起来更加高效。<br>4.所有新创建的Object 都将会存储在新生代Yong Generation中。如果Young Generation的数据在一次或多次GC后存活下来，那么将被转移到OldGeneration。新的Object总是创建在Eden Space。</p>
+<p>PS：虽然总体来说堆是线程共享的，但是在堆的年轻代中的Eden区可以分配给专属于线程的局部缓存区TLAB，也可以用来存放对象。相当于线程私有的对象。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-16T03:48:01.000Z" title="2021/5/16 上午11:48:01">2021-05-16</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-16T03:48:01.000Z" title="2021/5/16 上午11:48:01">2021-05-16</time></span><span class="level-item">6 minutes read (About 925 words)</span></div></div><div class="content"><h1 id="2-6-2消息队列协议"><a href="#2-6-2消息队列协议" class="headerlink" title="2.6.2消息队列协议"></a>2.6.2消息队列协议</h1><p>[TOC]</p>
+<h2 id="什么是协议？"><a href="#什么是协议？" class="headerlink" title="什么是协议？"></a>什么是协议？</h2><p>消息中间件负责数据的传递，存储和分发消费三个部分，数据的存储和分发的过程中肯定要遵循某种约定的规范，采取底层的TCP&#x2F;IP,UDP协议还是其他的自己构建的协议。</p>
+<p>1.计算机操作系统和应用程序通讯时共同遵循一组约定，只有遵循相同的约定和规范，系统和系统之间才能相互交流。<br>2.和一般的网络应用程序的不同它主要负责数据的接收和传递，所以性能比较高。<br>3.协议对数据格式和计算机之间交换数据都必须严格遵守规范。</p>
+<h2 id="网络协议的三要素"><a href="#网络协议的三要素" class="headerlink" title="网络协议的三要素"></a>网络协议的三要素</h2><p>1.语法。用户数据与控制信息的结构与格式，以及数据出现的顺序。http规定了报文和响应报文的格式。<br>2.语义。解释控制信息每个部分的意义。post&#x2F;get请求。<br>3.时序。对时间发生顺序的详细说明。 一个请求对应一个响应。</p>
+<p><strong>消息中间件采用的不是http协议，常见的消息中间件协议：OpenWire，AMQP，MQTT，Kafka</strong></p>
+<h3 id="面试题：为什么消息中间不直接使用http协议呢？"><a href="#面试题：为什么消息中间不直接使用http协议呢？" class="headerlink" title="面试题：为什么消息中间不直接使用http协议呢？"></a>面试题：为什么消息中间不直接使用http协议呢？</h3><p>1.因为http请求报文头和响应报文头比较复杂，包含cookie，数据加密解密，状态码，响应码等附加的功能，但是对于一个消息而言，我们并不需要这么复杂，它只负责数据传递、存储、分发，追求的高性能。<br>2.大部分http都是短连接，在实际的交互过程中，一个请求到响应很有可能会中断，中断以后就不会进行持久化，容易造成请求的丢失。目的是为了保证消息和数据的高可靠和稳健的运行。</p>
+<h2 id="AMQP协议"><a href="#AMQP协议" class="headerlink" title="AMQP协议"></a>AMQP协议</h2><p>AMQP：Advanced Message Queuing Protocol高级消息队列协议。摩根大通集团联合设计。是提供统一消息服务的应用层标准高级消息队列协议，是应用层协议的一个开放标准，为面向消息的中间件设计。基于此协议的客户端和消息中间件可传递消息，并不受客户端、中间件不同产品，不同的开发语言等条件的限制。<br>Erlang中的实现由RabbitMQ等。<br>特性：<br>    1.分布式事务支持<br>    2.消息的持久化支持<br>    3.高性能和高可靠的消息处理优势</p>
+<h2 id="MQTT协议"><a href="#MQTT协议" class="headerlink" title="MQTT协议"></a>MQTT协议</h2><p>MQTT：Message Queuing Telemetry Transport 消息队列是IBM开放的一个及时通讯协议，物联网系统架构中的重要组成部分。<br>特点：<br>    1.轻量<br>    2.结构简单<br>    3.传输快，不支持事务<br>    4.没有持久化设计<br>应用场景：<br>    1.适用于计算能力有限<br>    2.低带宽<br>    3.网络不稳定的场景<br>支持：RabbitMQ ActiveMQ</p>
+<h2 id="OpenMessage协议"><a href="#OpenMessage协议" class="headerlink" title="OpenMessage协议"></a>OpenMessage协议</h2><p>最近由阿里、雅虎和滴滴出行共同参与与创立的分布式消息中间件、流处理等领域的应用开发标准。<br>特点：<br>    1.结构简单<br>    2.解析速度快<br>    3.支持事务和持久化设计</p>
+<h2 id="Kafka协议"><a href="#Kafka协议" class="headerlink" title="Kafka协议"></a>Kafka协议</h2><p>Kafka协议是基于TCP&#x2F;IP的二进制协议，消息内部是通过长度来分割，由一些基本数据类型组成。<br>特点：<br>    1.结构简单<br>    2.解析速度快<br>    3.无事务支持<br>    4.有持久化设计</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-15T15:02:27.000Z" title="2021/5/15 下午11:02:27">2021-05-15</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-15T15:02:27.000Z" title="2021/5/15 下午11:02:27">2021-05-15</time></span><span class="level-item">4 minutes read (About 644 words)</span></div></div><div class="content"><h1 id="2-2-2-Mysql索引"><a href="#2-2-2-Mysql索引" class="headerlink" title="2.2.2 Mysql索引"></a>2.2.2 Mysql索引</h1><p><strong>从数据结构角度</strong></p>
+<p>1、B+树索引(O(log(n)))：关于B+树索引</p>
+<p>2、hash索引：<br>a 仅仅能满足”&#x3D;”,”IN”和”&lt;&#x3D;&gt;”查询，不能使用范围查询<br>b 其检索效率非常高，索引的检索可以一次定位，不像B-Tree 索引需要从根节点到枝节点，最后才能访问到页节点这样多次的IO访问，所以 Hash 索引的查询效率要远高于 B-Tree 索引<br>c 只有Memory存储引擎显示支持hash索引</p>
+<p>3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）</p>
+<p>4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）</p>
+<p><strong>从物理存储角度</strong></p>
+<p>1、聚集索引（clustered index）</p>
+<p>2、非聚集索引（non-clustered index）</p>
+<p><strong>从逻辑角度</strong></p>
+<p>1、<strong>主键索引</strong>：主键索引是一种特殊的唯一索引，不允许有空值</p>
+<p>2、<strong>普通索引</strong>或者单列索引</p>
+<p>3、<strong>复合索引</strong>：复合索引指多个字段上创建的索引，只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。使用复合索引时遵循最左前缀集合</p>
+<p>4、<strong>唯一索引</strong>或者非唯一索引</p>
+<p>5、<strong>空间索引</strong>：空间索引是对空间数据类型的字段建立的索引，MYSQL中的空间数据类型有4种，分别是GEOMETRY、POINT、LINESTRING、POLYGON。<br>MYSQL使用SPATIAL关键字进行扩展，使得能够用于创建正规索引类型的语法创建空间索引。创建空间索引的列，必须将其声明为NOT NULL，空间索引只能在存储引擎为MYISAM的表中创建</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE table_name[col_name data type]</span><br><span class="line">[unique|fulltext|spatial][index|key][index_name](col_name[length])[asc|desc]</span><br></pre></td></tr></table></figure>
+
+<p>1、unique|fulltext|spatial为可选参数，分别表示唯一索引、全文索引和空间索引；</p>
+<p>2、index和key为同义词，两者作用相同，用来指定创建索引</p>
+<p>3、col_name为需要创建索引的字段列，该列必须从数据表中该定义的多个列中选择；</p>
+<p>4、index_name指定索引的名称，为可选参数，如果不指定，MYSQL默认col_name为索引值；</p>
+<p>5、length为可选参数，表示索引的长度，只有字符串类型的字段才能指定索引长度；</p>
+<p>6、asc或desc指定升序或降序的索引值存储</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-15T15:01:17.000Z" title="2021/5/15 下午11:01:17">2021-05-15</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-15T15:01:17.000Z" title="2021/5/15 下午11:01:17">2021-05-15</time></span><span class="level-item">a few seconds read (About 6 words)</span></div></div><div class="content"><p>平滑增加字段</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-15T14:40:20.000Z" title="2021/5/15 下午10:40:20">2021-05-15</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-15T14:40:20.000Z" title="2021/5/15 下午10:40:20">2021-05-15</time></span><span class="level-item">a minute read (About 125 words)</span></div></div><div class="content"><h1 id="2-4-SpringBoot的启动原理"><a href="#2-4-SpringBoot的启动原理" class="headerlink" title="2.4 SpringBoot的启动原理"></a>2.4 SpringBoot的启动原理</h1><p><a href="#1.%E8%8E%B7%E5%8F%96%E5%B9%B6%E5%90%AF%E5%8A%A8%E7%9B%91%E5%90%AC%E5%99%A8">1.获取并启动监听器</a><br><a href="#2.%E7%8E%AF%E5%A2%83%E6%9E%84%E5%BB%BA">2.环境构建</a><br><a href="#3.%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">3.创建容器</a><br><a href="#4.%E5%89%8D%E7%BD%AE%E5%A4%84%E7%90%86">4.前置处理</a><br><a href="#5.%E5%88%B7%E6%96%B0%E5%AE%B9%E5%99%A8">5.刷新容器</a><br><a href="#6.%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86">6.后置处理</a><br><a href="#7.%E5%8F%91%E5%87%BA%E4%BA%8B%E4%BB%B6">7.发出事件</a><br><a href="#8.%E6%89%A7%E8%A1%8CRunner">8.执行Runner</a><br><a href="#9.%E8%BF%94%E5%9B%9E%E5%AE%B9%E5%99%A8">9.返回容器</a></p>
+<h2 id="1-获取并启动监听器"><a href="#1-获取并启动监听器" class="headerlink" title="1.获取并启动监听器"></a>1.获取并启动监听器</h2><h2 id="2-环境构建"><a href="#2-环境构建" class="headerlink" title="2.环境构建"></a>2.环境构建</h2><h2 id="3-创建容器"><a href="#3-创建容器" class="headerlink" title="3.创建容器"></a>3.创建容器</h2><h2 id="4-前置处理"><a href="#4-前置处理" class="headerlink" title="4.前置处理"></a>4.前置处理</h2><h2 id="5-刷新容器"><a href="#5-刷新容器" class="headerlink" title="5.刷新容器"></a>5.刷新容器</h2><p>Spring Framework</p>
+<h2 id="6-后置处理"><a href="#6-后置处理" class="headerlink" title="6.后置处理"></a>6.后置处理</h2><h2 id="7-发出事件"><a href="#7-发出事件" class="headerlink" title="7.发出事件"></a>7.发出事件</h2><h2 id="8-执行Runner"><a href="#8-执行Runner" class="headerlink" title="8.执行Runner"></a>8.执行Runner</h2><h2 id="9-返回容器"><a href="#9-返回容器" class="headerlink" title="9.返回容器"></a>9.返回容器</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-15T12:22:18.000Z" title="2021/5/15 下午8:22:18">2021-05-15</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-15T12:22:18.000Z" title="2021/5/15 下午8:22:18">2021-05-15</time></span><span class="level-item">2 minutes read (About 350 words)</span></div></div><div class="content"><h1 id="2-6-4消息的分发策略"><a href="#2-6-4消息的分发策略" class="headerlink" title="2.6.4消息的分发策略"></a>2.6.4消息的分发策略</h1><h2 id="消息的分发策略"><a href="#消息的分发策略" class="headerlink" title="消息的分发策略"></a>消息的分发策略</h2><p>MQ消息队列有以下几个角色</p>
+<p>1.生产者<br>2.存储消息<br>3.消费者<br>那么生产者生成消息以后，MQ进行存储，消费者是2如何获取消息的呢？一般获取数据的方式无外乎推（push）或者拉（pull）两种方式，典型的git就有推拉机制，我们发送的http请求就是一种典型的拉取数据库数据返回的过程。而消息队列MQ是一种推送的过程，而这些推送机制会适用到很多的业务场景也有很多对应推机制策略。</p>
+<h2 id="消息的重试"><a href="#消息的重试" class="headerlink" title="消息的重试"></a>消息的重试</h2><p>在发送消息的过程中可能会出现异常，或网络的抖动，故障等等。因为造成消息的无法消费，比如用户在下订单，消费MQ接受，订单系统出现故障，导致用户支付失败。那么这个时候就需要消息中间件就必须支持消息重试机制策略。</p>
+<h2 id="消息的分发策略的机制和对比"><a href="#消息的分发策略的机制和对比" class="headerlink" title="消息的分发策略的机制和对比"></a>消息的分发策略的机制和对比</h2><table>
+<thead>
+<tr>
+<th></th>
+<th>ActiveMQ</th>
+<th>RabbtiMQ</th>
+<th>Kafka</th>
+<th>RocketMQ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>发布订阅</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>轮询分发</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>公平分发</td>
+<td>&#x2F;</td>
+<td>支持</td>
+<td>支持</td>
+<td>&#x2F;</td>
+</tr>
+<tr>
+<td>重发</td>
+<td>支持</td>
+<td>支持</td>
+<td>&#x2F;</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>消息拉取</td>
+<td>&#x2F;</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-15T12:05:32.000Z" title="2021/5/15 下午8:05:32">2021-05-15</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-15T12:05:32.000Z" title="2021/5/15 下午8:05:32">2021-05-15</time></span><span class="level-item">a few seconds read (About 67 words)</span></div></div><div class="content"><h1 id="2-6-3消息队列的持久化"><a href="#2-6-3消息队列的持久化" class="headerlink" title="2.6.3消息队列的持久化"></a>2.6.3消息队列的持久化</h1><h2 id="持久化："><a href="#持久化：" class="headerlink" title="持久化："></a>持久化：</h2><p>数据能够永久保存，内存中的数据在机器重启后就消失了。</p>
+<h2 id="常见的持久化方式"><a href="#常见的持久化方式" class="headerlink" title="常见的持久化方式"></a>常见的持久化方式</h2><table>
+<thead>
+<tr>
+<th></th>
+<th>ActiveMQ</th>
+<th>RabbitMQ</th>
+<th>Kafka</th>
+<th>RocketMQ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>文件存储</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>数据库</td>
+<td>支持</td>
+<td>&#x2F;</td>
+<td>&#x2F;</td>
+<td>&#x2F;</td>
+</tr>
+</tbody></table>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-14T02:54:36.000Z" title="2021/5/14 上午10:54:36">2021-05-14</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-14T02:54:36.000Z" title="2021/5/14 上午10:54:36">2021-05-14</time></span><span class="level-item">8 minutes read (About 1270 words)</span></div></div><div class="content"><h1 id="2-4-2-Spring-Bean依赖注入"><a href="#2-4-2-Spring-Bean依赖注入" class="headerlink" title="2.4.2 Spring Bean依赖注入"></a>2.4.2 Spring Bean依赖注入</h1><h2 id="一、什么是Spring中的依赖注入？"><a href="#一、什么是Spring中的依赖注入？" class="headerlink" title="一、什么是Spring中的依赖注入？"></a>一、什么是Spring中的依赖注入？</h2><p>依赖注入是控制反转（IoC）的一个方面，它是一个通用概念，它可以用许多不同的方式表达。这个概念说你不创建你的对象，而是描述它们应该如何创建。您不能在代码中直接连接组件和服务，而是描述配置文件中哪些组件需要哪些服务。然后，一个容器（IOC容器）负责将其全部挂起。</p>
+<h2 id="二、有哪些不同类型的IoC（依赖注入）？"><a href="#二、有哪些不同类型的IoC（依赖注入）？" class="headerlink" title="二、有哪些不同类型的IoC（依赖注入）？"></a>二、有哪些不同类型的IoC（依赖注入）？</h2><p>1.构造函数的依赖注入：当容器调用具有许多参数的类构造函数时，完成基于构造函数的DI，每个参数表示对其他类的依赖。<br>2.Setter的依赖注入：基于Setter的DI是在调用无参数构造函数或无参数静态工厂方法来实例化bean之后，通过容器调用bean上的setter方法来完成的。</p>
+<h2 id="三、Spring-bean是什么？"><a href="#三、Spring-bean是什么？" class="headerlink" title="三、Spring bean是什么？"></a>三、Spring bean是什么？</h2><p>Spring Beans是构成Spring应用程序主干的Java对象。它们由Spring IoC容器实例化，组装和管理。这些bean是使用提供给容器的配置元数据创建的（以XML定义、注解）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=<span class="string">&quot;testController&quot;</span> class=<span class="string">&quot;com.**.TestController&quot;</span> scope=<span class="string">&quot;prototype&quot;</span> init-method=<span class="string">&quot;init&quot;</span> destroy-method=<span class="string">&quot;destory&quot;</span>/&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/&quot;)</span></span><br><span class="line"><span class="meta">@Scope(&quot;prototype&quot;)</span>			<span class="comment">// 创建多实例</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestController</span> &#123;</span><br><span class="line">   <span class="meta">@PostConstruct</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">   <span class="meta">@PreDestory</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destory</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>scope属性：<br>1.singleton： 表示在spring容器中的单例，通过spring容器获得该bean时总是返回唯一的实例；<br>2.prototype：与单例模式相反，表示为每一个bean请求都会提供一个实例；<br>3.request：在请求范围内会为每一个来自客户端的网络请求提供一个实例，在请求完成后，bean会失效并被垃圾回收器回收；<br>4.session：与请求范围类似，表示确保每个session中有个Bean的实例，在session过期后随之消失；<br>5.global-session：表示在全局会话内有效。</p>
+<h2 id="四、有三种方式向Spring-容器提供元数据"><a href="#四、有三种方式向Spring-容器提供元数据" class="headerlink" title="四、有三种方式向Spring 容器提供元数据:"></a>四、有三种方式向Spring 容器提供元数据:</h2><p>1.XML配置文件<br>2.基于注解配置<br>3.基于Java的配置</p>
+<p>基于Java类定义Bean配置元数据，其实就是通过Java类定义Spring配置元数据，且直接消除XML配置文件。<br>首先让我们看一下基于Java类如何定义Bean配置元数据，具体步骤如下：<br>  1.使用@Configuration注解需要作为配置的类，表示该类将定义Bean的元数据<br>  2.使用@Bean注解相应的方法，该方法名默认就是Bean的名称，该方法返回值就是Bean的对象。<br>  3.AnnotationConfigApplicationContext或子类进行加载基于java类的配置<br><strong>注意</strong>：<strong>使用bean注解的方法不能是private、final、static的。</strong></p>
+<p>基于Java方式的配置方式不是为了完全替代基于XML方式的配置，两者可以结合使用，因此可以有两种结合使用方式：<br>    <strong>1.在基于Java方式的配置类中引入基于XML方式的配置文件</strong>	</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=<span class="string">&quot;message&quot;</span> class=<span class="string">&quot;java.lang.String&quot;</span>&gt;</span><br><span class="line">    &lt;constructor-arg index=<span class="string">&quot;0&quot;</span> value=<span class="string">&quot;test&quot;</span>&gt;&lt;/constructor-arg&gt;</span><br><span class="line">&lt;/bean&gt;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="meta">@Configuration(&quot;ctxConfig&quot;)</span></span><br><span class="line"><span class="meta">@ImportResource(&quot;classpath:com/jike/***/appCtx.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ApplicationContextConfig</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到在java程序中使用**@** <strong>ImportResource</strong>导入了XML的配置文件</p>
+<p>​	<strong>2.在基于XML方式的配置文件中中引入基于Java方式的配置</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;context:annotation-config/&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;ctxConfig&quot;</span> class=“com.jike.***..ApplicationContextConfig<span class="string">&quot;/&gt;</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">//测试类</span></span><br><span class="line"><span class="string">public void testXmlConfig() &#123;</span></span><br><span class="line"><span class="string">  String configLocations[] = &#123;&quot;</span> classpath:com/jike<span class="comment">/***/</span>appCtx.xml<span class="string">&quot;&#125;;</span></span><br><span class="line"><span class="string">  ApplicationContext ctx = new ClassPathXmlApplicationContext(configLocations);</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到在XML的配置文件当中将java的配置类当中Bean来声明，第一行的是开启注解驱动支持。<br>值得注意的是必须得配置 <a href="context:annotation-config/">context:annotation-config/</a> 在XML配置文件中。</p>
+<p>Spring提供了一个AnnotationConfigApplicanContext类，能够直接通过标注@Configuration的Java类启动Spring容器：<br><strong>通过构造函数加载配置类:</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ApplicationContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(AppConf.class);</span><br></pre></td></tr></table></figure>
+
+<p><strong>通过编码方式注册配置类：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AnnotationConfigApplicationContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>();</span><br><span class="line">ctx.register(DaoConfig.class);</span><br><span class="line">ctx.register(ServiceConfig.class);</span><br><span class="line">ctx.refresh();</span><br></pre></td></tr></table></figure>
+
+<p>可以看到ctx注册了多个configuration类，然后通过refresh类来刷新容器以应用这些配置文件。<br>可以通过代码一个个的引入配置类，当然也可以使用**@Import**注解来引入配置类</p>
+<p><strong>引入多个配置类：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Import(DaoConfig.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServiceConfig</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>总结：不同配置方式比较</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bean</th>
+<th>XML配置文件</th>
+<th>注解配置</th>
+<th>Java的配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bean定义</td>
+<td><bean id=""></bean></td>
+<td>@Component</td>
+<td>标注了@Configuration的java类中，类方法上标注了@Bean</td>
+</tr>
+<tr>
+<td>Bean名称</td>
+<td>id或name&#x3D;”userDao”</td>
+<td>@Component(“userDao”)</td>
+<td>@Bean(“userDao”)</td>
+</tr>
+<tr>
+<td>Bean注入</td>
+<td>通过<property>子元素或通过p命名空间的动态属性注入</td>
+<td>通过标出@Autowired，按类型匹配自动,配合@Qualifier按名称匹配</td>
+<td>1.@Autowired方法入参绑定Bean 2.配置类的@Bean方法注入</td>
+</tr>
+<tr>
+<td>生命过程方法</td>
+<td>通过<bean>的init-method和destory-method属性指定Bean实现类方法名</td>
+<td>@PostContruct和@PreDestroy</td>
+<td>@Bean(initMethod &#x3D; “”, destroyMethod &#x3D; “”)</td>
+</tr>
+<tr>
+<td>作用范围</td>
+<td><bean>的scope属性</td>
+<td>@Scope</td>
+<td>@Scope</td>
+</tr>
+<tr>
+<td>延迟初始化</td>
+<td>Lazy-init,默认为default</td>
+<td>@Lazy</td>
+<td>@Lazy</td>
+</tr>
+</tbody></table>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-13T11:17:55.000Z" title="2021/5/13 下午7:17:55">2021-05-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-13T11:17:55.000Z" title="2021/5/13 下午7:17:55">2021-05-13</time></span><span class="level-item">41 minutes read (About 6162 words)</span></div></div><div class="content"><h1 id="2-4-3-Spring注解"><a href="#2-4-3-Spring注解" class="headerlink" title="2.4.3 Spring注解"></a>2.4.3 Spring注解</h1><p>注解是个好东西，但好东西我们也是看见过，整理过，理解过，用过才知道好。不求我们每个都记住，但求保有印象，在需要的时候能提取出来再查找相关资料，平时工作就不会显得那么被动了。</p>
+<h2 id="1-Configuration注解"><a href="#1-Configuration注解" class="headerlink" title="1.@Configuration注解"></a>1.@Configuration注解</h2><p>该类等价 与XML中配置beans，相当于Ioc容器，它的某个方法头上如果注册了@Bean，就会作为这个Spring容器中的Bean，与xml中配置的bean意思一样。</p>
+<p>@Configuration注解的类必需使用<code>context:component-scanbase-package=&quot;XXX&quot;</code>扫描.如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span> <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfig</span> &#123;</span><br><span class="line">	<span class="comment">//在properties文件里配置  </span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;wx_appid&#125;&quot;)</span> </span><br><span class="line">  <span class="keyword">public</span> String appid;</span><br><span class="line">	<span class="keyword">protected</span> <span class="title function_">MainConfig</span><span class="params">()</span>&#123;&#125; </span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="keyword">public</span> WxMpService <span class="title function_">wxMpService</span><span class="params">()</span> &#123;    </span><br><span class="line">    <span class="type">WxMpService</span> <span class="variable">wxMpService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">WxMpServiceImpl</span>();</span><br><span class="line">    wxMpService.setWxMpConfigStorage(wxMpConfigStorage());    </span><br><span class="line">    <span class="keyword">return</span> wxMpService;</span><br><span class="line">	&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义一个MainConfig，用@Configuration注解，那MainConfig相当于xml里的beans,里面用@Bean注解的和xml里定义的bean等价，用<code>context:component-scanbase-package=”XXX”</code>扫描该类，最终我们可以在程序里用<code>@AutoWired</code>或<code>@Resource</code>注解取得用<code>@Bean</code>注解的<code>bean</code>，和用xml先配置bean然后在程序里自动注入一样。目的是减少xml里配置。</p>
+<h2 id="2-Value注解"><a href="#2-Value注解" class="headerlink" title="2.@Value注解"></a>2.@Value注解</h2><p>为了简化从properties里取配置，可以使用@Value, 可以在properties文件中的配置值。在dispatcher-servlet.xml里引入properties文件。在程序里使用@Value:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;$&#123;wx_appid&#125;&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String appid；</span><br></pre></td></tr></table></figure>
+
+<p>即使给变量赋了初值也会以配置文件的值为准。</p>
+<h2 id="3-Controller-Service-Repository-Component"><a href="#3-Controller-Service-Repository-Component" class="headerlink" title="3.@Controller,@Service,@Repository,@Component"></a>3.@Controller,@Service,@Repository,@Component</h2><p>目前4种注解意思是一样，并没有什么区别，区别只是名字不同。使用方法：</p>
+<p>​	1.使用context:component-scanbase-package&#x3D;”XXX”&#x2F;扫描被注解的类<br>​	2.在类上写注解：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestController</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-PostConstruct-和-PreDestory"><a href="#4-PostConstruct-和-PreDestory" class="headerlink" title="4.@PostConstruct 和 @PreDestory"></a>4.@PostConstruct 和 @PreDestory</h2><p>实现初始化和销毁bean之前进行的操作，只能有一个方法可以用此注释进行注释，方法不能有参数，返回值必需是void,方法需要是非静态的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestService</span> &#123;</span><br><span class="line">	<span class="meta">@PostConstruct</span>  </span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;		<span class="comment">// 在构造方法和init方法(如果有的话)之间得到调用，且只会执行一次。</span></span><br><span class="line">		System.out.println(<span class="string">&quot;初始化&quot;</span>);  </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@PreDestroy</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span>  <span class="title function_">dostory</span><span class="params">()</span>&#123;		<span class="comment">// 注解的方法在destory()方法调用后得到执行。</span></span><br><span class="line">		System.out.println(<span class="string">&quot;销毁&quot;</span>);  </span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>流程图：</p>
+<p><img src="/../../images/2e803639d7ea863b9cdcc0abde546050.png" alt="2e803639d7ea863b9cdcc0abde546050.png"></p>
+<p>引深一点，Spring 容器中的 Bean 是有生命周期的，Spring 允许在 Bean 在初始化完成后以及 Bean 销毁前执行特定的操作，常用的设定方式有以下三种：</p>
+<p>1.通过实现 InitializingBean&#x2F;DisposableBean 接口来定制初始化之后&#x2F;销毁之前的操作方法；</p>
+<p>2.通过 元素的 init-method&#x2F;destroy-method属性指定初始化之后 &#x2F;销毁之前调用的操作方法；</p>
+<p>3.在指定方法上加上@PostConstruct 或@PreDestroy注解来制定该方法是在初始化之后还是销毁之前调用</p>
+<p>但他们之前并不等价。即使3个方法都用上了，也有先后顺序.</p>
+<p>Constructor &gt; @PostConstruct &gt;InitializingBean &gt; init-method</p>
+<ol start="5">
+<li>@Primary<br>自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常。</li>
+</ol>
+<p>例如：</p>
+<p>@Component public class Apple implements Fruit{<br>@Override  public String hello() {      return “我是苹果”;  }<br>}</p>
+<p>@Component @Primary public class Pear implements Fruit{<br>@Override  public String hello(String lyrics) {      return “梨子”;  }<br>}</p>
+<p>public class FruitService {<br>&#x2F;&#x2F;Fruit有2个实例子类，因为梨子用@Primary，那么会使用Pear注入  @Autowired  private Fruit fruit;</p>
+<p>public String hello(){      return fruit.hello();  }<br>}</p>
+<ol start="6">
+<li><p>@Lazy(true)<br>用于指定该Bean是否取消预初始化，用于注解类，延迟初始化。</p>
+</li>
+<li><p>@Autowired<br>Autowired默认先按byType，如果发现找到多个bean，则，又按照byName方式比对，如果还有多个，则报出异常。</p>
+</li>
+</ol>
+<p>1.可以手动指定按byName方式注入，使用@Qualifier。</p>
+<p>&#x2F;&#x2F;通过此注解完成从spring配置文件中 查找满足Fruit的bean,然后按&#x2F;&#x2F;@Qualifier指定pean</p>
+<p>@Autowired</p>
+<p>@Qualifier(“pean”)</p>
+<p>public Fruit fruit;</p>
+<p>2.如果要允许null 值，可以设置它的required属性为false，如：</p>
+<p>@Autowired(required&#x3D;false)</p>
+<p>public Fruit fruit;</p>
+<ol start="8">
+<li>@Resource<br>默认按 byName自动注入,如果找不到再按byType找bean,如果还是找不到则抛异常，无论按byName还是byType如果找到多个，则抛异常。</li>
+</ol>
+<p>可以手动指定bean,它有2个属性分别是name和type，使用name属性，则使用byName的自动注入，而使用type属性时则使用byType自动注入。</p>
+<p>@Resource(name&#x3D;”bean名字”)</p>
+<p>或</p>
+<p>@Resource(type&#x3D;”bean的class”)</p>
+<p>这个注解是属于J2EE的，减少了与spring的耦合。</p>
+<ol start="9">
+<li>@Async<br>java里使用线程用3种方法：</li>
+</ol>
+<p>继承Thread，重写run方法<br>实现Runnable,重写run方法<br>使用Callable和Future接口创建线程，并能得到返回值。<br>前2种简单，第3种方式特别提示一下，例子如下：</p>
+<p>class MyCallable implements Callable {  private int i &#x3D; 0;  &#x2F;&#x2F; 与run()方法不同的是，call()方法具有返回值  @Override  public Integer call() {  int sum &#x3D; 0;  for (; i &lt; 100; i++) {  System.out.println(Thread.currentThread().getName() + “ “ + i);  sum +&#x3D; i;  }  return sum;  } }</p>
+<p>main方法：</p>
+<p>public static void main(String[] args) {  Callable myCallable &#x3D; new MyCallable(); &#x2F;&#x2F; 创建MyCallable对象  FutureTask ft &#x3D; new FutureTask(myCallable); &#x2F;&#x2F;使用FutureTask来包装MyCallable对象  for (int i &#x3D; 0; i &lt; 100; i++) {  System.out.println(Thread.currentThread().getName() + “ “ + i);  if (i &#x3D;&#x3D; 30) {  Thread thread &#x3D; new Thread(ft); &#x2F;&#x2F;FutureTask对象作为Thread对象的target创建新的线程  thread.start(); &#x2F;&#x2F;线程进入到就绪状态  }  }  System.out.println(“主线程for循环执行完毕..”);  try {  int sum &#x3D; ft.get(); &#x2F;&#x2F;取得新创建的新线程中的call()方法返回的结果  System.out.println(“sum &#x3D; “ + sum);  } catch (InterruptedException e) {  e.printStackTrace();  } catch (ExecutionException e) {  e.printStackTrace();  } }</p>
+<p>而使用@Async可视为第4种方法。基于@Async标注的方法，称之为异步方法,这个注解用于标注某个方法或某个类里面的所有方法都是需要异步处理的。被注解的方法被调用的时候，会在新线程中执行，而调用它的方法会在原来的线程中执行。</p>
+<p>application.xml形势的配置：</p>
+<p>第一步配置XML。</p>
+<p>参数解读：</p>
+<p>配置参数：</p>
+<p>id：当配置多个executor时，被@Async(“id”)指定使用；也被作为线程名的前缀。</p>
+<p>pool-size：</p>
+<p>core size：最小的线程数，缺省：1</p>
+<p>max size：最大的线程数，缺省：Integer.MAX_VALUE</p>
+<p>queue-capacity：当最小的线程数已经被占用满后，新的任务会被放进queue里面，当这个queue的capacity也被占满之后，pool里面会创建新线程处理这个任务，直到总线程数达到了max size，这时系统会拒绝这个任务并抛出TaskRejectedException异常(缺省配置的情况下，可以通过rejection-policy来决定如何处理这种情况)。缺省值为：Integer.MAX_VALUE</p>
+<p>keep-alive：超过core size的那些线程，任务完成后，再经过这个时长(秒)会被结束掉</p>
+<p>rejection-policy：当pool已经达到max size的时候，如何处理新任务</p>
+<p>ABORT(缺省)：抛出TaskRejectedException异常，然后不执行DISCARD：不执行，也不抛出异常</p>
+<p>DISCARD_OLDEST：丢弃queue中最旧的那个任务</p>
+<p>CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行</p>
+<p>第二步在类或方法上添加@Async，当调用该方法时，则该方法即是用异常执行的方法单独开个新线程执行。</p>
+<p>@Async(“可以指定执行器id，也可以不指定”)  public static void testAsyncVoid (){  try {  &#x2F;&#x2F;让程序暂停100秒，相当于执行一个很耗时的任务  System.out.println(“异常执行打印字符串”);  Thread.sleep(100000);  } catch (InterruptedException e) {  e.printStackTrace();  }  }</p>
+<p>当在外部调用testAsync方法时即在新线程中执行，由上面执行器去维护线程。</p>
+<p>总结：先用context:component-scan去扫描注解，让spring能识别到@Async注解，然后task:annotation-driven去驱动@Async注解，并可以指定默认的线程执行器executor。那么当用@Async注解的方法或类得到调用时，线程执行器会创建新的线程去执行。</p>
+<p>上面方法是无返回值的情况，还有异常方法有返回值的例子。</p>
+<p>@Async public Future testAsyncReturn () {  System.out.println(“Execute method asynchronously - “  + Thread.currentThread().getName());  try {  Thread.sleep(5000);  return new AsyncResult(“hello world !!!!”);  } catch (InterruptedException e) {  &#x2F;&#x2F;  }  return null; }</p>
+<p>返回的数据类型为Future类型，接口实现类是AsyncResult.</p>
+<p>调用方法如下：</p>
+<p>public void test(){  Future future &#x3D; cc.testAsyncReturn();  while (true) { &#x2F;&#x2F;&#x2F;这里使用了循环判断，等待获取结果信息  if (future.isDone()) { &#x2F;&#x2F;判断是否执行完毕  System.out.println(“Result from asynchronous process - “ + future.get());  break;  }  System.out.println(“Continue doing something else. “);  Thread.sleep(1000);  } }</p>
+<p>通过不停的检查Future的状态来获取当前的异步方法是否执行完毕</p>
+<p>参考文章</p>
+<p>编程的方式使用@Async:</p>
+<p>@Configuration @EnableAsync public class SpringConfig {  private int corePoolSize &#x3D; 10; private int maxPoolSize &#x3D; 200; private int queueCapacity &#x3D; 10; private String ThreadNamePrefix &#x3D; “MyLogExecutor-“;</p>
+<p>@Bean  public Executor logExecutor() {      ThreadPoolTaskExecutor executor &#x3D; new ThreadPoolTaskExecutor();      executor.setCorePoolSize(corePoolSize);      executor.setMaxPoolSize(maxPoolSize);      executor.setQueueCapacity(queueCapacity);      executor.setThreadNamePrefix(ThreadNamePrefix);      &#x2F;&#x2F; rejection-policy：当pool已经达到max size的时候，如何处理新任务      &#x2F;&#x2F; CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行      executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());      executor.initialize();      return executor;  }<br>}</p>
+<p>10.@Named<br>@Named和Spring的@Component功能相同。@Named可以有值，如果没有值生成的Bean名称默认和类名相同。比如</p>
+<p>@Named</p>
+<p>public class Person</p>
+<p>或</p>
+<p>@Named(“cc”)</p>
+<p>public class Person</p>
+<ol start="11">
+<li>@Inject<br>使用@Inject需要引用javax.inject.jar，它与Spring没有关系，是jsr330规范。</li>
+</ol>
+<p>与@Autowired有互换性。</p>
+<ol start="12">
+<li>@Singleton<br>只要在类上加上这个注解，就可以实现一个单例类，不需要自己手动编写单例实现类。</li>
+</ol>
+<p>13.@Valid,@Valided<br>@Valid</p>
+<p>网上一大片使用@Valid失效不能用的情况。为什么呢？</p>
+<p>1.@Valid必需使用在以@RequestBody接收参数的情况下。</p>
+<p>2.使用ajax以POST方式提示数据，禁止用Fiddler以及浏览器直接访问的方式测试接口</p>
+<p>3.用添加注解驱动。</p>
+<p>4.@Valid是应用在javabean上的校验。</p>
+<ol start="5">
+<li>org.hibernate  hibernate-validator  4.2.0.Final   com.fasterxml.jackson.core  jackson-annotations  2.5.3    com.fasterxml.jackson.core  jackson-core  2.5.3    com.fasterxml.jackson.core  jackson-databind  2.5.3    org.codehaus.jackson  jackson-mapper-asl  1.9.8    com.fasterxml.jackson.module  jackson-module-jaxb-annotations  2.5.3</li>
+</ol>
+<p>这些jar包是需要的。@Valid是使用hibernate validation的时候使用，可参数下面介绍的@RequestBody</p>
+<p>6.@Valid下后面紧跟BindingResult result，验证结果保存在result</p>
+<p>例如：</p>
+<p>@RequestMapping(“&#x2F;test”)  public String testValid(@Valid User user, BindingResult result){  if (result.hasErrors()){  List errorList &#x3D; result.getAllErrors();  for(ObjectError error : errorList){  System.out.println(error.getDefaultMessage());  }  }  return “test”; }</p>
+<p>在入参User上添加了@Valid做校验，在User类里属性上实行实际的特定校验。</p>
+<p>例如在User的name属性上加</p>
+<p>@NotBlank</p>
+<p>private String name;</p>
+<p>全部参数校验如下：</p>
+<p>空检查</p>
+<p>@Null 验证对象是否为null</p>
+<p>@NotNull 验证对象是否不为null, 无法查检长度为0的字符串</p>
+<p>@NotBlank 检查约束字符串是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格.</p>
+<p>@NotEmpty 检查约束元素是否为NULL或者是EMPTY.</p>
+<p>Booelan检查</p>
+<p>@AssertTrue 验证 Boolean 对象是否为 true</p>
+<p>@AssertFalse 验证 Boolean 对象是否为 false</p>
+<p>长度检查</p>
+<p>@Size(min&#x3D;, max&#x3D;) 验证对象(Array,Collection,Map,String)长度是否在给定的范围之内</p>
+<p>@Length(min&#x3D;, max&#x3D;)验证注解的元素值长度在min和max区间内</p>
+<p>日期检查</p>
+<p>@Past 验证 Date 和 Calendar 对象是否在当前时间之前</p>
+<p>@Future 验证 Date 和 Calendar 对象是否在当前时间之后</p>
+<p>@Pattern 验证 String 对象是否符合正则表达式的规则</p>
+<p>数值检查，建议使用在Stirng,Integer类型，不建议使用在int类型上，因为表单值为“”时无法转换为int，但可以转换为Stirng为””,Integer为null</p>
+<p>@Min(value&#x3D;””) 验证 Number 和 String 对象是否大等于指定的值</p>
+<p>@Max(value&#x3D;””) 验证 Number 和 String 对象是否小等于指定的值</p>
+<p>@DecimalMax(value&#x3D;值) 被标注的值必须不大于约束中指定的最大值. 这个约束的参数是一个通过BigDecimal定义的最大值的字符串表示.小数存在精度</p>
+<p>@DecimalMin(value&#x3D;值) 被标注的值必须不小于约束中指定的最小值. 这个约束的参数是一个通过BigDecimal定义的最小值的字符串表示.小数存在精度</p>
+<p>@Digits 验证 Number 和 String 的构成是否合法</p>
+<p>@Digits(integer&#x3D;,fraction&#x3D;)验证字符串是否是符合指定格式的数字，interger指定整数精度，fraction指定小数精度。</p>
+<p>@Range(min&#x3D;, max&#x3D;) 检查数字是否介于min和max之间.</p>
+<p>@Range(min&#x3D;10000,max&#x3D;50000,message&#x3D;”range.bean.wage”)</p>
+<p>private BigDecimal wage;</p>
+<p>@Valid 递归的对关联对象进行校验, 如果关联对象是个集合或者数组,那么对其中的元素进行递归校验,如果是一个map,则对其中的值部分进行校验.(是否进行递归验证)</p>
+<p>@CreditCardNumber信用卡验证</p>
+<p>@Email 验证是否是邮件地址，如果为null,不进行验证，算通过验证。</p>
+<p>@ScriptAssert(lang&#x3D;,script&#x3D;, alias&#x3D;)</p>
+<p>@URL(protocol&#x3D;,host&#x3D;,port&#x3D;,regexp&#x3D;, flags&#x3D;)</p>
+<p>@Validated</p>
+<p>@Valid是对javabean的校验，如果想对使用@RequestParam方式接收参数方式校验使用@Validated</p>
+<p>使用@Validated的步骤：</p>
+<p>第一步：定义全局异常，让该全局异常处理器能处理所以验证失败的情况，并返回给前台失败提示数据。如下，该类不用在任何xml里配置。 import javax.validation.ValidationException;</p>
+<p>import org.springframework.context.annotation.Bean; import org.springframework.http.HttpStatus; import org.springframework.stereotype.Component; import org.springframework.validation.beanvalidation.MethodValidationPostProcessor; import org.springframework.web.bind.annotation.ControllerAdvice; import org.springframework.web.bind.annotation.ExceptionHandler; import org.springframework.web.bind.annotation.ResponseBody; import org.springframework.web.bind.annotation.ResponseStatus;</p>
+<p>@ControllerAdvice @Component public class GlobalExceptionHandler {  @Bean  public MethodValidationPostProcessor methodValidationPostProcessor() {  return new MethodValidationPostProcessor();  }</p>
+<p>@ExceptionHandler@ResponseBody@ResponseStatus(HttpStatus.BAD_REQUEST)public String handle(ValidationException exception) {    System.out.println(“bad request, “ + exception.getMessage());    return “bad request, “ + exception.getMessage();}<br>} 第二步。在XXController.java头上添加@Validated，然后在@RequestParam后台使用上面介绍的验证注解，比如@NotBlank,@Rank.</p>
+<p>如下：</p>
+<p>@Controller @RequestMapping(“&#x2F;test”) @Validated public class TestController extends BaseController {<br>@RequestMapping(value &#x3D; “testValidated”, method &#x3D; RequestMethod.GET)@ResponseBody@ResponseStatus(HttpStatus.BAD_REQUEST)public Object testValidated(@RequestParam(value &#x3D; “pk”, required &#x3D; true) @Size(min &#x3D; 1, max &#x3D; 3) String pk,        @RequestParam(value &#x3D; “age”, required &#x3D; false) @Range(min &#x3D; 1, max &#x3D; 3) String age) {    try {        return “pk:” + pk + “,age&#x3D;” + age;    } catch (Throwable t) {                return buildFailure(“消息列表查询失败”);    }}<br>}</p>
+<p>当入非法参数是，会被全局处理器拦截到，(Spring切面编程方式)，如果参数非法即刻给前台返回错误数据。</p>
+<p>测试：<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/TestValidate/test/testValidated?pk=2&amp;age=12">http://127.0.0.1:8080/TestValidate/test/testValidated?pk=2&amp;age=12</a></p>
+<p>返回：</p>
+<p>注意</p>
+<p>@Valid是使用hibernateValidation.jar做校验</p>
+<p>@Validated是只用springValidator校验机制使用</p>
+<p>gitHub下载地址</p>
+<p>@Validated与@RequestBody结合使用时，在接口方法里要增加@Valid。例如：</p>
+<p>public Object edit(@Valid @RequestBody AddrRo addrRo) {…..}</p>
+<p>14.@RequestBody<br>@RequestBody(required&#x3D;true)</p>
+<p>:有个默认属性required,默认是true,当body里没内容时抛异常。</p>
+<p>application&#x2F;x-www-form-urlencoded：窗体数据被编码为名称&#x2F;值对。这是标准的编码格式。这是默认的方式 multipart&#x2F;form-data：窗体数据被编码为一条消息，页上的每个控件对应消息中的一个部分。二进制数据传输方式，主要用于上传文件</p>
+<p>注意：必需使用POST方式提交参数，需要使用ajax方式请求，用Fiddler去模拟post请求不能。</p>
+<p>引用jar包：</p>
+<p>Spring相关jar包。</p>
+<p>以及</p>
+<p> com.fasterxml.jackson.core  jackson-annotations  2.5.3    com.fasterxml.jackson.core  jackson-core  2.5.3    com.fasterxml.jackson.core  jackson-databind  2.5.3 </p>
+<p>dispatchServlet-mvc.xml配置 第一种，直接配置MappingJackson2HttpMessageCoverter：</p>
+<p>​    </p>
+<p>第二种：mvc:annotation-driven&#x2F; 就不用配置上面bean,默认会配好。</p>
+<p>Ajax请求：</p>
+<p>function testRequestBody() {  var o &#x3D; {“status”:9};  jQuery.ajax({  type: “POST”,  url: “<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/TestValidate/test/testValid&quot;">http://127.0.0.1:8080/TestValidate/test/testValid&quot;</a>,  xhrFields:{  withCredentials:true  },  data: JSON.stringify(o),  contentType: “application&#x2F;json”,  dataType: “json”,  async: false,  success:function (data) {  console.log(data);  },</p>
+<pre><code>    error: function(res) &#123;         console.log(res);        &#125;    &#125;);
+</code></pre>
+<p>}</p>
+<p>后台XXXcontroller.java:</p>
+<p>@RequestMapping(value&#x3D;”&#x2F; testValid “,method&#x3D;RequestMethod.POST) @ResponseBody public Object setOrderInfo(@RequestBody InfoVO infoVO,HttpServletRequest request, HttpServletResponse response){  InfoVO cVo &#x3D; getInfoVo(infoVO);  return “success”;  } 开发时，不是报415，就是400错误，头都大了。还是细节没做到位，注意下面几个要点：</p>
+<p>Content-Type必需是application&#x2F;json</p>
+<p>需要jackson-databind.jar</p>
+<p>mvc:annotation-driven&#x2F;要配置或直接配置bean</p>
+<p>XXXController.jar在post方式接收数据</p>
+<p>最最重要的，使用ajax以post方式请求。不能用Fiddler模拟,不然会出错。</p>
+<p>15.@CrossOrigin<br>是Cross-Origin ResourceSharing(跨域资源共享)的简写</p>
+<p>作用是解决跨域访问的问题，在Spring4.2以上的版本可直接使用。在类上或方法上添加该注解</p>
+<p>例如：</p>
+<p>@CrossOrigin public class TestController extends BaseController {<br>XXXX<br>}</p>
+<p>如果失效则可能方法没解决是GET还是POST方式，指定即可解决问题。</p>
+<p>16.@RequestParam<br>作用是提取和解析请求中的参数。@RequestParam支持类型转换，类型转换目前支持所有的基本Java类型</p>
+<p>@RequestParam([value&#x3D;”number”], [required&#x3D;false]) String number</p>
+<p>将请求中参数为number映射到方法的number上。required&#x3D;false表示该参数不是必需的，请求上可带可不带。</p>
+<p>17.@PathVariable，@RequestHeader，@CookieValue，@RequestParam, @RequestBody，@SessionAttributes, @ModelAttribute<br>@PathVariable：处理requet uri部分,当使用@RequestMapping URI template 样式映射时， 即someUrl&#x2F;{paramId}, 这时的paramId可通过 @Pathvariable注解绑定它传过来的值到方法的参数上</p>
+<p>例如：</p>
+<p>@Controller @RequestMapping(“&#x2F;owners&#x2F;{a}”) public class RelativePathUriTemplateController { @RequestMapping(“&#x2F;pets&#x2F;{b}”) public void findPet(@PathVariable(“a”) String a,@PathVariable String b, Model model) {  &#x2F;&#x2F; implementation omitted } }</p>
+<p>@RequestHeader，@CookieValue: 处理request header部分的注解</p>
+<p>将头部信息绑定到方法参数上：</p>
+<p>@RequestMapping(“&#x2F;test”) public void displayHeaderInfo(@RequestHeader(“Accept-Encoding”) String encoding,  @RequestHeader(“Keep-Alive”)long keepAlive) {<br>&#x2F;&#x2F;…</p>
+<p>}</p>
+<p>&#x2F;&#x2F;将cookie里JSESSIONID绑定到方法参数上</p>
+<p>@RequestMapping(“&#x2F;test”) public void displayHeaderInfo(@CookieValue(“JSESSIONID”) String cookie) {<br>&#x2F;&#x2F;…</p>
+<p>}</p>
+<p>18.@Scope<br>配置bean的作用域。</p>
+<p>@Controller</p>
+<p>@RequestMapping(“&#x2F;test”)</p>
+<p>@Scope(“prototype”)</p>
+<p>public class TestController {<br>}</p>
+<p>默认是单例模式，即@Scope(“singleton”),</p>
+<p>singleton：单例，即容器里只有一个实例对象。</p>
+<p>prototype：多对象，每一次请求都会产生一个新的bean实例，Spring不无法对一个prototype bean的整个生命周期负责，容器在初始化、配置、装饰或者是装配完一个prototype实例后，将它交给客户端，由程序员负责销毁该对象，不管何种作用域，容器都会调用所有对象的初始化生命周期回调方法，而对prototype而言，任何配置好的析构生命周期回调方法都将不会被调用</p>
+<p>request：对每一次HTTP请求都会产生一个新的bean，同时该bean仅在当前HTTP request内有效</p>
+<p>web.xml增加如下配置： org.springframework.web.context.request.RequestContextListener session：该针对每一次HTTP请求都会产生一个新的bean，同时该bean仅在当前HTTP session内有效。也要在web.xml配置如下代码： org.springframework.web.context.request.RequestContextListener</p>
+<p>global session：作用不大，可不用管他。</p>
+<p>19.@ResponseStatus<br>@ResponseStatus用于修饰一个类或者一个方法，修饰一个类的时候，一般修饰的是一个异常类,当处理器的方法被调用时，@ResponseStatus指定的code和reason会被返回给前端。value属性是http状态码，比如404，500等。reason是错误信息</p>
+<p>当修改类或方法时，只要该类得到调用，那么value和reason都会被添加到response里</p>
+<p>例如：</p>
+<p>@ResponseStatus(value&#x3D;HttpStatus.FORBIDDEN, reason&#x3D;”出现了错误”) public class UserException extends RuntimeException{<br>XXXXX<br>}</p>
+<p>当某处抛出UserException时，则会把value和reason返回给前端。</p>
+<p>@RequestMapping(“&#x2F;testResponseStatus”)  public String testResponseStatus(int i){  if(i&#x3D;&#x3D;0)  throw new UserNotMatchException();  return “hello”; }</p>
+<p>修改方法：</p>
+<p>@ControllerAdvice @Component public class GlobalExceptionHandler {  @Bean  public MethodValidationPostProcessor methodValidationPostProcessor() {  return new MethodValidationPostProcessor();  }</p>
+<p>@ExceptionHandler@ResponseBody@ResponseStatus(value&#x3D;HttpStatus.BAD_REQUEST,reason&#x3D;”哈哈”)public String handle(ValidationException exception) {System.out.println(“bad request, “ + exception.getMessage());return “bad request, “ + exception.getMessage();}<br>}</p>
+<p>结果如下：</p>
+<p>正如上面所说，该方法得到调用，不论是否抛异常，都会把value和reason添加到response里。</p>
+<p>总结：@ResponseStatus是为了在方法或类得到调用时将指定的code和reason添加到response里返前端，就像服务器常给我们报的404错误一样，我们可以自己指定高逼格错误提示。</p>
+<p>20.@RestController<br>@RestController &#x3D; @Controller + @ResponseBody。</p>
+<p>是2个注解的合并效果，即指定了该controller是组件，又指定方法返回的是String或json类型数据，不会解决成jsp页面，注定不够灵活，如果一个Controller即有SpringMVC返回视图的方法，又有返回json数据的方法即使用@RestController太死板。</p>
+<p>灵活的作法是：定义controller的时候，直接使用@Controller，如果需要返回json可以直接在方法中添加@ResponseBody</p>
+<p>21.@ControllerAdvice<br>官方解释是：It is typically used todefine@ExceptionHandler,</p>
+<p>@InitBinder, and@ModelAttribute methods that apply to all@RequestMapping methods</p>
+<p>意思是：即把@ControllerAdvice注解内部使用@ExceptionHandler、@InitBinder、@ModelAttribute注解的方法应用到所有的 @RequestMapping注解的方法。非常简单，不过只有当使用@ExceptionHandler最有用，另外两个用处不大。</p>
+<p>@ControllerAdvice public class GlobalExceptionHandler {  @ExceptionHandler(SQLException.class)  @ResponseStatus(value&#x3D;HttpStatus.INTERNAL_SERVER_ERROR,reason&#x3D;”sql查询错误”)  @ResponseBody  public ExceptionResponse handleSQLException(HttpServletRequest request, Exception ex) {  String message &#x3D; ex.getMessage();  return ExceptionResponse.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), message);  } }</p>
+<p>即表示让Spring捕获到所有抛出的SQLException异常，并交由这个被注解的handleSQLException方法处理，同时使用@ResponseStatus指定了code和reason写到response上，返回给前端。</p>
+<p>22.元注解包括 @Retention @Target @Document @Inherited四种<br>元注解是指注解的注解，比如我们看到的ControllerAdvice注解定义如下。</p>
+<p>@Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface ControllerAdvice {  XXX }</p>
+<p>@Retention: 定义注解的保留策略：</p>
+<p>@Retention(RetentionPolicy.SOURCE) &#x2F;&#x2F;注解仅存在于源码中，在class字节码文件中不包含</p>
+<p>@Retention(RetentionPolicy.CLASS) &#x2F;&#x2F;默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得，</p>
+<p>@Retention(RetentionPolicy.RUNTIME) &#x2F;&#x2F;注解会在class字节码文件中存在，在运行时可以通过反射获取到</p>
+<p>@Target：定义注解的作用目标:</p>
+<p>@Target(ElementType.TYPE) &#x2F;&#x2F;接口、类、枚举、注解</p>
+<p>@Target(ElementType.FIELD) &#x2F;&#x2F;字段、枚举的常量</p>
+<p>@Target(ElementType.METHOD) &#x2F;&#x2F;方法</p>
+<p>@Target(ElementType.PARAMETER) &#x2F;&#x2F;方法参数</p>
+<p>@Target(ElementType.CONSTRUCTOR) &#x2F;&#x2F;构造函数</p>
+<p>@Target(ElementType.LOCAL_VARIABLE)&#x2F;&#x2F;局部变量</p>
+<p>@Target(ElementType.ANNOTATION_TYPE)&#x2F;&#x2F;注解</p>
+<p>@Target(ElementType.PACKAGE) &#x2F;&#x2F;&#x2F;包</p>
+<p>由以上的源码可以知道，他的elementType 可以有多个，一个注解可以为类的，方法的，字段的等等</p>
+<p>@Document：说明该注解将被包含在javadoc中</p>
+<p>@Inherited：说明子类可以继承父类中的该注解</p>
+<p>比如@Valid注解定义是</p>
+<p>表示该注解只能用在方法，属性，构造函数及方法参数上。该注意会被编译到class里可通过反射得到。</p>
+<p>23.@RequestMapping<br>处理映射请求的注解。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。有6个属性。</p>
+<p>1、 value， method: value：指定请求的实际地址，指定的地址可以是URI Template 模式； method：指定请求的method类型， GET、POST、PUT、DELETE等； 比如： @RequestMapping(value &#x3D; “&#x2F;testValid”, method &#x3D; RequestMethod.POST) @ResponseBody public Object testValid(@RequestBody @Valid Test test,BindingResult result, HttpServletRequest request, HttpServletResponse response) {  XXX }</p>
+<p>value的uri值为以下三类： A) 可以指定为普通的具体值；如@RequestMapping(value &#x3D;”&#x2F;testValid”) B) 可以指定为含有某变量的一类值;如@RequestMapping(value&#x3D;”&#x2F;{day}”) C) 可以指定为含正则表达式的一类值;如@RequestMapping(value&#x3D;”&#x2F;{textualPart:[a-z-]+}.{numericPart:[d]+}”) 可以匹配..&#x2F;chenyuan122912请求。</p>
+<p>2、 consumes，produces： consumes： 指定处理请求的提交内容类型(Content-Type)，例如@RequestMapping(value &#x3D; “&#x2F;test”, consumes&#x3D;”application&#x2F;json”)处理application&#x2F;json内容类型</p>
+<p>produces: 指定返回的内容类型，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
+<p>3 params、headers： params： 指定request中必须包含某些参数值是，才让该方法处理。</p>
+<p>例如：</p>
+<p>@RequestMapping(value &#x3D; “&#x2F;test”, method &#x3D; RequestMethod.GET, params&#x3D;”name&#x3D;chenyuan”) public void findOrd(String name) {  &#x2F;&#x2F; implementation omitted }</p>
+<p>仅处理请求中包含了名为“name”，值为“chenyuan”的请求.</p>
+<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
+<p>@RequestMapping(value &#x3D; “&#x2F;test”, method &#x3D; RequestMethod.GET, headers&#x3D;”Referer&#x3D;<a target="_blank" rel="noopener" href="http://www.baidu.com&quot;/">www.baidu.com&quot;</a>) public void findOrd(String name) {  &#x2F;&#x2F; implementation omitted }</p>
+<p>仅处理request的header中包含了指定“Refer”请求头和对应值为“<a target="_blank" rel="noopener" href="http://www.baidu.com”的请求/">www.baidu.com”的请求</a></p>
+<ol start="24">
+<li><p>@GetMapping和@PostMapping</p>
+<p>@GetMapping(value &#x3D; “page”)等价于@RequestMapping(value &#x3D; “page”, method &#x3D; RequestMethod.GET)</p>
+</li>
+</ol>
+<p>@PostMapping(value &#x3D; “page”)等价于@RequestMapping(value &#x3D; “page”, method &#x3D; RequestMethod.POST)</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-05-13T10:55:12.000Z" title="2021/5/13 下午6:55:12">2021-05-13</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-05-13T10:55:12.000Z" title="2021/5/13 下午6:55:12">2021-05-13</time></span><span class="level-item">3 minutes read (About 413 words)</span></div></div><div class="content"><h1 id="2-4-1-ApplicationContext"><a href="#2-4-1-ApplicationContext" class="headerlink" title="2.4.1 ApplicationContext"></a>2.4.1 ApplicationContext</h1><h2 id="SpringBoot中获取ApplicationContext的三种方式"><a href="#SpringBoot中获取ApplicationContext的三种方式" class="headerlink" title="SpringBoot中获取ApplicationContext的三种方式"></a>SpringBoot中获取ApplicationContext的三种方式</h2><blockquote>
+<p>ApplicationContext是什么？</p>
+<p>简单来说就是Spring中的容器，可以用来获取容器中的各种bean组件，注册监听事件，加载资源文件等功能。</p>
+</blockquote>
+<h2 id="一、Application-Context获取的几种方式"><a href="#一、Application-Context获取的几种方式" class="headerlink" title="一、Application Context获取的几种方式"></a>一、Application Context获取的几种方式</h2><h3 id="1-直接使用Autowired注入"><a href="#1-直接使用Autowired注入" class="headerlink" title="1 直接使用Autowired注入"></a>1 直接使用Autowired注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Book1</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ApplicationContext applicationContext;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-利用-spring4-3-的新特性"><a href="#2-利用-spring4-3-的新特性" class="headerlink" title="2 利用 spring4.3 的新特性"></a>2 利用 spring4.3 的新特性</h3><p>使用spring4.3新特性但是存在一定的局限性，必须满足以下两点：<br>1 构造函数只能有一个，如果有多个，就必须有一个无参数的构造函数，此时，spring会调用无参的构造函数<br>2 构造函数的参数，必须在spring容器中存在</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Book2</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> ApplicationContext applicationContext;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Book2</span><span class="params">(ApplicationContext applicationContext)</span>&#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">        <span class="built_in">this</span>.applicationContext=applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span> <span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-实现spring提供的接口-ApplicationContextAware"><a href="#3-实现spring提供的接口-ApplicationContextAware" class="headerlink" title="3 实现spring提供的接口 ApplicationContextAware"></a>3 实现spring提供的接口 ApplicationContextAware</h3><p>spring 在bean 初始化后会判断是不是<code>ApplicationContextAware</code>的子类，调用<code>setApplicationContext()</code>方法， 会将容器中<code>ApplicationContext</code>传入进去</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Book3</span> <span class="keyword">implements</span> <span class="title class_">ApplicationContextAware</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> ApplicationContext applicationContext;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span> <span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="built_in">this</span>.applicationContext = applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、ApplicationContext的常见实现是什么？"><a href="#二、ApplicationContext的常见实现是什么？" class="headerlink" title="二、ApplicationContext的常见实现是什么？"></a>二、ApplicationContext的常见实现是什么？</h2><p>1.FileSystemXmlApplicationContext来容器从XML文件加载bean的定义。必须将XML bean配置文件的完整路径提供给构造函数。</p>
+<p>2.ClassPathXmlApplicationContext的容器还加载从XML文件java bean的定义。在这里，您需要正确设置CLASSPATH，因为此容器将在CLASSPATH中查找bean配置XML文件。</p>
+<p>3.WebXmlApplicationContext：容器从Web应用程序中加载的所有bean类定义的XML文件。</p>
+</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/10/">Previous</a></div><div class="pagination-next"><a href="/page/12/">Next</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/10/">10</a></li><li><a class="pagination-link is-current" href="/page/11/">11</a></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">133</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">5</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">Follow</a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:22:12.940Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90002%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3TCP%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">90002 快速了解TCP的流量控制与拥塞控制</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:05:30.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90001%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">90001 分布式事务</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"> </a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">May 2022</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">April 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">March 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">February 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">December 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">November 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">September 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">August 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">July 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">June 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">March 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">February 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">January 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">November 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/"><span class="tag">事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"><span class="tag">分布式</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2022 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>

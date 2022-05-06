@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Hexo</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Hexo"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hexo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="问题 什么是分布式消息中间件？ 消息中间件的作用是什么？ 消息中间件的使用场景是什么？ 消息中间件选型？  分布式消息是一种通信机制，和 RPC、HTTP、RMI 等不一样，消息中间件采用分布式中间代理的方式进行通信。如图所示，采用了消息中间件之后，上游业务系统发送消息，先存储在消息中间件，然后由消息中间件将消息分发到对应的业务模块应用（分布式生产者 - 消费者模式）。这种异步的方式，减少了服务"><meta property="og:type" content="blog"><meta property="og:title" content="Hexo"><meta property="og:url" content="http://example.com/2021/04/28/204JAVA/4.Kafka/"><meta property="og:site_name" content="Hexo"><meta property="og:description" content="问题 什么是分布式消息中间件？ 消息中间件的作用是什么？ 消息中间件的使用场景是什么？ 消息中间件选型？  分布式消息是一种通信机制，和 RPC、HTTP、RMI 等不一样，消息中间件采用分布式中间代理的方式进行通信。如图所示，采用了消息中间件之后，上游业务系统发送消息，先存储在消息中间件，然后由消息中间件将消息分发到对应的业务模块应用（分布式生产者 - 消费者模式）。这种异步的方式，减少了服务"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://example.com/images/640.png"><meta property="og:image" content="http://example.com/images/640"><meta property="og:image" content="http://example.com/images/640-20210428095405910"><meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/FbXJ7UCc6O1oicl7z78fR9ibRGPNMBfV0ezicXtDDiaMbIKIjibSf05dOIKmBzicuuEhrRkbuESn0DNrfEFOCsTtYTTw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1"><meta property="og:image" content="http://example.com/images/640-20210428095405405"><meta property="og:image" content="http://example.com/images/640-20210428095405632"><meta property="og:image" content="http://example.com/images/640-20210428095405909.png"><meta property="og:image" content="http://example.com/images/640-20210428095405435.png"><meta property="og:image" content="http://example.com/images/640-20210428095405419"><meta property="og:image" content="http://example.com/images/640-20210428095405428"><meta property="og:image" content="http://example.com/images/640-20210428095405430"><meta property="og:image" content="http://example.com/images/640-20210428095405441"><meta property="og:image" content="http://example.com/images/640-20210428095405438"><meta property="og:image" content="http://example.com/images/640-20210428095405450"><meta property="og:image" content="http://example.com/images/640-20210428095405444.png"><meta property="article:published_time" content="2021-04-28T01:54:13.000Z"><meta property="article:modified_time" content="2021-04-28T01:54:13.000Z"><meta property="article:author" content="John Doe"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/../../images/640.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://example.com/2021/04/28/204JAVA/4.Kafka/"},"headline":"Hexo","image":["http://example.com/images/640.png","http://example.com/images/640-20210428095405909.png","http://example.com/images/640-20210428095405435.png","http://example.com/images/640-20210428095405444.png"],"datePublished":"2021-04-28T01:54:13.000Z","dateModified":"2021-04-28T01:54:13.000Z","author":{"@type":"Person","name":"John Doe"},"publisher":{"@type":"Organization","name":"Hexo","logo":{"@type":"ImageObject","url":"http://example.com/img/logo.svg"}},"description":"问题 什么是分布式消息中间件？ 消息中间件的作用是什么？ 消息中间件的使用场景是什么？ 消息中间件选型？  分布式消息是一种通信机制，和 RPC、HTTP、RMI 等不一样，消息中间件采用分布式中间代理的方式进行通信。如图所示，采用了消息中间件之后，上游业务系统发送消息，先存储在消息中间件，然后由消息中间件将消息分发到对应的业务模块应用（分布式生产者 - 消费者模式）。这种异步的方式，减少了服务"}</script><link rel="canonical" href="http://example.com/2021/04/28/204JAVA/4.Kafka/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-04-28T01:54:13.000Z" title="2021/4/28 上午9:54:13">2021-04-28</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-04-28T01:54:13.000Z" title="2021/4/28 上午9:54:13">2021-04-28</time></span><span class="level-item">41 minutes read (About 6201 words)</span></div></div><div class="content"><p><img src="/../../images/640.png" alt="图片"></p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>什么是分布式消息中间件？</li>
+<li>消息中间件的作用是什么？</li>
+<li>消息中间件的使用场景是什么？</li>
+<li>消息中间件选型？</li>
+</ul>
+<p>分布式消息是一种通信机制，和 RPC、HTTP、RMI 等不一样，消息中间件采用分布式中间代理的方式进行通信。如图所示，采用了消息中间件之后，上游业务系统发送消息，先存储在消息中间件，然后由消息中间件将消息分发到对应的业务模块应用（分布式生产者 - 消费者模式）。这种异步的方式，减少了服务之间的耦合程度。</p>
+<p><img src="/../../images/640" alt="图片"></p>
+<p><strong>定义消息中间件：</strong></p>
+<ul>
+<li>利用高效可靠的消息传递机制进行平台无关的数据交流</li>
+<li>基于数据通信，来进行分布式系统的集成</li>
+<li>通过提供消息传递和消息排队模型，可以在分布式环境下扩展进程间的通信</li>
+</ul>
+<p>在系统架构中引用额外的组件，必然提高系统的架构复杂度和运维的难度，那么<strong>在系统中使用分布式消息中间件有什么优势呢？消息中间件在系统中起的作用又是什么呢？</strong></p>
+<ul>
+<li>解耦</li>
+<li>冗余（存储）</li>
+<li>扩展性</li>
+<li>削峰</li>
+<li>可恢复性</li>
+<li>顺序保证</li>
+<li>缓冲</li>
+<li>异步通信</li>
+</ul>
+<p>面试时，面试官经常会关心面试者对开源组件的选型能力，这既可以考验面试者知识的广度，也可以考验面试者对某类系统的知识的认识深度，而且也可以看出面试者对系统整体把握和系统架构设计的能力。开源分布式消息系统有很多，不同的消息系统的特性也不一样，选择怎样的消息系统，不仅需要对各消息系统有一定的了解，也需要对自身系统需求有清晰的认识。</p>
+<p><strong>下面是常见的几种分布式消息系统的对比：</strong><br><img src="/../../images/640-20210428095405910" alt="图片">选择</p>
+<h3 id="答案关键字"><a href="#答案关键字" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li>什么是分布式消息中间件？通信，队列，分布式，生产消费者模式。</li>
+<li>消息中间件的作用是什么？解耦、峰值处理、异步通信、缓冲。</li>
+<li>消息中间件的使用场景是什么？异步通信，消息存储处理。</li>
+<li>消息中间件选型？语言，协议、HA、数据可靠性、性能、事务、生态、简易、推拉模式。</li>
+</ul>
+<h2 id="Kafka-基本概念和架构"><a href="#Kafka-基本概念和架构" class="headerlink" title="Kafka 基本概念和架构"></a>Kafka 基本概念和架构</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>简单讲下 Kafka 的架构？</li>
+<li>Kafka 是推模式还是拉模式，推拉的区别是什么？</li>
+<li>Kafka 如何广播消息？</li>
+<li>Kafka 的消息是否是有序的？</li>
+<li>Kafka 是否支持读写分离？</li>
+<li>Kafka 如何保证数据高可用？</li>
+<li>Kafka 中 zookeeper 的作用？</li>
+<li>是否支持事务？</li>
+<li>分区数是否可以减少？</li>
+</ul>
+<p><strong>Kafka 架构中的一般概念：</strong></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FbXJ7UCc6O1oicl7z78fR9ibRGPNMBfV0ezicXtDDiaMbIKIjibSf05dOIKmBzicuuEhrRkbuESn0DNrfEFOCsTtYTTw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片">架构</p>
+<ul>
+<li>Producer：生产者，也就是发送消息的一方。生产者负责创建消息，然后将其发送到 Kafka。</li>
+<li>Consumer：消费者，也就是接受消息的一方。消费者连接到 Kafka 上并接收消息，进而进行相应的业务逻辑处理。</li>
+<li>Consumer Group：一个消费者组可以包含一个或多个消费者。使用多分区 + 多消费者方式可以极大提高数据下游的处理速度，同一消费组中的消费者不会重复消费消息，同样的，不同消费组中的消费者消息消息时互不影响。Kafka 就是通过消费组的方式来实现消息 P2P 模式和广播模式。</li>
+<li>Broker：服务代理节点。Broker 是 Kafka 的服务节点，即 Kafka 的服务器。</li>
+<li>Topic：Kafka 中的消息以 Topic 为单位进行划分，生产者将消息发送到特定的 Topic，而消费者负责订阅 Topic 的消息并进行消费。</li>
+<li>Partition：Topic 是一个逻辑的概念，它可以细分为多个分区，每个分区只属于单个主题。同一个主题下不同分区包含的消息是不同的，分区在存储层面可以看作一个可追加的日志（Log）文件，消息在被追加到分区日志文件的时候都会分配一个特定的偏移量（offset）。</li>
+<li>Offset：offset 是消息在分区中的唯一标识，Kafka 通过它来保证消息在分区内的顺序性，不过 offset 并不跨越分区，也就是说，Kafka 保证的是分区有序性而不是主题有序性。</li>
+<li>Replication：副本，是 Kafka 保证数据高可用的方式，Kafka 同一 Partition 的数据可以在多 Broker 上存在多个副本，通常只有主副本对外提供读写服务，当主副本所在 broker 崩溃或发生网络一场，Kafka 会在 Controller 的管理下会重新选择新的 Leader 副本对外提供读写服务。</li>
+<li>Record：实际写入 Kafka 中并可以被读取的消息记录。每个 record 包含了 key、value 和 timestamp。</li>
+</ul>
+<p><strong>Kafka Topic Partitions Layout</strong></p>
+<p><img src="/../../images/640-20210428095405405" alt="图片">主题</p>
+<p>Kafka 将 Topic 进行分区，分区可以并发读写。</p>
+<p><strong>Kafka Consumer Offset</strong></p>
+<p><img src="/../../images/640-20210428095405632" alt="图片">consumer offset</p>
+<h3 id="zookeeper"><a href="#zookeeper" class="headerlink" title="zookeeper"></a>zookeeper</h3><p><img src="/../../images/640-20210428095405909.png" alt="图片">zookeeper</p>
+<ul>
+<li>Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。</li>
+<li>Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由 Zookeeper 在维护</li>
+<li>生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的 Broker 上。</li>
+<li>消费者负载均衡：与生产者类似，Kafka 中的消费者同样需要进行负载均衡来实现多个消费者合理地从对应的 Broker 服务器上接收消息，每个消费者分组包含若干消费者，每条消息都只会发送给分组中的一个消费者，不同的消费者分组消费自己特定的 Topic 下面的消息，互不干扰。</li>
+</ul>
+<h3 id="答案关键字-1"><a href="#答案关键字-1" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li><p>简单讲下 Kafka 的架构？</p>
+<blockquote>
+<p>Producer、Consumer、Consumer Group、Topic、Partition</p>
+</blockquote>
+</li>
+<li><p>Kafka 是推模式还是拉模式，推拉的区别是什么？</p>
+<blockquote>
+<p>Kafka Producer 向 Broker 发送消息使用 Push 模式，Consumer 消费采用的 Pull 模式。拉取模式，让 consumer 自己管理 offset，可以提供读取性能</p>
+</blockquote>
+</li>
+<li><p>Kafka 如何广播消息？</p>
+<blockquote>
+<p>Consumer group</p>
+</blockquote>
+</li>
+<li><p>Kafka 的消息是否是有序的？</p>
+<blockquote>
+<p>Topic 级别无序，Partition 有序</p>
+</blockquote>
+</li>
+<li><p>Kafka 是否支持读写分离？</p>
+<blockquote>
+<p>不支持，只有 Leader 对外提供读写服务</p>
+</blockquote>
+</li>
+<li><p>Kafka 如何保证数据高可用？</p>
+<blockquote>
+<p>副本，ack，HW</p>
+</blockquote>
+</li>
+<li><p>Kafka 中 zookeeper 的作用？</p>
+<blockquote>
+<p>集群管理，元数据管理</p>
+</blockquote>
+</li>
+<li><p>是否支持事务？</p>
+<blockquote>
+<p>0.11 后支持事务，可以实现”exactly once“</p>
+</blockquote>
+</li>
+<li><p>分区数是否可以减少？</p>
+<blockquote>
+<p>不可以，会丢失数据</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Kafka-使用"><a href="#Kafka-使用" class="headerlink" title="Kafka 使用"></a>Kafka 使用</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>Kafka 有哪些命令行工具？你用过哪些？</li>
+<li>Kafka Producer 的执行过程？</li>
+<li>Kafka Producer 有哪些常见配置？</li>
+<li>如何让 Kafka 的消息有序？</li>
+<li>Producer 如何保证数据发送不丢失？</li>
+<li>如何提升 Producer 的性能？</li>
+<li>如果同一 group 下 consumer 的数量大于 part 的数量，kafka 如何处理？</li>
+<li>Kafka Consumer 是否是线程安全的？</li>
+<li>讲一下你使用 Kafka Consumer 消费消息时的线程模型，为何如此设计？</li>
+<li>Kafka Consumer 的常见配置？</li>
+<li>Consumer 什么时候会被踢出集群？</li>
+<li>当有 Consumer 加入或退出时，Kafka 会作何反应？</li>
+<li>什么是 Rebalance，何时会发生 Rebalance？</li>
+</ul>
+<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Kafka 的命令行工具在 Kafka 包的<code>/bin</code>目录下，主要包括服务和集群管理脚本，配置脚本，信息查看脚本，Topic 脚本，客户端脚本等。</p>
+<ul>
+<li>kafka-configs.sh：配置管理脚本</li>
+<li>kafka-console-consumer.sh：kafka 消费者控制台</li>
+<li>kafka-console-producer.sh：kafka 生产者控制台</li>
+<li>kafka-consumer-groups.sh：kafka 消费者组相关信息</li>
+<li>kafka-delete-records.sh：删除低水位的日志文件</li>
+<li>kafka-log-dirs.sh：kafka 消息日志目录信息</li>
+<li>kafka-mirror-maker.sh：不同数据中心 kafka 集群复制工具</li>
+<li>kafka-preferred-replica-election.sh：触发 preferred replica 选举</li>
+<li>kafka-producer-perf-test.sh：kafka 生产者性能测试脚本</li>
+<li>kafka-reassign-partitions.sh：分区重分配脚本</li>
+<li>kafka-replica-verification.sh：复制进度验证脚本</li>
+<li>kafka-server-start.sh：启动 kafka 服务</li>
+<li>kafka-server-stop.sh：停止 kafka 服务</li>
+<li>kafka-topics.sh：topic 管理脚本</li>
+<li>kafka-verifiable-consumer.sh：可检验的 kafka 消费者</li>
+<li>kafka-verifiable-producer.sh：可检验的 kafka 生产者</li>
+<li>zookeeper-server-start.sh：启动 zk 服务</li>
+<li>zookeeper-server-stop.sh：停止 zk 服务</li>
+<li>zookeeper-shell.sh：zk 客户端</li>
+</ul>
+<p>我们通常可以使用<code>kafka-console-consumer.sh</code>和<code>kafka-console-producer.sh</code>脚本来测试 Kafka 生产和消费，<code>kafka-consumer-groups.sh</code>可以查看和管理集群中的 Topic，<code>kafka-topics.sh</code>通常用于查看 Kafka 的消费组情况。</p>
+<h3 id="Kafka-Producer"><a href="#Kafka-Producer" class="headerlink" title="Kafka Producer"></a>Kafka Producer</h3><p>Kafka producer 的正常生产逻辑包含以下几个步骤：</p>
+<ol>
+<li>配置生产者客户端参数常见生产者实例。</li>
+<li>构建待发送的消息。</li>
+<li>发送消息。</li>
+<li>关闭生产者实例。</li>
+</ol>
+<p>Producer 发送消息的过程如下图所示，需要经过<code>拦截器</code>，<code>序列化器</code>和<code>分区器</code>，最终由<code>累加器</code>批量发送至 Broker。</p>
+<p><img src="/../../images/640-20210428095405435.png" alt="图片">producer</p>
+<p>Kafka Producer 需要以下必要参数：</p>
+<ul>
+<li>bootstrap.server：指定 Kafka 的 Broker 的地址</li>
+<li>key.serializer：key 序列化器</li>
+<li>value.serializer：value 序列化器</li>
+</ul>
+<p>常见参数：</p>
+<ul>
+<li><p>batch.num.messages</p>
+<blockquote>
+<p>默认值：200，每次批量消息的数量，只对 asyc 起作用。</p>
+</blockquote>
+</li>
+<li><p>request.required.acks</p>
+<blockquote>
+<p>默认值：0，0 表示 producer 毋须等待 leader 的确认，1 代表需要 leader 确认写入它的本地 log 并立即确认，-1 代表所有的备份都完成后确认。只对 async 模式起作用，这个参数的调整是数据不丢失和发送效率的 tradeoff，如果对数据丢失不敏感而在乎效率的场景可以考虑设置为 0，这样可以大大提高 producer 发送数据的效率。</p>
+</blockquote>
+</li>
+<li><p>request.timeout.ms</p>
+<blockquote>
+<p>默认值：10000，确认超时时间。</p>
+</blockquote>
+</li>
+<li><p>partitioner.class</p>
+<blockquote>
+<p>默认值：kafka.producer.DefaultPartitioner，必须实现 kafka.producer.Partitioner，根据 Key 提供一个分区策略。<em>有时候我们需要相同类型的消息必须顺序处理，这样我们就必须自定义分配策略，从而将相同类型的数据分配到同一个分区中。</em></p>
+</blockquote>
+</li>
+<li><p>producer.type</p>
+<blockquote>
+<p>默认值：sync，指定消息发送是同步还是异步。异步 asyc 成批发送用 kafka.producer.AyncProducer， 同步 sync 用 kafka.producer.SyncProducer。同步和异步发送也会影响消息生产的效率。</p>
+</blockquote>
+</li>
+<li><p>compression.topic</p>
+<blockquote>
+<p>默认值：none，消息压缩，默认不压缩。其余压缩方式还有，”gzip”、”snappy”和”lz4”。对消息的压缩可以极大地减少网络传输量、降低网络 IO，从而提高整体性能。</p>
+</blockquote>
+</li>
+<li><p>compressed.topics</p>
+<blockquote>
+<p>默认值：null，在设置了压缩的情况下，可以指定特定的 topic 压缩，未指定则全部压缩。</p>
+</blockquote>
+</li>
+<li><p>message.send.max.retries</p>
+<blockquote>
+<p>默认值：3，消息发送最大尝试次数。</p>
+</blockquote>
+</li>
+<li><p>retry.backoff.ms</p>
+<blockquote>
+<p>默认值：300，每次尝试增加的额外的间隔时间。</p>
+</blockquote>
+</li>
+<li><p>topic.metadata.refresh.interval.ms</p>
+<blockquote>
+<p>默认值：600000，定期的获取元数据的时间。当分区丢失，leader 不可用时 producer 也会主动获取元数据，如果为 0，则每次发送完消息就获取元数据，不推荐。如果为负值，则只有在失败的情况下获取元数据。</p>
+</blockquote>
+</li>
+<li><p>queue.buffering.max.ms</p>
+<blockquote>
+<p>默认值：5000，在 producer queue 的缓存的数据最大时间，仅仅 for asyc。</p>
+</blockquote>
+</li>
+<li><p>queue.buffering.max.message</p>
+<blockquote>
+<p>默认值：10000，producer 缓存的消息的最大数量，仅仅 for asyc。</p>
+</blockquote>
+</li>
+<li><p>queue.enqueue.timeout.ms</p>
+<blockquote>
+<p>默认值：-1，0 当 queue 满时丢掉，负值是 queue 满时 block, 正值是 queue 满时 block 相应的时间，仅仅 for asyc。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Kafka-Consumer"><a href="#Kafka-Consumer" class="headerlink" title="Kafka Consumer"></a>Kafka Consumer</h3><p>Kafka 有消费组的概念，每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：</p>
+<p><img src="/../../images/640-20210428095405419" alt="图片">consumer group</p>
+<p>Kafka Consumer Client 消费消息通常包含以下步骤：</p>
+<ol>
+<li>配置客户端，创建消费者</li>
+<li>订阅主题</li>
+<li>拉去消息并消费</li>
+<li>提交消费位移</li>
+<li>关闭消费者实例</li>
+</ol>
+<p><img src="/../../images/640-20210428095405428" alt="图片">过程</p>
+<p>因为 Kafka 的 Consumer 客户端是线程不安全的，为了保证线程安全，并提升消费性能，可以在 Consumer 端采用类似 Reactor 的线程模型来消费数据。</p>
+<p><img src="/../../images/640-20210428095405430" alt="图片">消费模型</p>
+<h4 id="Kafka-consumer-参数"><a href="#Kafka-consumer-参数" class="headerlink" title="Kafka consumer 参数"></a>Kafka consumer 参数</h4><ul>
+<li>bootstrap.servers：连接 broker 地址，<code>host：port</code> 格式。</li>
+<li>group.id：消费者隶属的消费组。</li>
+<li>key.deserializer：与生产者的<code>key.serializer</code>对应，key 的反序列化方式。</li>
+<li>value.deserializer：与生产者的<code>value.serializer</code>对应，value 的反序列化方式。</li>
+<li>session.timeout.ms：coordinator 检测失败的时间。默认 10s 该参数是 Consumer Group 主动检测 （组内成员 comsummer) 崩溃的时间间隔，类似于心跳过期时间。</li>
+<li>auto.offset.reset：该属性指定了消费者在读取一个没有偏移量后者偏移量无效（消费者长时间失效当前的偏移量已经过时并且被删除了）的分区的情况下，应该作何处理，默认值是 latest，也就是从最新记录读取数据（消费者启动之后生成的记录），另一个值是 earliest，意思是在偏移量无效的情况下，消费者从起始位置开始读取数据。</li>
+<li>enable.auto.commit：否自动提交位移，如果为<code>false</code>，则需要在程序中手动提交位移。对于精确到一次的语义，最好手动提交位移</li>
+<li>fetch.max.bytes：单次拉取数据的最大字节数量</li>
+<li>max.poll.records：单次 poll 调用返回的最大消息数，如果处理逻辑很轻量，可以适当提高该值。但是<code>max.poll.records</code>条数据需要在在 session.timeout.ms 这个时间内处理完 。默认值为 500</li>
+<li>request.timeout.ms：一次请求响应的最长等待时间。如果在超时时间内未得到响应，kafka 要么重发这条消息，要么超过重试次数的情况下直接置为失败。</li>
+</ul>
+<h4 id="Kafka-Rebalance"><a href="#Kafka-Rebalance" class="headerlink" title="Kafka Rebalance"></a>Kafka Rebalance</h4><p>rebalance 本质上是一种协议，规定了一个 consumer group 下的所有 consumer 如何达成一致来分配订阅 topic 的每个分区。比如某个 group 下有 20 个 consumer，它订阅了一个具有 100 个分区的 topic。正常情况下，Kafka 平均会为每个 consumer 分配 5 个分区。这个分配的过程就叫 rebalance。</p>
+<p><strong>什么时候 rebalance？</strong></p>
+<p>这也是经常被提及的一个问题。rebalance 的触发条件有三种：</p>
+<ul>
+<li>组成员发生变更（新 consumer 加入组、已有 consumer 主动离开组或已有 consumer 崩溃了——这两者的区别后面会谈到）</li>
+<li>订阅主题数发生变更</li>
+<li>订阅主题的分区数发生变更</li>
+</ul>
+<p><strong>如何进行组内分区分配？</strong></p>
+<p>Kafka 默认提供了两种分配策略：Range 和 Round-Robin。当然 Kafka 采用了可插拔式的分配策略，你可以创建自己的分配器以实现不同的分配策略。</p>
+<h3 id="答案关键字-2"><a href="#答案关键字-2" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li>Kafka 有哪些命令行工具？你用过哪些？<code>/bin</code>目录，管理 kafka 集群、管理 topic、生产和消费 kafka</li>
+<li>Kafka Producer 的执行过程？拦截器，序列化器，分区器和累加器</li>
+<li>Kafka Producer 有哪些常见配置？broker 配置，ack 配置，网络和发送参数，压缩参数，ack 参数</li>
+<li>如何让 Kafka 的消息有序？Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition</li>
+<li>Producer 如何保证数据发送不丢失？ack 机制，重试机制</li>
+<li>如何提升 Producer 的性能？批量，异步，压缩</li>
+<li>如果同一 group 下 consumer 的数量大于 part 的数量，kafka 如何处理？多余的 Part 将处于无用状态，不消费数据</li>
+<li>Kafka Consumer 是否是线程安全的？不安全，单线程消费，多线程处理</li>
+<li>讲一下你使用 Kafka Consumer 消费消息时的线程模型，为何如此设计？拉取和处理分离</li>
+<li>Kafka Consumer 的常见配置？broker, 网络和拉取参数，心跳参数</li>
+<li>Consumer 什么时候会被踢出集群？奔溃，网络异常，处理时间过长提交位移超时</li>
+<li>当有 Consumer 加入或退出时，Kafka 会作何反应？进行 Rebalance</li>
+<li>什么是 Rebalance，何时会发生 Rebalance？topic 变化，consumer 变化</li>
+</ul>
+<h2 id="高可用和性能"><a href="#高可用和性能" class="headerlink" title="高可用和性能"></a>高可用和性能</h2><h3 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>Kafka 如何保证高可用？</li>
+<li>Kafka 的交付语义？</li>
+<li>Replic 的作用？</li>
+<li>什么事 AR，ISR？</li>
+<li>Leader 和 Flower 是什么？</li>
+<li>Kafka 中的 HW、LEO、LSO、LW 等分别代表什么？</li>
+<li>Kafka 为保证优越的性能做了哪些处理？</li>
+</ul>
+<h3 id="分区与副本"><a href="#分区与副本" class="headerlink" title="分区与副本"></a>分区与副本</h3><p><img src="/../../images/640-20210428095405441" alt="图片">分区副本</p>
+<p>在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。</p>
+<p><strong>为什么 follower 副本不提供读服务？</strong></p>
+<p>这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。</p>
+<p><img src="/../../images/640-20210428095405438" alt="图片">watermark</p>
+<p><strong>只有 Leader 可以对外提供读服务，那如何选举 Leader</strong></p>
+<p>kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。</p>
+<p><strong>副本的存在就会出现副本同步问题</strong></p>
+<p>Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据<code>ack</code>配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会<code>ReplicaManager</code>服务来管理 flower 与 leader 之间的数据同步。</p>
+<p><img src="/../../images/640-20210428095405450" alt="图片">sync</p>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>partition 并发</li>
+<li>顺序读写磁盘</li>
+<li>page cache：按页读写</li>
+<li>预读：Kafka 会将将要消费的消息提前读入内存</li>
+<li>高性能序列化（二进制）</li>
+<li>内存映射</li>
+<li>无锁 offset 管理：提高并发能力</li>
+<li>Java NIO 模型</li>
+<li>批量：批量读写</li>
+<li>压缩：消息压缩，存储压缩，减小网络和 IO 开销</li>
+</ul>
+<h4 id="Partition-并发"><a href="#Partition-并发" class="headerlink" title="Partition 并发"></a>Partition 并发</h4><p>一方面，由于不同 Partition 可位于不同机器，因此可以充分利用集群优势，实现机器间的并行处理。另一方面，由于 Partition 在物理上对应一个文件夹，即使多个 Partition 位于同一个节点，也可通过配置让同一节点上的不同 Partition 置于不同的 disk drive 上，从而实现磁盘间的并行处理，充分发挥多磁盘的优势。</p>
+<h4 id="顺序读写"><a href="#顺序读写" class="headerlink" title="顺序读写"></a>顺序读写</h4><p>Kafka 每一个 partition 目录下的文件被平均切割成大小相等（默认一个文件是 500 兆，可以手动去设置）的数据文件， 每一个数据文件都被称为一个段（segment file）, 每个 segment 都采用 append 的方式追加数据。</p>
+<p><img src="/../../images/640-20210428095405444.png" alt="图片">追加数据</p>
+<h3 id="答案关键字-3"><a href="#答案关键字-3" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li><p>Kafka 如何保证高可用？</p>
+<blockquote>
+<p>通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡</p>
+</blockquote>
+</li>
+<li><p>Kafka 的交付语义？</p>
+<blockquote>
+<p>交付语义一般有<code>at least once</code>、<code>at most once</code>和<code>exactly once</code>。kafka 通过 ack 的配置来实现前两种。</p>
+</blockquote>
+</li>
+<li><p>Replic 的作用？</p>
+<blockquote>
+<p>实现数据的高可用</p>
+</blockquote>
+</li>
+<li><p>什么是 AR，ISR？</p>
+<blockquote>
+<p>AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。</p>
+</blockquote>
+</li>
+<li><p>Leader 和 Flower 是什么？</p>
+</li>
+<li><p>Kafka 中的 HW 代表什么？</p>
+<blockquote>
+<p>高水位值 (High watermark)。这是控制消费者可读取消息范围的重要字段。一 个普通消费者只能“看到”Leader 副本上介于 Log Start Offset 和 HW（不含）之间的 所有消息。水位以上的消息是对消费者不可见的。</p>
+</blockquote>
+</li>
+<li><p>Kafka 为保证优越的性能做了哪些处理？</p>
+<blockquote>
+<p>partition 并发、顺序读写磁盘、page cache 压缩、高性能序列化（二进制）、内存映射 无锁 offset 管理、Java NIO 模型</p>
+</blockquote>
+</li>
+</ul>
+</div><div class="article-licensing box"><div class="licensing-title"><p><a href="http://example.com/2021/04/28/204JAVA/4.Kafka/">http://example.com/2021/04/28/204JAVA/4.Kafka/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Author</h6><p>John Doe</p></div></div><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-04-28</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-04-28</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="notification is-danger">You need to set <code>install_url</code> to use ShareThis. Please set it in <code>_config.yml</code>.</div></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" href="/" target="_blank" rel="noopener" data-type="afdian"><span class="icon is-small"><i class="fas fa-charging-station"></i></span><span>Afdian.net</span></a><a class="button donate" data-type="alipay"><span class="icon is-small"><i class="fab fa-alipay"></i></span><span>Alipay</span><span class="qrcode"><img src="/" alt="Alipay"></span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="buymeacoffee"><span class="icon is-small"><i class="fas fa-coffee"></i></span><span>Buy me a coffee</span></a><a class="button donate" href="/" target="_blank" rel="noopener" data-type="patreon"><span class="icon is-small"><i class="fab fa-patreon"></i></span><span>Patreon</span></a><div class="notification is-danger">You forgot to set the <code>business</code> or <code>currency_code</code> for Paypal. Please set it in <code>_config.yml</code>.</div><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/05/12/213Linux/MAC/%E5%AE%89%E8%A3%85%E6%89%A9%E5%B1%95/"><i class="level-item fas fa-chevron-left"></i><span class="level-item"> </span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/04/25/204JAVA/2.%E9%94%81/"><span class="level-item"> </span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div class="notification is-danger">You forgot to set the <code>shortname</code> for Disqus. Please set it in <code>_config.yml</code>.</div></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">Posts</p><a href="/archives"><p class="title">133</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Categories</p><a href="/categories"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">Tags</p><a href="/tags"><p class="title">5</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">Follow</a></div></div></div><!--!--><!--!--><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:22:12.940Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90002%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3TCP%E7%9A%84%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E4%B8%8E%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6/">90002 快速了解TCP的流量控制与拥塞控制</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-06T10:05:30.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90001%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">90001 分布式事务</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"> </a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">May 2022</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">April 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">March 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">February 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">December 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">November 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">September 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">August 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">July 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">June 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">23</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">April 2021</span></span><span class="level-end"><span class="level-item tag">11</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">March 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">February 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">January 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">November 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BA%8B%E5%8A%A1/"><span class="tag">事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"><span class="tag">分布式</span><span class="tag">1</span></a></div></div></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="Hexo" height="28"></a><p class="is-size-7"><span>&copy; 2022 John Doe</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
