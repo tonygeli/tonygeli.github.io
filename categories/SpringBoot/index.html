@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="robots" content="noindex"><meta><title>分类: SpringBoot - LILAIQUN</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="LILAIQUN"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="LILAIQUN"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta property="og:type" content="blog"><meta property="og:title" content="LILAIQUN"><meta property="og:url" content="https://tonygeli.github.io/"><meta property="og:site_name" content="LILAIQUN"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://tonygeli.github.io/img/og_image.png"><meta property="article:author" content="Tonygeli"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://tonygeli.github.io"},"headline":"LILAIQUN","image":["https://tonygeli.github.io/img/og_image.png"],"author":{"@type":"Person","name":"Tonygeli"},"publisher":{"@type":"Organization","name":"LILAIQUN","logo":{"@type":"ImageObject","url":"https://tonygeli.github.io/img/logo.svg"}},"description":""}</script><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-content"><nav class="breadcrumb" aria-label="breadcrumbs"><ul><li><a href="/categories">分类</a></li><li class="is-active"><a href="#" aria-current="page">SpringBoot</a></li></ul></nav></div></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/01/04/90000%E6%96%87%E7%AB%A0/90007SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86/"><img class="fill" src="/../../images/cover7.jpg" alt="90007 SpringBoot自动配置原理"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-04T07:48:46.000Z" title="2021/1/4 下午3:48:46">2021-01-04</time>发表</span><span class="level-item"><time dateTime="2022-05-08T11:55:01.479Z" title="2022/5/8 下午7:55:01">2022-05-08</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/SpringBoot/">SpringBoot</a></span><span class="level-item">9 分钟读完 (大约1360个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/01/04/90000%E6%96%87%E7%AB%A0/90007SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86/">90007 SpringBoot自动配置原理</a></h1><div class="content"><p><strong>前言</strong></p>
+<p>自从有了 SpringBoot 之后，咋们就起飞了！各种零配置开箱即用，而我们之所以开发起来能够这么爽，<strong>自动配置</strong>的功劳少不了，今天我们就一起来讨论一下 SpringBoot 自动配置原理。</p>
+<p>本文主要分为三大部分：</p>
+<ol>
+<li>SpringBoot 源码常用注解拾遗</li>
+<li>SpringBoot 启动过程</li>
+<li>SpringBoot 自动配置原理</li>
+</ol>
+<h2 id="一-SpringBoot-源码常用注解拾遗"><a href="#一-SpringBoot-源码常用注解拾遗" class="headerlink" title="一. SpringBoot 源码常用注解拾遗"></a>一. SpringBoot 源码常用注解拾遗</h2><p>这部分主要讲一下 SpringBoot 源码中经常使用到的注解，以扫清后面阅读源码时候的障碍。</p>
+<h3 id="组合注解"><a href="#组合注解" class="headerlink" title="组合注解"></a>组合注解</h3><blockquote>
+<p>当可能大量同时使用到几个注解到同一个类上，就可以考虑将这几个注解到别的注解上。被注解的注解我们就称之为组合注解。</p>
+</blockquote>
+<ul>
+<li>元注解：可以注解到别的注解上的注解。</li>
+<li>组合注解：被注解的注解我们就称之为组合注解。</li>
+</ul>
+<h3 id="Value-【Spring-提供】"><a href="#Value-【Spring-提供】" class="headerlink" title="@Value 【Spring 提供】"></a>@Value 【Spring 提供】</h3><blockquote>
+<p><code>@Value</code> 就相当于传统 xml 配置文件中的 value 字段。</p>
+</blockquote>
+<p>假设存在代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123; </span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Value(&quot;i am name&quot;)</span> </span><br><span class="line">  <span class="keyword">private</span> String name; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>上面代码等价于的配置文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean class=<span class="string">&quot;Person&quot;</span>&gt; </span><br><span class="line">	&lt;<span class="type">property</span> <span class="variable">name</span> <span class="operator">=</span><span class="string">&quot;name&quot;</span> value=<span class="string">&quot;i am name&quot;</span>&gt;&lt;/property&gt;</span><br><span class="line">&lt;/bean&gt; </span><br></pre></td></tr></table></figure>
+
+<p>我们知道配置文件中的 value 的取值可以是：</p>
+<ul>
+<li>字面量</li>
+<li>通过 <code>$&#123;key&#125;</code> 方式从环境变量中获取值</li>
+<li>通过 <code>$&#123;key&#125;</code> 方式全局配置文件中获取值</li>
+<li><code>#&#123;SpEL&#125;</code></li>
+</ul>
+<blockquote>
+<p>所以，我们就可以通过 <code>@Value($&#123;key&#125;)</code> 的方式获取全局配置文件中的指定配置项。</p>
+</blockquote>
+<h3 id="ConfigurationProperties-【SpringBoot-提供】"><a href="#ConfigurationProperties-【SpringBoot-提供】" class="headerlink" title="@ConfigurationProperties 【SpringBoot 提供】"></a>@ConfigurationProperties 【SpringBoot 提供】</h3><p>如果我们需要取 N 个配置项，通过 @Value 的方式去配置项需要一个一个去取，这就显得有点 low 了。我们可以使用 <code>@ConfigurationProperties</code> 。</p>
+<blockquote>
+<p>标有 <code>@ConfigurationProperties</code> 的类的所有属性和配置文件中相关的配置项进行绑定。（默认从全局配置文件中获取配置值），绑定之后我们就可以通过这个类去访问全局配置文件中的属性值了。</p>
+</blockquote>
+<p>下面看一个实例：</p>
+<ol>
+<li>在主配置文件中添加如下配置</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">person.name=kundy </span><br><span class="line">person.age=<span class="number">13</span> </span><br><span class="line">person.sex=male </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建配置类，由于篇幅问题这里省略了 setter、getter 方法，但是实际开发中这个是必须的，否则无法成功注入。另外，@Component 这个注解也还是需要添加的。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span> </span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123; </span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> String name; </span><br><span class="line">  <span class="keyword">private</span> Integer age; </span><br><span class="line">  <span class="keyword">private</span> String sex; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里 @ConfigurationProperties 有一个 <code>prefix</code> 参数，主要是用来指定该配置项在配置文件中的前缀。</p>
+</blockquote>
+<ol start="3">
+<li>测试，在 SpringBoot 环境中，编写个测试方法，注入 Person 类，即可通过 Person 对象取到配置文件的值。</li>
+</ol>
+<h3 id="Import-【Spring-提供】"><a href="#Import-【Spring-提供】" class="headerlink" title="@Import 【Spring 提供】"></a>@Import 【Spring 提供】</h3><blockquote>
+<p><code>@Import</code> 注解支持导入普通 java 类，并将其声明成一个bean。主要用于将多个分散的 java config 配置类融合成一个更大的 config 类。</p>
+</blockquote>
+<ul>
+<li><code>@Import</code> 注解在 4.2 之前只支持导入配置类。</li>
+<li>在4.2之后 <code>@Import</code> 注解支持导入普通的 java 类,并将其声明成一个 bean。</li>
+</ul>
+<p>**@Import 三种使用方式 **</p>
+<ul>
+<li>直接导入普通的 Java 类。</li>
+<li>配合自定义的 ImportSelector 使用。</li>
+<li>配合 ImportBeanDefinitionRegistrar 使用。</li>
+</ul>
+<p><strong>1. 直接导入普通的 Java 类</strong></p>
+<ol>
+<li>创建一个普通的 Java 类。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Circle</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span> &#123; </span><br><span class="line">System.out.println(<span class="string">&quot;Circle sayHi()&quot;</span>); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建一个配置类，里面没有显式声明任何的 Bean，然后将刚才创建的 Circle 导入。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;Circle.class&#125;)</span> </span><br><span class="line"><span class="meta">@Configuration</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfig</span> &#123; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建测试类。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123; </span><br><span class="line">  <span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(MainConfig.class); </span><br><span class="line">  <span class="type">Circle</span> <span class="variable">circle</span> <span class="operator">=</span> context.getBean(Circle.class); </span><br><span class="line">  circle.sayHi(); </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>运行结果：</li>
+</ol>
+<blockquote>
+<p>Circle sayHi()</p>
+</blockquote>
+<p>可以看到我们顺利的从 IOC 容器中获取到了 Circle 对象，证明我们在配置类中导入的 Circle 类，确实被声明为了一个 Bean。</p>
+<p><strong>2. 配合自定义的 ImportSelector 使用</strong></p>
+<blockquote>
+<p><code>ImportSelector</code> 是一个接口，该接口中只有一个 selectImports 方法，用于返回全类名数组。所以利用该特性我们可以给容器<strong>动态导入 N 个</strong> Bean。</p>
+</blockquote>
+<ol>
+<li>创建普通 Java 类 Triangle。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Triangle</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span>&#123; </span><br><span class="line">System.out.println(<span class="string">&quot;Triangle sayHi()&quot;</span>); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建 ImportSelector 实现类，selectImports 返回 Triangle 的全类名。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyImportSelector</span> <span class="keyword">implements</span> <span class="title class_">ImportSelector</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="keyword">public</span> String[] selectImports(AnnotationMetadata annotationMetadata) &#123; </span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;annotation.importannotation.waytwo.Triangle&quot;</span>&#125;; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建配置类，在原来的基础上还导入了 MyImportSelector。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;Circle.class,MyImportSelector.class&#125;)</span> </span><br><span class="line"><span class="meta">@Configuration</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfigTwo</span> &#123; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>创建测试类</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(MainConfigTwo.class); </span><br><span class="line"><span class="type">Circle</span> <span class="variable">circle</span> <span class="operator">=</span> context.getBean(Circle.class); </span><br><span class="line"><span class="type">Triangle</span> <span class="variable">triangle</span> <span class="operator">=</span> context.getBean(Triangle.class); </span><br><span class="line">circle.sayHi(); </span><br><span class="line">triangle.sayHi(); </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>运行结果：</li>
+</ol>
+<blockquote>
+<p>Circle sayHi()<br>Triangle sayHi()</p>
+</blockquote>
+<p>可以看到 Triangle 对象也被 IOC 容器成功的实例化出来了。</p>
+<p><strong>3. 配合 ImportBeanDefinitionRegistrar 使用</strong></p>
+<blockquote>
+<p><code>ImportBeanDefinitionRegistrar</code> 也是一个接口，它可以<strong>手动注册bean到容器中</strong>，从而我们可以对类进行个性化的定制。(需要搭配 @Import 与 @Configuration 一起使用。）</p>
+</blockquote>
+<ol>
+<li>创建普通 Java 类 Rectangle。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123; </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span> &#123; </span><br><span class="line">  	System.out.println(<span class="string">&quot;Rectangle sayHi()&quot;</span>); </span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>创建 ImportBeanDefinitionRegistrar 实现类，实现方法直接手动注册一个名叫 rectangle 的 Bean 到 IOC 容器中。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyImportBeanDefinitionRegistrar</span> <span class="keyword">implements</span> <span class="title class_">ImportBeanDefinitionRegistrar</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerBeanDefinitions</span><span class="params">(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry)</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="type">RootBeanDefinition</span> <span class="variable">rootBeanDefinition</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RootBeanDefinition</span>(Rectangle.class); </span><br><span class="line"><span class="comment">// 注册一个名字叫做 rectangle 的 bean </span></span><br><span class="line">beanDefinitionRegistry.registerBeanDefinition(<span class="string">&quot;rectangle&quot;</span>, rootBeanDefinition); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建配置类，导入 MyImportBeanDefinitionRegistrar 类。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;Circle.class, MyImportSelector.class, MyImportBeanDefinitionRegistrar.class&#125;)</span> </span><br><span class="line"><span class="meta">@Configuration</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfigThree</span> &#123; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>创建测试类。</li>
+</ol>
+</div></article></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">132</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">17</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">中间件</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="level-start"><span class="level-item">数据库</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">24</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Bean/"><span class="tag">Bean</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySql/"><span class="tag">MySql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Netty/"><span class="tag">Netty</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Stream/"><span class="tag">Stream</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZooKeeper/"><span class="tag">ZooKeeper</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"><span class="tag">代码优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/"><span class="tag">公众号</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"><span class="tag">单点登录</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"><span class="tag">大数据</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tag">线程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/"><span class="tag">自动装配</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T01:46:49.745Z">2022-05-07</time></p><p class="title"><a href="/2022/05/07/90000%E6%96%87%E7%AB%A0/90012Bean%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2%E7%A5%9E%E5%99%A8Mapstruct/">自动转换神器 Mapstruct</a></p><p class="categories"><a href="/categories/Spring/">Spring</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000%E6%96%87%E7%AB%A0/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/90005Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/">90005Stream代码优化</a></p><p class="categories"><a href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-04-29T15:15:26.673Z">2022-04-29</time></p><p class="title"><a href="/2022/04/29/30000Spring/30101%20SecurityContextHolder/"> </a></p></div></article></div></div><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a><p class="is-size-7"><span>&copy; 2022 Tonygeli</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>90003彻底搞懂NIO效率高的原理 - LILAIQUN</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="LILAIQUN"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="LILAIQUN"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="彻底搞懂NIO效率高的原理前言 这篇文章读不懂的没关系，可以先收藏一下。笔者准备介绍完epoll和NIO等知识点，然后写一篇Java网络IO模型的介绍，这样可以使Java网络IO的知识体系更加地完整和严谨。初学者也可以等看完IO模型介绍的博客之后，再回头看这些博客，会更加有收获。"><meta property="og:type" content="blog"><meta property="og:title" content="90003彻底搞懂NIO效率高的原理"><meta property="og:url" content="https://tonygeli.github.io/2021/07/14/90000%E6%96%87%E7%AB%A0/90003%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82NIO%E6%95%88%E7%8E%87%E9%AB%98%E7%9A%84%E5%8E%9F%E7%90%86/"><meta property="og:site_name" content="LILAIQUN"><meta property="og:description" content="彻底搞懂NIO效率高的原理前言 这篇文章读不懂的没关系，可以先收藏一下。笔者准备介绍完epoll和NIO等知识点，然后写一篇Java网络IO模型的介绍，这样可以使Java网络IO的知识体系更加地完整和严谨。初学者也可以等看完IO模型介绍的博客之后，再回头看这些博客，会更加有收获。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://tonygeli.github.io/images/cover3.jpg"><meta property="article:published_time" content="2021-07-14T07:53:00.000Z"><meta property="article:modified_time" content="2022-05-08T11:54:26.799Z"><meta property="article:author" content="Tonygeli"><meta property="article:tag" content="TCP"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/../../images/cover3.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://tonygeli.github.io/2021/07/14/90000%E6%96%87%E7%AB%A0/90003%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82NIO%E6%95%88%E7%8E%87%E9%AB%98%E7%9A%84%E5%8E%9F%E7%90%86/"},"headline":"90003彻底搞懂NIO效率高的原理","image":["https://tonygeli.github.io/images/cover3.jpg"],"datePublished":"2021-07-14T07:53:00.000Z","dateModified":"2022-05-08T11:54:26.799Z","author":{"@type":"Person","name":"Tonygeli"},"publisher":{"@type":"Organization","name":"LILAIQUN","logo":{"@type":"ImageObject","url":"https://tonygeli.github.io/img/logo.svg"}},"description":"彻底搞懂NIO效率高的原理前言 这篇文章读不懂的没关系，可以先收藏一下。笔者准备介绍完epoll和NIO等知识点，然后写一篇Java网络IO模型的介绍，这样可以使Java网络IO的知识体系更加地完整和严谨。初学者也可以等看完IO模型介绍的博客之后，再回头看这些博客，会更加有收获。"}</script><link rel="canonical" href="https://tonygeli.github.io/2021/07/14/90000%E6%96%87%E7%AB%A0/90003%E5%BD%BB%E5%BA%95%E6%90%9E%E6%87%82NIO%E6%95%88%E7%8E%87%E9%AB%98%E7%9A%84%E5%8E%9F%E7%90%86/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/../../images/cover3.jpg" alt="90003彻底搞懂NIO效率高的原理"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-07-14T07:53:00.000Z" title="2021/7/14 下午3:53:00">2021-07-14</time>发表</span><span class="level-item"><time dateTime="2022-05-08T11:54:26.799Z" title="2022/5/8 下午7:54:26">2022-05-08</time>更新</span><span class="level-item">18 分钟读完 (大约2746个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">90003彻底搞懂NIO效率高的原理</h1><div class="content"><h1 id="彻底搞懂NIO效率高的原理"><a href="#彻底搞懂NIO效率高的原理" class="headerlink" title="彻底搞懂NIO效率高的原理"></a>彻底搞懂NIO效率高的原理</h1><p><strong>前言</strong></p>
+<p>这篇文章读不懂的没关系，可以先收藏一下。笔者准备介绍完epoll和NIO等知识点，然后写一篇Java网络IO模型的介绍，这样可以使Java网络IO的知识体系更加地完整和严谨。初学者也可以等看完IO模型介绍的博客之后，再回头看这些博客，会更加有收获。</p>
+<span id="more"></span>
+
+<h1 id="NIO相比BIO的优势"><a href="#NIO相比BIO的优势" class="headerlink" title="NIO相比BIO的优势"></a><strong>NIO相比BIO的优势</strong></h1><p>NIO（Non-blocking I&#x2F;O，在Java领域，也称为New I&#x2F;O），是一种同步非阻塞的I&#x2F;O模型，也是I&#x2F;O多路复用的基础，已经被越来越多地应用到大型应用服务器，成为解决高并发与大量连接、I&#x2F;O处理问题的有效方式。</p>
+<p><img src="/../../images/f694de00677c45a1abf7d87aed6cc82a" alt="彻底搞懂NIO效率高的原理"></p>
+<p>bio与nio</p>
+<p><strong>面向流与面向缓冲</strong></p>
+<p>Java NIO和BIO之间第一个最大的区别是，BIO是面向流的，NIO是面向缓冲区的。 JavaIO面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没有被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。Java NIO的缓冲读取方法略有不同。数据读取到一个缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。但是，还需要检查是否该缓冲区中包含所有需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。</p>
+<blockquote>
+<p>有关面向缓冲读取数据的示例和注意点，可以点击查看<a target="_blank" rel="noopener" href="https://www.toutiao.com/i6715713088542212622/?group_id=6715713088542212622">TCP粘拆包详解与Netty代码示例</a></p>
+</blockquote>
+<p><strong>阻塞IO与非阻塞IO</strong></p>
+<p>Java IO的各种流是阻塞的。这意味着，当一个线程调用read() 或write()时，该线程被阻塞，直到有数据被读取或者数据写入。该线程在阻塞期间不能做其他事情。而Java NIO的非阻塞模式，如果通道没有东西可读，或不可写，读写函数马上返回，而不会阻塞，这个线程可以去做别的事情。 线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程可以管理多个输入和输出通道（channel），即IO多路复用的原理。</p>
+<p><strong>零拷贝</strong></p>
+<p>在传统的文件IO操作中，我们都是调用操作系统提供的底层标准IO系统调用函数read()、write() ，此时调用此函数的进程（在JAVA中即java进程）由当前的用户态切换到内核态，然后OS的内核代码负责将相应的文件数据读取到内核的IO缓冲区，然后再把数据从内核IO缓冲区拷贝到进程的私有地址空间中去，这样便完成了一次IO操作。</p>
+<p><img src="/../images/81a8c1b3ec94496db62c4460789e1d37" alt="彻底搞懂NIO效率高的原理"></p>
+<p>IO</p>
+<p>而NIO的零拷贝与传统的文件IO操作最大的不同之处就在于它虽然也是要从磁盘读取数据，但是它并不需要将数据读取到OS内核缓冲区，而是直接将进程的用户私有地址空间中的一部分区域与文件对象建立起映射关系，这样直接从内存中读写文件，速度大幅度提升。</p>
+<p><img src="/../images/5d63b9ca6ae44b93b8431d093ef8b615" alt="彻底搞懂NIO效率高的原理"></p>
+<p>NIO</p>
+<blockquote>
+<p>详细的解析，之后会有单独的博客进行讲解</p>
+</blockquote>
+<h1 id="NIO的核心部分"><a href="#NIO的核心部分" class="headerlink" title="NIO的核心部分"></a><strong>NIO的核心部分</strong></h1><p>Java NIO主要由以下三个核心部分组成：</p>
+<ul>
+<li>Channel</li>
+<li>Buffer</li>
+<li>Selector</li>
+</ul>
+<p><strong>Channel</strong></p>
+<p>基本上，所有的IO在NIO中都从一个Channel开始。数据可以从Channel读到Buffer中，也可以从Buffer写到Channel中。这里有个图示：</p>
+<p><img src="/../../images/a1097d0cf9c6497389c7c3ce1e34d6d2" alt="彻底搞懂NIO效率高的原理"></p>
+<p>channel与buffer</p>
+<p>Channel和Buffer有好几种类型。下面是Java NIO中的一些主要Channel的实现：</p>
+<ul>
+<li>FileChannel(file)</li>
+<li>DatagramChannel(UDP)</li>
+<li>SocketChannel(TCP)</li>
+<li>ServerSocketChannel(TCP)</li>
+</ul>
+<p>这些通道涵盖了UDP和TCP网络IO以及文件IO。</p>
+<blockquote>
+<p>最后两个channel的关系。通过<br>ServerSocketChannel.accept() 方法监听新进来的连接。当 accept()方法返回的时候,它返回一个包含新进来的连接的 SocketChannel。因此, accept()方法会一直阻塞到有新连接到达。通常不会仅仅只监听一个连接,在while循环中调用 accept()方法.</p>
+</blockquote>
+<p>&#x2F;&#x2F;打开 ServerSocketChannel</p>
+<p>ServerSocketChannel serverSocketChannel &#x3D; ServerSocketChannel.open();</p>
+<p>serverSocketChannel.socket().bind(new InetSocketAddress(9999));</p>
+<p>while(true){</p>
+<p>SocketChannel socketChannel &#x3D; serverSocketChannel.accept();</p>
+<p>&#x2F;&#x2F;do something with socketChannel…</p>
+<p>}</p>
+<p>&#x2F;&#x2F;关闭ServerSocketChannel</p>
+<p>serverSocketChannel.close();</p>
+<p><strong>Buffer</strong></p>
+<p>缓冲区本质上是一块可以写入数据，然后可以从中读取数据的内存。这块内存被包装成NIO Buffer对象，并提供了一组方法，用来方便的访问该块内存。</p>
+<p>Java NIO里关键的Buffer实现：</p>
+<ul>
+<li>ByteBuffer</li>
+<li>CharBuffer</li>
+<li>DoubleBuffer</li>
+<li>FloatBuffer</li>
+<li>IntBuffer</li>
+<li>LongBuffer</li>
+<li>ShortBuffer</li>
+</ul>
+<p>这些Buffer覆盖了你能通过IO发送的基本数据类型：byte、short、int、long、float、double和char。</p>
+<p>为了理解Buffer的工作原理，需要熟悉它的三个属性：</p>
+<ul>
+<li>capacity</li>
+<li>position</li>
+<li>limit</li>
+</ul>
+<p>position和limit的含义取决于Buffer处在读模式还是写模式。不管Buffer处在什么模式，capacity的含义总是一样的。</p>
+<p><img src="/../../images/0f8892655d5141ed93e9a4442670f30b" alt="彻底搞懂NIO效率高的原理"></p>
+<p>buffer模型</p>
+<p><strong>capacity</strong></p>
+<p>作为一个内存块，Buffer有个固定的最大值，就是capacity。Buffer只能写capacity个byte、long、char等类型。一旦Buffer满了，需要将其清空（通过读数据或者清除数据）才能继续写数据往里写数据。</p>
+<p><strong>position</strong></p>
+<p>当写数据到Buffer中时，position表示当前的位置。初始的position值为0。当一个byte、long等数据写到Buffer后， position会向前移动到下一个可插入数据的Buffer单元。position最大可为capacity – 1.</p>
+<p>当读取数据时，也是从某个特定位置读。当将Buffer从写模式切换到读模式，position会被重置为0。 当从Buffer的position处读取数据时，position向前移动到下一个可读的位置。</p>
+<p><strong>limit</strong></p>
+<p>在写模式下，Buffer的limit表示最多能往Buffer里写多少数据。 写模式下，limit等于capacity。</p>
+<p>当切换Buffer到读模式时， limit表示你最多能读到多少数据。因此，当切换Buffer到读模式时，limit会被设置成写模式下的position值。</p>
+<p><strong>Selector</strong></p>
+<p>Selector允许单线程处理多个 Channel。如果你的应用打开了多个连接（通道），但每个连接的流量都很低，使用Selector就会很方便。例如，在一个聊天服务器中。</p>
+<p>这是在一个单线程中使用一个Selector处理3个Channel的图示：</p>
+<p><img src="/../../images/12d44b7ddffd4908bfe9627f63580ec1" alt="彻底搞懂NIO效率高的原理"></p>
+<p>Selector</p>
+<p>要使用Selector，得向Selector注册Channel，然后调用它的select()方法。这个方法会一直阻塞到某个注册的通道有事件就绪。一旦这个方法返回，线程就可以处理这些事件，事件例如有新连接进来，数据接收等。</p>
+<p><strong>NIO与epoll的关系</strong></p>
+<p>Java NIO根据操作系统不同， 针对NIO中的Selector有不同的实现：</p>
+<ul>
+<li>macosx:KQueueSelectorProvider</li>
+<li>solaris:DevPollSelectorProvider</li>
+<li>Linux:EPollSelectorProvider (Linux kernels &gt;&#x3D; 2.6)或PollSelectorProvider</li>
+<li>windows:WindowsSelectorProvider</li>
+</ul>
+<p>所以不需要特别指定，Oracle JDK会自动选择合适的Selector。</p>
+<p>如果想设置特定的Selector，可以设置属性，例如：</p>
+<p>-Djava.nio.channels.spi.SelectorProvider&#x3D;sun.nio.ch.EPollSelectorProvider</p>
+<p>JDK在Linux已经默认使用epoll方式，但是JDK的epoll采用的是水平触发，所以Netty自4.0.16起, Netty为Linux通过JNI的方式提供了native socket transport。Netty重新实现了epoll机制，</p>
+<ol>
+<li>采用边缘触发方式</li>
+<li>netty epoll transport暴露了更多的nio没有的配置参数，如 TCP_CORK, SO_REUSEADDR等等。</li>
+<li>C代码，更少GC，更少synchronized</li>
+</ol>
+<p>使用native socket transport的方法很简单，只需将相应的类替换即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NioEventLoopGroup → EpollEventLoopGroup</span><br><span class="line">NioEventLoop → EpollEventLoop</span><br><span class="line">NioServerSocketChannel → EpollServerSocketChannel</span><br><span class="line">NioSocketChannel → EpollSocketChannel </span><br></pre></td></tr></table></figure>
+
+<p>有关epoll的详细讲解，可以点击查看<a target="_blank" rel="noopener" href="https://www.toutiao.com/i6720907162404520456/?group_id=6720907162404520456">彻底搞懂epoll高效运行的原理</a></p>
+<h1 id="NIO处理消息的核心思路"><a href="#NIO处理消息的核心思路" class="headerlink" title="NIO处理消息的核心思路"></a><strong>NIO处理消息的核心思路</strong></h1><p>结合示例代码，总结NIO的核心思路：</p>
+<ol>
+<li>NIO 模型中通常会有两个线程，每个线程绑定一个轮询器 selector ，在上面例子中serverSelector负责轮询是否有新的连接，clientSelector负责轮询连接是否有数据可读</li>
+<li>服务端监测到新的连接之后，不再创建一个新的线程，而是直接将新连接绑定到clientSelector上，这样就不用BIO模型中1w 个while循环在阻塞，参见(1)</li>
+<li>clientSelector被一个 while 死循环包裹着，如果在某一时刻有多条连接有数据可读，那么通过clientSelector.select(1)方法可以轮询出来，进而批量处理，参见(2)</li>
+<li>数据的读写面向 Buffer，参见(3)</li>
+</ol>
+<p><strong>NIO的示例代码</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">public class NIOServer &#123;</span><br><span class="line"> public static void main(String[] args) throws IOException &#123;</span><br><span class="line"> Selector serverSelector = Selector.open();</span><br><span class="line"> Selector clientSelector = Selector.open();</span><br><span class="line"> new Thread(() -&gt; &#123;</span><br><span class="line"> try &#123;</span><br><span class="line"> // 对应IO编程中服务端启动</span><br><span class="line"> ServerSocketChannel listenerChannel = ServerSocketChannel.open();</span><br><span class="line"> listenerChannel.socket().bind(new InetSocketAddress(8000));</span><br><span class="line"> listenerChannel.configureBlocking(false);</span><br><span class="line"> listenerChannel.register(serverSelector, SelectionKey.OP_ACCEPT);</span><br><span class="line"> while (true) &#123;</span><br><span class="line"> // 监测是否有新的连接，这里的1指的是阻塞的时间为 1ms</span><br><span class="line"> if (serverSelector.select(1) &gt; 0) &#123;</span><br><span class="line"> Set&lt;SelectionKey&gt; set = serverSelector.selectedKeys();</span><br><span class="line"> Iterator&lt;SelectionKey&gt; keyIterator = set.iterator();</span><br><span class="line"> while (keyIterator.hasNext()) &#123;</span><br><span class="line"> SelectionKey key = keyIterator.next();</span><br><span class="line"> if (key.isAcceptable()) &#123;</span><br><span class="line"> try &#123;</span><br><span class="line"> // (1) 每来一个新连接，不需要创建一个线程，而是直接注册到clientSelector</span><br><span class="line"> SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept();</span><br><span class="line"> clientChannel.configureBlocking(false);</span><br><span class="line"> clientChannel.register(clientSelector, SelectionKey.OP_READ);</span><br><span class="line"> &#125; finally &#123;</span><br><span class="line"> keyIterator.remove();</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125; catch (IOException ignored) &#123;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;).start();</span><br><span class="line"> new Thread(() -&gt; &#123;</span><br><span class="line"> try &#123;</span><br><span class="line"> while (true) &#123;</span><br><span class="line"> // (2) 批量轮询是否有哪些连接有数据可读，这里的1指的是阻塞的时间为 1ms</span><br><span class="line"> if (clientSelector.select(1) &gt; 0) &#123;</span><br><span class="line"> Set&lt;SelectionKey&gt; set = clientSelector.selectedKeys();</span><br><span class="line"> Iterator&lt;SelectionKey&gt; keyIterator = set.iterator();</span><br><span class="line"> while (keyIterator.hasNext()) &#123;</span><br><span class="line"> SelectionKey key = keyIterator.next();</span><br><span class="line"> if (key.isReadable()) &#123;</span><br><span class="line"> try &#123;</span><br><span class="line"> SocketChannel clientChannel = (SocketChannel) key.channel();</span><br><span class="line"> ByteBuffer byteBuffer = ByteBuffer.allocate(1024);</span><br><span class="line"> // (3) 面向 Buffer</span><br><span class="line"> clientChannel.read(byteBuffer);</span><br><span class="line"> byteBuffer.flip();</span><br><span class="line"> System.out.println(Charset.defaultCharset().newDecoder().decode(byteBuffer)</span><br><span class="line"> .toString());</span><br><span class="line"> &#125; finally &#123;</span><br><span class="line"> keyIterator.remove();</span><br><span class="line"> key.interestOps(SelectionKey.OP_READ);</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125; catch (IOException ignored) &#123;</span><br><span class="line"> &#125;</span><br><span class="line"> &#125;).start();</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>更多内容，欢迎关注微信公众号：全菜工程师小辉~</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>90003彻底搞懂NIO效率高的原理</p><p><a href="https://tonygeli.github.io/2021/07/14/90000文章/90003彻底搞懂NIO效率高的原理/">https://tonygeli.github.io/2021/07/14/90000文章/90003彻底搞懂NIO效率高的原理/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Tonygeli</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2021-07-14</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-05-08</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/TCP/">TCP</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2021/07/14/90000%E6%96%87%E7%AB%A0/90006TCP%E7%B2%98%E6%8B%86%E5%8C%85%E8%AF%A6%E8%A7%A3%E4%B8%8ENetty%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">90006 TCP粘拆包详解与Netty代码示例</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/07/14/201%E9%9D%A2%E8%AF%95%E9%A2%98%E7%9B%AE/%E9%A1%B9%E7%9B%AE%E8%AE%BE%E8%AE%A1/"><span class="level-item"> </span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">132</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">17</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">中间件</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="level-start"><span class="level-item">数据库</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">24</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Bean/"><span class="tag">Bean</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySql/"><span class="tag">MySql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Netty/"><span class="tag">Netty</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Stream/"><span class="tag">Stream</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZooKeeper/"><span class="tag">ZooKeeper</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"><span class="tag">代码优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/"><span class="tag">公众号</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"><span class="tag">单点登录</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"><span class="tag">大数据</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tag">线程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/"><span class="tag">自动装配</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T01:46:49.745Z">2022-05-07</time></p><p class="title"><a href="/2022/05/07/90000%E6%96%87%E7%AB%A0/90012Bean%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2%E7%A5%9E%E5%99%A8Mapstruct/">自动转换神器 Mapstruct</a></p><p class="categories"><a href="/categories/Spring/">Spring</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000%E6%96%87%E7%AB%A0/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/90005Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/">90005Stream代码优化</a></p><p class="categories"><a href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-04-29T15:15:26.673Z">2022-04-29</time></p><p class="title"><a href="/2022/04/29/30000Spring/30101%20SecurityContextHolder/"> </a></p></div></article></div></div><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a><p class="is-size-7"><span>&copy; 2022 Tonygeli</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
