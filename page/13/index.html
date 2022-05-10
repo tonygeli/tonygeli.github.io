@@ -27,325 +27,687 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-01T01:55:59.000Z" title="2021/4/1 上午9:55:59">2021-04-01</time>发表</span><span class="level-item"><time dateTime="2021-04-01T01:55:59.000Z" title="2021/4/1 上午9:55:59">2021-04-01</time>更新</span><span class="level-item">3 分钟读完 (大约497个字)</span></div></div><div class="content"><p>[TOC]</p>
-<p>▲ 34 进程和线程之间有什么区别？</p>
-<p>▲ 30 进程间有哪些通信方式？</p>
-<p>▲ 29 简述 socket 中 select 与 epoll 的使用场景以及区别，epoll 中水平触发以及边缘触发有什么不同？</p>
-<p>▲ 26 Linux 进程调度中有哪些常见算法以及策略？</p>
-<p>▲ 18 操作系统如何申请以及管理内存的？</p>
-<p>▲ 12 简单介绍进程调度的算法</p>
-<p>▲ 11 简述 Linux 系统态与用户态，什么时候会进入系统态？</p>
-<p>▲ 11 简述 LRU 算法及其实现方式</p>
-<p>▲ 11 线程间有哪些通信方式？</p>
-<p>▲ 8 简述同步与异步的区别，阻塞与非阻塞的区别</p>
-<p>▲ 8 简述操作系统如何进行内存管理</p>
-<p>▲ 8 什么时候会由用户态陷入内核态？</p>
-<p>▲ 7 简述操作系统中的缺页中断</p>
-<p>▲ 3 简述操作系统中 malloc 的实现原理</p>
-<p>▲ 2 BIO、NIO 有什么区别？怎么判断写文件时 Buffer 已经写满？简述 Linux 的 IO模型</p>
-<p>▲ 1 进程空间从高位到低位都有些什么？</p>
-<h2 id="进程间有哪些通信方式？"><a href="#进程间有哪些通信方式？" class="headerlink" title="进程间有哪些通信方式？"></a>进程间有哪些通信方式？</h2><p>进程间通信（InterProcess Communication，IPC）</p>
-<p><strong>管道:</strong><br>    只能在父子进程间</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> MAX_LEN 128</span></span><br><span class="line"><span class="comment">/*0为读，1为写*/</span></span><br><span class="line"><span class="type">int</span> fd[<span class="number">2</span>] = &#123;<span class="number">0</span>&#125;; <span class="comment">//描述符</span></span><br><span class="line"><span class="type">pid_t</span> pid = <span class="number">0</span>;</span><br><span class="line"><span class="type">char</span> line[MAX_LEN] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">int</span> n = <span class="number">0</span>;</span><br><span class="line"><span class="comment">/*创建管道，需要传入两个文件描述符*/</span></span><br><span class="line"><span class="built_in">pipe</span>(fd);</span><br><span class="line"><span class="comment">/*fork子进程*/</span></span><br><span class="line">pid = fork();</span><br><span class="line"><span class="comment">/*父进程*/</span></span><br><span class="line"><span class="keyword">if</span>(pid &gt; <span class="number">0</span>) &#123;</span><br><span class="line">  <span class="comment">/*关闭管道的写描述符*/</span></span><br><span class="line">  <span class="built_in">close</span>(fd[<span class="number">1</span>]);</span><br><span class="line">  <span class="comment">/*从管道读取数据*/</span></span><br><span class="line">  n = <span class="built_in">read</span>(fd[<span class="number">0</span>], line, MAX_LEN);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;read %d bytes from pipe :%s\n&quot;</span>, n, line);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*子进程*/</span></span><br><span class="line"><span class="comment">/*关闭管道的读描述符*/</span></span><br><span class="line"><span class="built_in">close</span>(fd[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">/*向管道写入数据*/</span></span><br><span class="line"><span class="built_in">write</span>(fd[<span class="number">1</span>],<span class="string">&quot;www.baidu.com&quot;</span>,<span class="built_in">sizeof</span>(<span class="string">&quot;www.baidu.com&quot;</span>));</span><br><span class="line"></span><br><span class="line">&gt; read <span class="number">18</span> bytes from pipe :www.baidu.com</span><br></pre></td></tr></table></figure>
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-12T02:38:21.000Z" title="2021/5/12 上午10:38:21">2021-05-12</time>发表</span><span class="level-item"><time dateTime="2021-05-12T02:38:21.000Z" title="2021/5/12 上午10:38:21">2021-05-12</time>更新</span><span class="level-item">2 分钟读完 (大约354个字)</span></div></div><div class="content"><h2 id="Mac环境目录"><a href="#Mac环境目录" class="headerlink" title="Mac环境目录"></a>Mac环境目录</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 通过phpinfo()打印页面</span><br><span class="line"></span><br><span class="line">1. php.ini文件目录</span><br><span class="line">Loaded Configuration File</span><br><span class="line">/usr/local/etc/php/7.1/php.ini</span><br><span class="line"></span><br><span class="line">2.扩展存放目录</span><br><span class="line">extension_dir</span><br><span class="line">/usr/local/lib/php/pecl/20160303</span><br></pre></td></tr></table></figure>
 
-<p><strong>FIFO</strong>:<br>    FIFO也被称为命名管道，与管道不同的是，不相关的进程也能够进行数据交换。</p>
-<p>消息队列<br>信号量<br>共享内存<br>UNXI域套接字<br>套接字（Socket）</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-03-25T06:16:50.000Z" title="2021/3/25 下午2:16:50">2021-03-25</time>发表</span><span class="level-item"><time dateTime="2021-03-25T06:16:50.000Z" title="2021/3/25 下午2:16:50">2021-03-25</time>更新</span><span class="level-item">2 分钟读完 (大约263个字)</span></div></div><div class="content"><p>[TOC]</p>
-<h1 id="PECL-php扩展安装"><a href="#PECL-php扩展安装" class="headerlink" title="PECL - php扩展安装"></a>PECL - php扩展安装</h1><h2 id="apcu安装"><a href="#apcu安装" class="headerlink" title="apcu安装"></a>apcu安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">sudo apt-get install php7.x-dev</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pecl channel-update pecl.php.net</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">pecl install apcu</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">php -i  // 查看加载的php.ini位置</span></span><br></pre></td></tr></table></figure>
-
-<h1 id="Composer-安装"><a href="#Composer-安装" class="headerlink" title="Composer 安装"></a>Composer 安装</h1><h2 id="安装指定版本"><a href="#安装指定版本" class="headerlink" title="安装指定版本"></a>安装指定版本</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ php -r <span class="string">&quot;copy(&#x27;https://getcomposer.org/installer&#x27;, &#x27;composer-setup.php&#x27;);&quot;</span></span><br><span class="line">$ php -r <span class="string">&quot;if (hash_file(&#x27;sha384&#x27;, &#x27;composer-setup.php&#x27;) === &#x27;756890a4488ce9024fc62c56153228907f1545c228516cbf63f885e036d37e9a59d27d63f46af1d4d07ee0f76181c7d3&#x27;) &#123; echo &#x27;Installer verified&#x27;; &#125; else &#123; echo &#x27;Installer corrupt&#x27;; unlink(&#x27;composer-setup.php&#x27;); &#125; echo PHP_EOL;&quot;</span></span><br><span class="line">$ php composer-setup.php --version=1.7.1</span><br><span class="line">All settings correct <span class="keyword">for</span> using Composer</span><br><span class="line">Downloading...</span><br><span class="line"></span><br><span class="line">Composer (version 1.7.1) successfully installed to: //composer.phar</span><br><span class="line">Use it: php composer.phar  </span><br><span class="line">$ php -r <span class="string">&quot;unlink(&#x27;composer-setup.php&#x27;);&quot;</span></span><br><span class="line">$ <span class="built_in">mv</span> composer.phar /usr/bin/composer</span><br><span class="line"></span><br><span class="line">$ apt-get install php-pear</span><br></pre></td></tr></table></figure>
+<h2 id="安装apcu"><a href="#安装apcu" class="headerlink" title="安装apcu"></a>安装apcu</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 1.下载源码  </span><br><span class="line">git <span class="built_in">clone</span> https://github.com/krakjoe/apcu</span><br><span class="line">// 2.编译安装  </span><br><span class="line"><span class="built_in">cd</span> apcu</span><br><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line">// 3. 修改php.ini文件</span><br><span class="line">extension=apcu</span><br><span class="line"></span><br><span class="line">php --ini</span><br><span class="line">// apcu.so目录</span><br><span class="line">/opt/homebrew/Cellar/php@7.4/7.4.16/pecl/20190902</span><br></pre></td></tr></table></figure>
 
 
 
-<h2 id="composer-中版本号使用"><a href="#composer-中版本号使用" class="headerlink" title="composer 中版本号使用"></a>composer 中版本号使用</h2><p>~和^的意思很接近，在x.y的情况下是一样的都是代表x.y &lt;&#x3D; 版本号 &lt; (x+1).0，但在版本号是x.y.z的情况下有区别，举个例子：</p>
-<p>~1.2.3 代表  1.2.3 &lt;&#x3D; 版本号 &lt; 1.3.0</p>
-<p>^1.2.3 代表  1.2.3 &lt;&#x3D; 版本号 &lt; 2.0.0</p>
-<h1 id="执行ssh-add时出现Could-not-open-a-connection-to-your-authentication-agent"><a href="#执行ssh-add时出现Could-not-open-a-connection-to-your-authentication-agent" class="headerlink" title="执行ssh-add时出现Could not open a connection to your authentication agent"></a>执行ssh-add时出现Could not open a connection to your authentication agent</h1><p>先执行  eval <code>ssh-agent</code>  （是～键上的那个&#96;） 再执行 ssh-add ~&#x2F;.ssh&#x2F;rsa成功ssh-add -l 就有新加的rsa了</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-26T09:12:25.000Z" title="2021/2/26 下午5:12:25">2021-02-26</time>发表</span><span class="level-item"><time dateTime="2021-02-26T09:12:25.000Z" title="2021/2/26 下午5:12:25">2021-02-26</time>更新</span><span class="level-item">3 分钟读完 (大约427个字)</span></div></div><div class="content"><p>[TOC]</p>
-<h2 id="1-如何使用Redis来实现简单限流策略？"><a href="#1-如何使用Redis来实现简单限流策略？" class="headerlink" title="1.如何使用Redis来实现简单限流策略？"></a>1.如何使用Redis来实现简单限流策略？</h2><p>首先我们来看一个常见 的简单的限流策略。系统要限定用户的某个行为在指定的时间里只能允许发生 N 次，如何使用 Redis 的数据结构来实现这个限流的功能？</p>
-<p>我们先定义这个接口，理解了这个接口的定义，读者就应该能明白我们期望达到的功能。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 指定用户 user_id 的某个行为 action_key 在特定的时间内 period 只允许发生一定的次数</span><br><span class="line">max_count</span><br><span class="line">def is_action_allowed(user_id, action_key, period, max_count):</span><br><span class="line">	return True</span><br><span class="line"># 调用这个接口 , 一分钟内只允许最多回复 5 个帖子</span><br><span class="line">can_reply = is_action_allowed(&quot;laoqian&quot;, &quot;reply&quot;, 60, 5)</span><br><span class="line">	if can_reply:</span><br><span class="line">		do_reply()</span><br><span class="line">	else:</span><br><span class="line">		raise ActionThresholdOverflow()</span><br></pre></td></tr></table></figure>
+<h2 id="MacOs"><a href="#MacOs" class="headerlink" title="MacOs"></a>MacOs</h2><blockquote>
+<p>OS11.1 Install Nginx</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install nginx</span><br><span class="line"><span class="comment"># Docroot is:</span></span><br><span class="line">/opt/homebrew/var/www</span><br><span class="line"><span class="comment"># Config files</span></span><br><span class="line">/opt/homebrew/etc/nginx/servers/</span><br></pre></td></tr></table></figure>
 
+<blockquote>
+<p>OS11.1 配置php-fpm</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ php-fpm</span><br><span class="line">ERROR: failed to load configuration file <span class="string">&#x27;/private/etc/php-fpm.conf&#x27;</span></span><br><span class="line">ERROR: FPM initialization failed</span><br><span class="line">$ <span class="built_in">cd</span> /private/etc</span><br><span class="line">$ sudo <span class="built_in">cp</span> php-fpm.conf.default php-fpm.conf</span><br><span class="line">$ php-fpm</span><br><span class="line">WARNING: Nothing matches the include pattern <span class="string">&#x27;/private/etc/php-fpm.d/*.conf&#x27;</span> from /private/etc/php-fpm.conf at line 143</span><br><span class="line">ERROR: failed to open error_log (/usr/var/log/php-fpm.log): No such file or directory (2)</span><br><span class="line">ERROR: failed to post process the configuration</span><br><span class="line">ERROR: FPM initialization failed</span><br><span class="line"><span class="comment"># cd /usr/var/log 发现根本没有这个目录，甚至连 var 目录都没有，加上为了避免权限问题，干脆配置到 /usr/local/var/log 目录。</span></span><br><span class="line"><span class="comment"># 修改 php-fpm.conf error_log 配置为 /usr/local/var/log/php-fpm.log，并把 user 和 group 改为和当前用户一样。</span></span><br><span class="line">$ php-fpm</span><br><span class="line">WARNING: Nothing matches the include pattern <span class="string">&#x27;/private/etc/php-fpm.d/*.conf&#x27;</span> from /private/etc/php-fpm.conf at line 143.</span><br><span class="line">ERROR: No pool defined. at least one pool section must be specified <span class="keyword">in</span> config file</span><br><span class="line">$ <span class="built_in">cd</span> /private/etc/php-fpm.d</span><br><span class="line">$ <span class="built_in">cp</span> www.conf.default www.conf</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
+<p>异常</p>
+<p>1.fatal error: ‘pcre2.h’ file not found #include “pcre2.h”</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cp</span> /opt/homebrew/Cellar/pcre2/10.36/include/pcre2.h /opt/homebrew/Cellar/php\@7.4/7.4.16/include/php/ext/pcre/pcre2.h</span><br></pre></td></tr></table></figure>
 
-<h2 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h2><h3 id="1-迁移前后Redis过期时间不一致。"><a href="#1-迁移前后Redis过期时间不一致。" class="headerlink" title="1.迁移前后Redis过期时间不一致。"></a>1.迁移前后Redis过期时间不一致。</h3><p>​	我们将<code>expire/pexpire/setex/psetex 命令在复制到从库的时候转换成时间戳的方式，比如expire 转成expireat命令，setex转换成set和expireat命令</code></p>
-<h3 id="2-迁移前后Redis-key-数量不一致"><a href="#2-迁移前后Redis-key-数量不一致" class="headerlink" title="2.迁移前后Redis key 数量不一致"></a>2.迁移前后Redis key 数量不一致</h3><p>​	1、主库在做RDB快照文件的时候，发现key已经过期了，则此时不会将过期时间写在RDB中<br>​	2、从库在load RDB 文件到内存中的时候，发现key已经过期了，则此时不会将过期的key load进去<br>​	针对上述问题，<em><strong>*目前我们将以上两个步骤都改为<code>不忽略过期key</code>，过期key的删除统一由主库触发删除，然后将删除命令传送到从库中。这样key的数量就完全一致了。*</strong></em></p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-20T05:45:59.000Z" title="2021/2/20 下午1:45:59">2021-02-20</time>发表</span><span class="level-item"><time dateTime="2021-02-20T05:45:59.000Z" title="2021/2/20 下午1:45:59">2021-02-20</time>更新</span><span class="level-item">3 分钟读完 (大约435个字)</span></div></div><div class="content"><p>▲ 58 MySQL 为什么使用 B+ 树来作索引，对比 B 树它的优点和缺点是什么？</p>
-<p>▲ 31 数据库的事务隔离级别有哪些？各有哪些优缺点？</p>
-<p>▲ 25 什么是数据库事务，MySQL 为什么会使用 InnoDB 作为默认选项</p>
-<p>▲ 21 什么情况下会发生死锁，如何解决死锁？</p>
-<p>▲ 21 简述乐观锁以及悲观锁的区别以及使用场景</p>
-<p>▲ 21 Redis 有几种数据结构？Zset 是如何实现的？</p>
-<p>▲ 19 聚簇索引和非聚簇索引有什么区别？什么情况用聚集索引？</p>
-<p>▲ 18 简述脏读和幻读的发生场景，InnoDB 是如何解决幻读的？</p>
-<p>▲ 17 唯一索引与普通索引的区别是什么？使用索引会有哪些优缺点？</p>
-<p>▲ 14 简述 MySQL 的间隙锁</p>
-<p>▲ 13 简述 Redis 持久化中 rdb 以及 aof 方案的优缺点</p>
-<p>▲ 11 Redis 如何实现延时队列，分布式锁的实现原理</p>
-<p>▲ 9 简述 Redis 中如何防止缓存雪崩和缓存击穿</p>
-<p>▲ 8 MySQL 有什么调优的方式？</p>
-<p>▲ 7 简述 MySQL 的主从同步机制，如果同步失败会怎么样？</p>
-<p>▲ 6 MySQL 的索引什么情况下会失效？</p>
-<p>▲ 5 简述数据库中的 ACID 分别是什么？</p>
-<p>▲ 4 Kafka 发送消息是如何保证可靠性的？</p>
-<p>▲ 3 简述 Redis 中跳表的应用以及优缺点</p>
-<p>▲ 1 假设Redis 的 master 节点宕机了，你会怎么进行数据恢复？</p>
-<h2 id="锁定读的语句"><a href="#锁定读的语句" class="headerlink" title="锁定读的语句"></a>锁定读的语句</h2><p>对读取的记录加共享-S锁：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT ... LOCK IN SHARE MODE;</span><br></pre></td></tr></table></figure>
-
-<p>对读取的记录加 排他锁-X锁：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SELECT ... FOR UPDATE;</span><br></pre></td></tr></table></figure>
-
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-02-02T09:28:23.000Z" title="2021/2/2 下午5:28:23">2021-02-02</time>发表</span><span class="level-item"><time dateTime="2021-02-02T09:28:23.000Z" title="2021/2/2 下午5:28:23">2021-02-02</time>更新</span><span class="level-item">5 分钟读完 (大约727个字)</span></div></div><div class="content"><p>[TOC]</p>
-<h1 id="Object对象简介"><a href="#Object对象简介" class="headerlink" title="Object对象简介"></a>Object对象简介</h1><p><strong>除了</strong>八大基本数据类型。当然了，八大基本数据类型也能<strong>装箱</strong>成为对象</p>
-<h2 id="1-equals和hashCode方法"><a href="#1-equals和hashCode方法" class="headerlink" title="1.equals和hashCode方法"></a>1.equals和hashCode方法</h2><p>重写<code>equals()</code>方法，就必须重写<code>hashCode()</code>的方法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">equals</span><span class="params">(Object anObject)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span> == anObject) &#123;		<span class="comment">// 地址相同</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (anObject <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">anotherString</span> <span class="operator">=</span> (String)anObject;</span><br><span class="line">        <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> value.length;</span><br><span class="line">        <span class="keyword">if</span> (n == anotherString.value.length) &#123;</span><br><span class="line">            <span class="type">char</span> v1[] = value;</span><br><span class="line">            <span class="type">char</span> v2[] = anotherString.value;</span><br><span class="line">            <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (n-- != <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (v1[i] != v2[i])		<span class="comment">// 字符相同</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                i++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">int</span> <span class="variable">h</span> <span class="operator">=</span> hash;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="number">0</span> &amp;&amp; value.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="type">char</span> val[] = value;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; value.length; i++) &#123;</span><br><span class="line">            h = <span class="number">31</span> * h + val[i];</span><br><span class="line">        &#125;</span><br><span class="line">        hash = h;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="2-toString方法"><a href="#2-toString方法" class="headerlink" title="2.toString方法"></a>2.toString方法</h2><h2 id="3-clone方法"><a href="#3-clone方法" class="headerlink" title="3.clone方法"></a>3.clone方法</h2><p><strong>protected修饰的类和属性,对于自己、本包和其子类可见</strong></p>
-<p><strong>可能会想</strong>：<code>clone()</code>方法是定义在Object类上的(以protected来修饰)，而我们自定义的Address对象<strong>隐式</strong>继承着Object(所有的对象都是Object的子类)，那么子类调用Object以protected来修饰<code>clone()</code>是完全没问题的</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-28T01:54:13.000Z" title="2021/4/28 上午9:54:13">2021-04-28</time>发表</span><span class="level-item"><time dateTime="2021-04-28T01:54:13.000Z" title="2021/4/28 上午9:54:13">2021-04-28</time>更新</span><span class="level-item">41 分钟读完 (大约6201个字)</span></div></div><div class="content"><p><img src="/../../images/640.png" alt="图片"></p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>什么是分布式消息中间件？</li>
+<li>消息中间件的作用是什么？</li>
+<li>消息中间件的使用场景是什么？</li>
+<li>消息中间件选型？</li>
+</ul>
+<p>分布式消息是一种通信机制，和 RPC、HTTP、RMI 等不一样，消息中间件采用分布式中间代理的方式进行通信。如图所示，采用了消息中间件之后，上游业务系统发送消息，先存储在消息中间件，然后由消息中间件将消息分发到对应的业务模块应用（分布式生产者 - 消费者模式）。这种异步的方式，减少了服务之间的耦合程度。</p>
+<p><img src="/../../images/640" alt="图片"></p>
+<p><strong>定义消息中间件：</strong></p>
 <ul>
-<li>但是，IDE现实告诉我，这<strong>编译就不通过了</strong>！</li>
+<li>利用高效可靠的消息传递机制进行平台无关的数据交流</li>
+<li>基于数据通信，来进行分布式系统的集成</li>
+<li>通过提供消息传递和消息排队模型，可以在分布式环境下扩展进程间的通信</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Address</span>  &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> provinceNo;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> cityNo;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> streetNo;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Address</span><span class="params">()</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Address</span><span class="params">(<span class="type">int</span> provinceNo, <span class="type">int</span> cityNo, <span class="type">int</span> streetNo)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.provinceNo = provinceNo;</span><br><span class="line">        <span class="built_in">this</span>.cityNo = cityNo;</span><br><span class="line">        <span class="built_in">this</span>.streetNo = streetNo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"> <span class="type">Address</span> <span class="variable">address</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Address</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"> address.clone();		<span class="comment">// clone() has protected access in &#x27;java.lang.Ojbect&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>上面的代码就错在：Address与Object<strong>不是在同一个包下</strong>的，而Address直接访问了Object的clone方法。这是不行的。</p>
-<h2 id="4-wait和notify方法"><a href="#4-wait和notify方法" class="headerlink" title="4.wait和notify方法"></a>4.wait和notify方法</h2><ul>
-<li><p>无论是wait、notify还是notifyAll()都需要<strong>由监听器对象(锁对象)来进行调用</strong></p>
-</li>
-<li><ul>
-<li>简单来说：<strong>他们都是在同步代码块中调用的</strong>，否则会抛出异常！</li>
-</ul>
-</li>
-<li><p><code>notify()</code>唤醒的是在等待队列的<strong>某个</strong>线程(不确定会唤醒哪个)，<code>notifyAll()</code>唤醒的是等待队列<strong>所有</strong>线程</p>
-</li>
-<li><p>导致<code>wait()</code>的线程被唤醒可以有4种情况</p>
-</li>
-<li><ul>
-<li>该线程被中断</li>
-<li><code>wait()</code>时间到了</li>
-<li>被<code>notify()</code>唤醒</li>
-<li>被<code>notifyAll()</code>唤醒</li>
-</ul>
-</li>
-<li><p>调用<code>wait()</code>的线程会<strong>释放掉锁</strong></p>
-</li>
-</ul>
-<p>notify方法调用后，被唤醒的线程<strong>不会立马获得到锁对象</strong>。而是等待notify的synchronized代码块<strong>执行完之后</strong>才会获得锁对象</p>
-<p><code>Thread.sleep()</code>与<code>Object.wait()</code>二者都可以暂停当前线程，释放CPU控制权。</p>
+<p>在系统架构中引用额外的组件，必然提高系统的架构复杂度和运维的难度，那么<strong>在系统中使用分布式消息中间件有什么优势呢？消息中间件在系统中起的作用又是什么呢？</strong></p>
 <ul>
-<li>主要的区别在于<code>Object.wait()</code>在释放CPU同时，<strong>释放了对象锁的控制</strong>。</li>
-<li>而<code>Thread.sleep()</code>没有对锁释放</li>
+<li>解耦</li>
+<li>冗余（存储）</li>
+<li>扩展性</li>
+<li>削峰</li>
+<li>可恢复性</li>
+<li>顺序保证</li>
+<li>缓冲</li>
+<li>异步通信</li>
 </ul>
-<h2 id="5-finalize-方法"><a href="#5-finalize-方法" class="headerlink" title="5.finalize()方法"></a>5.finalize()方法</h2><p><code>finalize()</code>方法将在<strong>垃圾回收器清除对象之前调用</strong>，但该方法不知道何时调用，具有<strong>不定性</strong></p>
-<p>一个对象的finalize()方法<strong>只会被调用一次</strong>，而且finalize()被调用不意味着gc会立即回收该对象，所以有可能调用finalize()后，该对象又不需要被回收了，然后到了真正要被回收的时候，因为前面调用过一次，所以不会调用finalize()，产生问题。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-25T03:12:00.000Z" title="2021/1/25 上午11:12:00">2021-01-25</time>发表</span><span class="level-item"><time dateTime="2021-01-25T03:12:00.000Z" title="2021/1/25 上午11:12:00">2021-01-25</time>更新</span><span class="level-item">3 分钟读完 (大约474个字)</span></div></div><div class="content"><h1 id="Redis可以做什么？"><a href="#Redis可以做什么？" class="headerlink" title="Redis可以做什么？"></a>Redis可以做什么？</h1><ol>
-<li>记录帖子的点赞数、评论数和点击数 (hash)。 </li>
-<li>记录用户的帖子 ID 列表 (排序)，便于快速显示用户的帖子列表 (zset)。 </li>
-<li>记录帖子的标题、摘要、作者和封面信息，用于列表页展示 (hash)。 </li>
-<li>记录帖子的点赞用户 ID 列表，评论 ID 列表，用于显示和去重计数 (zset)。 </li>
-<li>缓存近期热帖内容 (帖子内容空间占用比较大)，减少数据库压力 (hash)。 </li>
-<li>记录帖子的相关文章 ID，根据内容推荐相关帖子 (list)。 </li>
-<li>如果帖子 ID 是整数自增的，可以使用 Redis 来分配帖子 ID(计数器)。 </li>
-<li>收藏集和帖子之间的关系 (zset)。 </li>
-<li>记录热榜帖子 ID 列表，总热榜和分类热榜 (zset)。 </li>
-<li>缓存用户行为历史，进行恶意行为过滤 (zset,hash)。</li>
-</ol>
-<h3 id="Redis-有-5-种基础数据结构"><a href="#Redis-有-5-种基础数据结构" class="headerlink" title="Redis 有 5 种基础数据结构"></a>Redis 有 5 种基础数据结构</h3><ol>
-<li><code>string</code> (字符串)： 当字符串长度小于 1M 时，扩容都是加倍现有的空间，如果超过 1M，扩容时一次只会多扩 1M 的空间。需要注意的是字符串最大长度为 512M。</li>
-<li><code>list</code> (列表)：</li>
-<li><code>set</code> (集合)</li>
-<li><code>hash</code> (哈 希)</li>
-<li><code>zset</code> (有序集合)。</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 过期和 set 命令扩展</span></span><br><span class="line">&gt; setex name 5 codename <span class="comment"># 5s 后过期，等价于 set+expire</span></span><br><span class="line">&gt; get name </span><br><span class="line"><span class="string">&quot;codename&quot;</span></span><br><span class="line">... <span class="comment"># wait for 5s </span></span><br><span class="line">&gt; get name </span><br><span class="line">(nil)</span><br><span class="line"></span><br><span class="line">&gt; setnx name codename <span class="comment"># 如果 name 不存在就执行 set 创建</span></span><br><span class="line">(<span class="built_in">integer</span>) 1 </span><br><span class="line">&gt; get name </span><br><span class="line"><span class="string">&quot;codename&quot;</span> </span><br><span class="line">&gt; setnx name codename </span><br><span class="line">(<span class="built_in">integer</span>) 0 <span class="comment"># 因为 name 已经存在，所以 set 创建不成功</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计数</span></span><br><span class="line"><span class="comment"># 如果 value 值是一个整数，还可以对它进行自增操作。自增是有范围的，它的范围是signed long 的最大最小值，超 过了这个值，Redis 会报错。</span></span><br><span class="line"></span><br><span class="line">&gt; <span class="built_in">set</span> codename 9223372036854775807 </span><br><span class="line"><span class="comment"># Long.Max </span></span><br><span class="line">OK </span><br><span class="line">&gt; incr codename</span><br><span class="line">(error) ERR increment or decrement would overflow</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-22T03:17:24.000Z" title="2021/1/22 上午11:17:24">2021-01-22</time>发表</span><span class="level-item"><time dateTime="2022-03-22T06:10:54.402Z" title="2022/3/22 下午2:10:54">2022-03-22</time>更新</span><span class="level-item">5 分钟读完 (大约716个字)</span></div></div><div class="content"><h1 id="并发编程-线程池"><a href="#并发编程-线程池" class="headerlink" title="并发编程-线程池"></a>并发编程-线程池</h1><h2 id="1-为什么会出现线程池？"><a href="#1-为什么会出现线程池？" class="headerlink" title="1.为什么会出现线程池？"></a>1.为什么会出现线程池？</h2><p>创建和销毁线程都需要时间，如果频繁地进行这两个步骤就会降低系统的效率。</p>
-<h2 id="2-ThreadPoolExecutor类"><a href="#2-ThreadPoolExecutor类" class="headerlink" title="2.ThreadPoolExecutor类"></a>2.ThreadPoolExecutor类</h2><p>Java提供了<code>java.util.concurrent.ThreadPoolExecutor</code>类来帮助管理线程池。看下具体的源代码。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadPoolExecutor</span> <span class="keyword">extends</span> <span class="title class_">AbstractExecutorService</span> &#123;</span><br><span class="line">  	<span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize, <span class="type">int</span> maximumPoolSize, <span class="type">long</span> keepAliveTime, TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue)</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize,<span class="type">int</span> maximumPoolSize,<span class="type">long</span> keepAliveTime,TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue,ThreadFactory threadFactory)</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize,<span class="type">int</span> maximumPoolSize,<span class="type">long</span> keepAliveTime,TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue,RejectedExecutionHandler handler)</span>;</span><br><span class="line"> 	  <span class="comment">// 上面的3个构造函数都是调用这第4个构造函数</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ThreadPoolExecutor</span><span class="params">(<span class="type">int</span> corePoolSize,<span class="type">int</span> maximumPoolSize,<span class="type">long</span> keepAliveTime,TimeUnit unit, BlockingQueue&lt;Runnable&gt; workQueue,ThreadFactory threadFactory,RejectedExecutionHandler handler)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>总共有7个参数:</p>
-<ol>
-<li>corePoolSize – 最少的工作线程数量，即使它们处于空闲状态，除非设置了allowCoreThreadTimeOut。 the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set</li>
-<li>maximumPoolSize – 最多工作的线程数 the maximum number of threads to allow in the pool </li>
-<li>keepAliveTime – 当工作线程多于最少的数量，能存活的时间。when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.</li>
-<li>unit – 时间的单位 the time unit for the keepAliveTime argument</li>
-<li>workQueue – 保存任务的队列，由execute方法提交。the queue to use for holding tasks before they are executed. This queue will hold only the Runnable tasks submitted by the execute method.</li>
-<li>threadFactory – 创建新线程时要使用的工厂 the factory to use when the executor creates a new thread</li>
-<li>handler – 超过队列时如何处理任务 the handler to use when execution is blocked because the thread bounds and queue capacities are reached</li>
-</ol>
-<h2 id="3-看看workQueue参数"><a href="#3-看看workQueue参数" class="headerlink" title="3.看看workQueue参数"></a>3.看看workQueue参数</h2><p>阻塞队列，用来存放可执行的任务，会对线程池的运行产生重大影响，一共有以下几种选择</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 首先这是一个接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BlockingQueue</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">Queue</span>&lt;E&gt;;   </span><br><span class="line"><span class="comment">// 看看实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ArrayBlockingQueue</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">BlockingQueue</span>&lt;E&gt;;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LinkedBlockingQueue</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">BlockingQueue</span>&lt;E&gt;;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SynchronousQueue</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">BlockingQueue</span>&lt;E&gt;;</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-看看handler参数"><a href="#4-看看handler参数" class="headerlink" title="4.看看handler参数"></a>4.看看handler参数</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。 </span><br><span class="line">ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。 </span><br><span class="line">ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）</span><br><span class="line">ThreadPoolExecutor.CallerRunsPolicy：由调用线程处理该任务 </span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="5-如何合理配置线程池的大小"><a href="#5-如何合理配置线程池的大小" class="headerlink" title="5.如何合理配置线程池的大小"></a>5.如何合理配置线程池的大小</h2><p>一般需要根据任务的类型来配置线程池大小：</p>
-<p>　　如果是CPU密集型任务，就需要尽量压榨CPU，参考值可以设为 <em>N</em>(CPU)+1</p>
-<p>　　如果是IO密集型任务，参考值可以设置为2*<em>N</em>(CPU)</p>
-<p>　　当然，这只是一个参考值，具体的设置还需要根据实际情况进行调整，比如可以先将线程池大小设置为参考值，再观察任务运行情况和系统负载、资源利用率来进行适当调整。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-19T02:38:36.000Z" title="2021/1/19 上午10:38:36">2021-01-19</time>发表</span><span class="level-item"><time dateTime="2022-05-06T15:27:29.768Z" title="2022/5/6 下午11:27:29">2022-05-06</time>更新</span><span class="level-item">3 分钟读完 (大约419个字)</span></div></div><div class="content"><p>这么做的主要的原因是公司受够了fastjson频繁的安全漏洞问题，每一次出现漏洞都要推一次全公司的fastjson强制版本升级，很令公司头疼。</p>
-<p>文章的前半部分，我会简单分析各种json解析框架的优劣，并给出企业级项目迁移json框架的几种解决方案。</p>
-<p>在文章的后半部分，我会结合这一个月的经验，总结下Gson的使用问题，以及fastjson迁移到Gson踩过的深坑。</p>
-<h2 id="为何要放弃fastjson？"><a href="#为何要放弃fastjson？" class="headerlink" title="为何要放弃fastjson？"></a>为何要放弃fastjson？</h2><p>究其原因，<strong>是fastjson漏洞频发</strong>，导致了公司内部需要频繁的督促各业务线升级fastjson版本，来防止安全问题。</p>
-<p>fastjson在2020年频繁暴露安全漏洞，此漏洞可以绕过autoType开关来实现反序列化远程代码执行并获取服务器访问权限。</p>
-<p>从2019年7月份发布的v1.2.59一直到2020年6月份发布的 v1.2.71 ，每个版本的升级中都有关于AutoType的升级，涉及13个正式版本。</p>
-<p>相比之下，其他的json框架，如Gson和Jackson，漏洞数量少很多，<strong>高危漏洞也比较少</strong>，这是公司想要替换框架的主要原因。</p>
-<h2 id="fastjson替代方案"><a href="#fastjson替代方案" class="headerlink" title="fastjson替代方案"></a>fastjson替代方案</h2><p><strong>本文主要讨论Gson替换fastjson框架的实战问题，所以在这里不展开详细讨论各种json框架的优劣，只给出结论。</strong></p>
-<p>经过评估，主要有Jackson和Gson两种json框架放入考虑范围内，与fastjson进行对比。</p>
-</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/01/04/90000%E6%96%87%E7%AB%A0/90007SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86/"><img class="fill" src="/../../images/cover7.jpg" alt="90007 SpringBoot自动配置原理"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-01-04T07:48:46.000Z" title="2021/1/4 下午3:48:46">2021-01-04</time>发表</span><span class="level-item"><time dateTime="2022-05-08T11:55:01.479Z" title="2022/5/8 下午7:55:01">2022-05-08</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/SpringBoot/">SpringBoot</a></span><span class="level-item">9 分钟读完 (大约1360个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/01/04/90000%E6%96%87%E7%AB%A0/90007SpringBoot%E8%87%AA%E5%8A%A8%E9%85%8D%E7%BD%AE%E5%8E%9F%E7%90%86/">90007 SpringBoot自动配置原理</a></h1><div class="content"><p><strong>前言</strong></p>
-<p>自从有了 SpringBoot 之后，咋们就起飞了！各种零配置开箱即用，而我们之所以开发起来能够这么爽，<strong>自动配置</strong>的功劳少不了，今天我们就一起来讨论一下 SpringBoot 自动配置原理。</p>
-<p>本文主要分为三大部分：</p>
-<ol>
-<li>SpringBoot 源码常用注解拾遗</li>
-<li>SpringBoot 启动过程</li>
-<li>SpringBoot 自动配置原理</li>
-</ol>
-<h2 id="一-SpringBoot-源码常用注解拾遗"><a href="#一-SpringBoot-源码常用注解拾遗" class="headerlink" title="一. SpringBoot 源码常用注解拾遗"></a>一. SpringBoot 源码常用注解拾遗</h2><p>这部分主要讲一下 SpringBoot 源码中经常使用到的注解，以扫清后面阅读源码时候的障碍。</p>
-<h3 id="组合注解"><a href="#组合注解" class="headerlink" title="组合注解"></a>组合注解</h3><blockquote>
-<p>当可能大量同时使用到几个注解到同一个类上，就可以考虑将这几个注解到别的注解上。被注解的注解我们就称之为组合注解。</p>
-</blockquote>
+<p>面试时，面试官经常会关心面试者对开源组件的选型能力，这既可以考验面试者知识的广度，也可以考验面试者对某类系统的知识的认识深度，而且也可以看出面试者对系统整体把握和系统架构设计的能力。开源分布式消息系统有很多，不同的消息系统的特性也不一样，选择怎样的消息系统，不仅需要对各消息系统有一定的了解，也需要对自身系统需求有清晰的认识。</p>
+<p><strong>下面是常见的几种分布式消息系统的对比：</strong><br><img src="/../../images/640-20210428095405910" alt="图片">选择</p>
+<h3 id="答案关键字"><a href="#答案关键字" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li>什么是分布式消息中间件？通信，队列，分布式，生产消费者模式。</li>
+<li>消息中间件的作用是什么？解耦、峰值处理、异步通信、缓冲。</li>
+<li>消息中间件的使用场景是什么？异步通信，消息存储处理。</li>
+<li>消息中间件选型？语言，协议、HA、数据可靠性、性能、事务、生态、简易、推拉模式。</li>
+</ul>
+<h2 id="Kafka-基本概念和架构"><a href="#Kafka-基本概念和架构" class="headerlink" title="Kafka 基本概念和架构"></a>Kafka 基本概念和架构</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>简单讲下 Kafka 的架构？</li>
+<li>Kafka 是推模式还是拉模式，推拉的区别是什么？</li>
+<li>Kafka 如何广播消息？</li>
+<li>Kafka 的消息是否是有序的？</li>
+<li>Kafka 是否支持读写分离？</li>
+<li>Kafka 如何保证数据高可用？</li>
+<li>Kafka 中 zookeeper 的作用？</li>
+<li>是否支持事务？</li>
+<li>分区数是否可以减少？</li>
+</ul>
+<p><strong>Kafka 架构中的一般概念：</strong></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FbXJ7UCc6O1oicl7z78fR9ibRGPNMBfV0ezicXtDDiaMbIKIjibSf05dOIKmBzicuuEhrRkbuESn0DNrfEFOCsTtYTTw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片">架构</p>
 <ul>
-<li>元注解：可以注解到别的注解上的注解。</li>
-<li>组合注解：被注解的注解我们就称之为组合注解。</li>
+<li>Producer：生产者，也就是发送消息的一方。生产者负责创建消息，然后将其发送到 Kafka。</li>
+<li>Consumer：消费者，也就是接受消息的一方。消费者连接到 Kafka 上并接收消息，进而进行相应的业务逻辑处理。</li>
+<li>Consumer Group：一个消费者组可以包含一个或多个消费者。使用多分区 + 多消费者方式可以极大提高数据下游的处理速度，同一消费组中的消费者不会重复消费消息，同样的，不同消费组中的消费者消息消息时互不影响。Kafka 就是通过消费组的方式来实现消息 P2P 模式和广播模式。</li>
+<li>Broker：服务代理节点。Broker 是 Kafka 的服务节点，即 Kafka 的服务器。</li>
+<li>Topic：Kafka 中的消息以 Topic 为单位进行划分，生产者将消息发送到特定的 Topic，而消费者负责订阅 Topic 的消息并进行消费。</li>
+<li>Partition：Topic 是一个逻辑的概念，它可以细分为多个分区，每个分区只属于单个主题。同一个主题下不同分区包含的消息是不同的，分区在存储层面可以看作一个可追加的日志（Log）文件，消息在被追加到分区日志文件的时候都会分配一个特定的偏移量（offset）。</li>
+<li>Offset：offset 是消息在分区中的唯一标识，Kafka 通过它来保证消息在分区内的顺序性，不过 offset 并不跨越分区，也就是说，Kafka 保证的是分区有序性而不是主题有序性。</li>
+<li>Replication：副本，是 Kafka 保证数据高可用的方式，Kafka 同一 Partition 的数据可以在多 Broker 上存在多个副本，通常只有主副本对外提供读写服务，当主副本所在 broker 崩溃或发生网络一场，Kafka 会在 Controller 的管理下会重新选择新的 Leader 副本对外提供读写服务。</li>
+<li>Record：实际写入 Kafka 中并可以被读取的消息记录。每个 record 包含了 key、value 和 timestamp。</li>
 </ul>
-<h3 id="Value-【Spring-提供】"><a href="#Value-【Spring-提供】" class="headerlink" title="@Value 【Spring 提供】"></a>@Value 【Spring 提供】</h3><blockquote>
-<p><code>@Value</code> 就相当于传统 xml 配置文件中的 value 字段。</p>
-</blockquote>
-<p>假设存在代码：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123; </span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Value(&quot;i am name&quot;)</span> </span><br><span class="line">  <span class="keyword">private</span> String name; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<p>上面代码等价于的配置文件：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean class=<span class="string">&quot;Person&quot;</span>&gt; </span><br><span class="line">	&lt;<span class="type">property</span> <span class="variable">name</span> <span class="operator">=</span><span class="string">&quot;name&quot;</span> value=<span class="string">&quot;i am name&quot;</span>&gt;&lt;/property&gt;</span><br><span class="line">&lt;/bean&gt; </span><br></pre></td></tr></table></figure>
-
-<p>我们知道配置文件中的 value 的取值可以是：</p>
+<p><strong>Kafka Topic Partitions Layout</strong></p>
+<p><img src="/../../images/640-20210428095405405" alt="图片">主题</p>
+<p>Kafka 将 Topic 进行分区，分区可以并发读写。</p>
+<p><strong>Kafka Consumer Offset</strong></p>
+<p><img src="/../../images/640-20210428095405632" alt="图片">consumer offset</p>
+<h3 id="zookeeper"><a href="#zookeeper" class="headerlink" title="zookeeper"></a>zookeeper</h3><p><img src="/../../images/640-20210428095405909.png" alt="图片">zookeeper</p>
 <ul>
-<li>字面量</li>
-<li>通过 <code>$&#123;key&#125;</code> 方式从环境变量中获取值</li>
-<li>通过 <code>$&#123;key&#125;</code> 方式全局配置文件中获取值</li>
-<li><code>#&#123;SpEL&#125;</code></li>
+<li>Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。</li>
+<li>Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由 Zookeeper 在维护</li>
+<li>生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的 Broker 上。</li>
+<li>消费者负载均衡：与生产者类似，Kafka 中的消费者同样需要进行负载均衡来实现多个消费者合理地从对应的 Broker 服务器上接收消息，每个消费者分组包含若干消费者，每条消息都只会发送给分组中的一个消费者，不同的消费者分组消费自己特定的 Topic 下面的消息，互不干扰。</li>
 </ul>
+<h3 id="答案关键字-1"><a href="#答案关键字-1" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li><p>简单讲下 Kafka 的架构？</p>
 <blockquote>
-<p>所以，我们就可以通过 <code>@Value($&#123;key&#125;)</code> 的方式获取全局配置文件中的指定配置项。</p>
+<p>Producer、Consumer、Consumer Group、Topic、Partition</p>
 </blockquote>
-<h3 id="ConfigurationProperties-【SpringBoot-提供】"><a href="#ConfigurationProperties-【SpringBoot-提供】" class="headerlink" title="@ConfigurationProperties 【SpringBoot 提供】"></a>@ConfigurationProperties 【SpringBoot 提供】</h3><p>如果我们需要取 N 个配置项，通过 @Value 的方式去配置项需要一个一个去取，这就显得有点 low 了。我们可以使用 <code>@ConfigurationProperties</code> 。</p>
+</li>
+<li><p>Kafka 是推模式还是拉模式，推拉的区别是什么？</p>
 <blockquote>
-<p>标有 <code>@ConfigurationProperties</code> 的类的所有属性和配置文件中相关的配置项进行绑定。（默认从全局配置文件中获取配置值），绑定之后我们就可以通过这个类去访问全局配置文件中的属性值了。</p>
+<p>Kafka Producer 向 Broker 发送消息使用 Push 模式，Consumer 消费采用的 Pull 模式。拉取模式，让 consumer 自己管理 offset，可以提供读取性能</p>
 </blockquote>
-<p>下面看一个实例：</p>
-<ol>
-<li>在主配置文件中添加如下配置</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">person.name=kundy </span><br><span class="line">person.age=<span class="number">13</span> </span><br><span class="line">person.sex=male </span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>创建配置类，由于篇幅问题这里省略了 setter、getter 方法，但是实际开发中这个是必须的，否则无法成功注入。另外，@Component 这个注解也还是需要添加的。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span> </span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Person</span> &#123; </span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> String name; </span><br><span class="line">  <span class="keyword">private</span> Integer age; </span><br><span class="line">  <span class="keyword">private</span> String sex; </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
+</li>
+<li><p>Kafka 如何广播消息？</p>
 <blockquote>
-<p>这里 @ConfigurationProperties 有一个 <code>prefix</code> 参数，主要是用来指定该配置项在配置文件中的前缀。</p>
+<p>Consumer group</p>
 </blockquote>
-<ol start="3">
-<li>测试，在 SpringBoot 环境中，编写个测试方法，注入 Person 类，即可通过 Person 对象取到配置文件的值。</li>
-</ol>
-<h3 id="Import-【Spring-提供】"><a href="#Import-【Spring-提供】" class="headerlink" title="@Import 【Spring 提供】"></a>@Import 【Spring 提供】</h3><blockquote>
-<p><code>@Import</code> 注解支持导入普通 java 类，并将其声明成一个bean。主要用于将多个分散的 java config 配置类融合成一个更大的 config 类。</p>
+</li>
+<li><p>Kafka 的消息是否是有序的？</p>
+<blockquote>
+<p>Topic 级别无序，Partition 有序</p>
 </blockquote>
+</li>
+<li><p>Kafka 是否支持读写分离？</p>
+<blockquote>
+<p>不支持，只有 Leader 对外提供读写服务</p>
+</blockquote>
+</li>
+<li><p>Kafka 如何保证数据高可用？</p>
+<blockquote>
+<p>副本，ack，HW</p>
+</blockquote>
+</li>
+<li><p>Kafka 中 zookeeper 的作用？</p>
+<blockquote>
+<p>集群管理，元数据管理</p>
+</blockquote>
+</li>
+<li><p>是否支持事务？</p>
+<blockquote>
+<p>0.11 后支持事务，可以实现”exactly once“</p>
+</blockquote>
+</li>
+<li><p>分区数是否可以减少？</p>
+<blockquote>
+<p>不可以，会丢失数据</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="Kafka-使用"><a href="#Kafka-使用" class="headerlink" title="Kafka 使用"></a>Kafka 使用</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>Kafka 有哪些命令行工具？你用过哪些？</li>
+<li>Kafka Producer 的执行过程？</li>
+<li>Kafka Producer 有哪些常见配置？</li>
+<li>如何让 Kafka 的消息有序？</li>
+<li>Producer 如何保证数据发送不丢失？</li>
+<li>如何提升 Producer 的性能？</li>
+<li>如果同一 group 下 consumer 的数量大于 part 的数量，kafka 如何处理？</li>
+<li>Kafka Consumer 是否是线程安全的？</li>
+<li>讲一下你使用 Kafka Consumer 消费消息时的线程模型，为何如此设计？</li>
+<li>Kafka Consumer 的常见配置？</li>
+<li>Consumer 什么时候会被踢出集群？</li>
+<li>当有 Consumer 加入或退出时，Kafka 会作何反应？</li>
+<li>什么是 Rebalance，何时会发生 Rebalance？</li>
+</ul>
+<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Kafka 的命令行工具在 Kafka 包的<code>/bin</code>目录下，主要包括服务和集群管理脚本，配置脚本，信息查看脚本，Topic 脚本，客户端脚本等。</p>
 <ul>
-<li><code>@Import</code> 注解在 4.2 之前只支持导入配置类。</li>
-<li>在4.2之后 <code>@Import</code> 注解支持导入普通的 java 类,并将其声明成一个 bean。</li>
+<li>kafka-configs.sh：配置管理脚本</li>
+<li>kafka-console-consumer.sh：kafka 消费者控制台</li>
+<li>kafka-console-producer.sh：kafka 生产者控制台</li>
+<li>kafka-consumer-groups.sh：kafka 消费者组相关信息</li>
+<li>kafka-delete-records.sh：删除低水位的日志文件</li>
+<li>kafka-log-dirs.sh：kafka 消息日志目录信息</li>
+<li>kafka-mirror-maker.sh：不同数据中心 kafka 集群复制工具</li>
+<li>kafka-preferred-replica-election.sh：触发 preferred replica 选举</li>
+<li>kafka-producer-perf-test.sh：kafka 生产者性能测试脚本</li>
+<li>kafka-reassign-partitions.sh：分区重分配脚本</li>
+<li>kafka-replica-verification.sh：复制进度验证脚本</li>
+<li>kafka-server-start.sh：启动 kafka 服务</li>
+<li>kafka-server-stop.sh：停止 kafka 服务</li>
+<li>kafka-topics.sh：topic 管理脚本</li>
+<li>kafka-verifiable-consumer.sh：可检验的 kafka 消费者</li>
+<li>kafka-verifiable-producer.sh：可检验的 kafka 生产者</li>
+<li>zookeeper-server-start.sh：启动 zk 服务</li>
+<li>zookeeper-server-stop.sh：停止 zk 服务</li>
+<li>zookeeper-shell.sh：zk 客户端</li>
 </ul>
-<p>**@Import 三种使用方式 **</p>
+<p>我们通常可以使用<code>kafka-console-consumer.sh</code>和<code>kafka-console-producer.sh</code>脚本来测试 Kafka 生产和消费，<code>kafka-consumer-groups.sh</code>可以查看和管理集群中的 Topic，<code>kafka-topics.sh</code>通常用于查看 Kafka 的消费组情况。</p>
+<h3 id="Kafka-Producer"><a href="#Kafka-Producer" class="headerlink" title="Kafka Producer"></a>Kafka Producer</h3><p>Kafka producer 的正常生产逻辑包含以下几个步骤：</p>
+<ol>
+<li>配置生产者客户端参数常见生产者实例。</li>
+<li>构建待发送的消息。</li>
+<li>发送消息。</li>
+<li>关闭生产者实例。</li>
+</ol>
+<p>Producer 发送消息的过程如下图所示，需要经过<code>拦截器</code>，<code>序列化器</code>和<code>分区器</code>，最终由<code>累加器</code>批量发送至 Broker。</p>
+<p><img src="/../../images/640-20210428095405435.png" alt="图片">producer</p>
+<p>Kafka Producer 需要以下必要参数：</p>
 <ul>
-<li>直接导入普通的 Java 类。</li>
-<li>配合自定义的 ImportSelector 使用。</li>
-<li>配合 ImportBeanDefinitionRegistrar 使用。</li>
+<li>bootstrap.server：指定 Kafka 的 Broker 的地址</li>
+<li>key.serializer：key 序列化器</li>
+<li>value.serializer：value 序列化器</li>
 </ul>
-<p><strong>1. 直接导入普通的 Java 类</strong></p>
+<p>常见参数：</p>
+<ul>
+<li><p>batch.num.messages</p>
+<blockquote>
+<p>默认值：200，每次批量消息的数量，只对 asyc 起作用。</p>
+</blockquote>
+</li>
+<li><p>request.required.acks</p>
+<blockquote>
+<p>默认值：0，0 表示 producer 毋须等待 leader 的确认，1 代表需要 leader 确认写入它的本地 log 并立即确认，-1 代表所有的备份都完成后确认。只对 async 模式起作用，这个参数的调整是数据不丢失和发送效率的 tradeoff，如果对数据丢失不敏感而在乎效率的场景可以考虑设置为 0，这样可以大大提高 producer 发送数据的效率。</p>
+</blockquote>
+</li>
+<li><p>request.timeout.ms</p>
+<blockquote>
+<p>默认值：10000，确认超时时间。</p>
+</blockquote>
+</li>
+<li><p>partitioner.class</p>
+<blockquote>
+<p>默认值：kafka.producer.DefaultPartitioner，必须实现 kafka.producer.Partitioner，根据 Key 提供一个分区策略。<em>有时候我们需要相同类型的消息必须顺序处理，这样我们就必须自定义分配策略，从而将相同类型的数据分配到同一个分区中。</em></p>
+</blockquote>
+</li>
+<li><p>producer.type</p>
+<blockquote>
+<p>默认值：sync，指定消息发送是同步还是异步。异步 asyc 成批发送用 kafka.producer.AyncProducer， 同步 sync 用 kafka.producer.SyncProducer。同步和异步发送也会影响消息生产的效率。</p>
+</blockquote>
+</li>
+<li><p>compression.topic</p>
+<blockquote>
+<p>默认值：none，消息压缩，默认不压缩。其余压缩方式还有，”gzip”、”snappy”和”lz4”。对消息的压缩可以极大地减少网络传输量、降低网络 IO，从而提高整体性能。</p>
+</blockquote>
+</li>
+<li><p>compressed.topics</p>
+<blockquote>
+<p>默认值：null，在设置了压缩的情况下，可以指定特定的 topic 压缩，未指定则全部压缩。</p>
+</blockquote>
+</li>
+<li><p>message.send.max.retries</p>
+<blockquote>
+<p>默认值：3，消息发送最大尝试次数。</p>
+</blockquote>
+</li>
+<li><p>retry.backoff.ms</p>
+<blockquote>
+<p>默认值：300，每次尝试增加的额外的间隔时间。</p>
+</blockquote>
+</li>
+<li><p>topic.metadata.refresh.interval.ms</p>
+<blockquote>
+<p>默认值：600000，定期的获取元数据的时间。当分区丢失，leader 不可用时 producer 也会主动获取元数据，如果为 0，则每次发送完消息就获取元数据，不推荐。如果为负值，则只有在失败的情况下获取元数据。</p>
+</blockquote>
+</li>
+<li><p>queue.buffering.max.ms</p>
+<blockquote>
+<p>默认值：5000，在 producer queue 的缓存的数据最大时间，仅仅 for asyc。</p>
+</blockquote>
+</li>
+<li><p>queue.buffering.max.message</p>
+<blockquote>
+<p>默认值：10000，producer 缓存的消息的最大数量，仅仅 for asyc。</p>
+</blockquote>
+</li>
+<li><p>queue.enqueue.timeout.ms</p>
+<blockquote>
+<p>默认值：-1，0 当 queue 满时丢掉，负值是 queue 满时 block, 正值是 queue 满时 block 相应的时间，仅仅 for asyc。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="Kafka-Consumer"><a href="#Kafka-Consumer" class="headerlink" title="Kafka Consumer"></a>Kafka Consumer</h3><p>Kafka 有消费组的概念，每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：</p>
+<p><img src="/../../images/640-20210428095405419" alt="图片">consumer group</p>
+<p>Kafka Consumer Client 消费消息通常包含以下步骤：</p>
 <ol>
-<li>创建一个普通的 Java 类。</li>
+<li>配置客户端，创建消费者</li>
+<li>订阅主题</li>
+<li>拉去消息并消费</li>
+<li>提交消费位移</li>
+<li>关闭消费者实例</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Circle</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span> &#123; </span><br><span class="line">System.out.println(<span class="string">&quot;Circle sayHi()&quot;</span>); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>创建一个配置类，里面没有显式声明任何的 Bean，然后将刚才创建的 Circle 导入。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;Circle.class&#125;)</span> </span><br><span class="line"><span class="meta">@Configuration</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfig</span> &#123; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>创建测试类。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123; </span><br><span class="line">  <span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(MainConfig.class); </span><br><span class="line">  <span class="type">Circle</span> <span class="variable">circle</span> <span class="operator">=</span> context.getBean(Circle.class); </span><br><span class="line">  circle.sayHi(); </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>运行结果：</li>
-</ol>
+<p><img src="/../../images/640-20210428095405428" alt="图片">过程</p>
+<p>因为 Kafka 的 Consumer 客户端是线程不安全的，为了保证线程安全，并提升消费性能，可以在 Consumer 端采用类似 Reactor 的线程模型来消费数据。</p>
+<p><img src="/../../images/640-20210428095405430" alt="图片">消费模型</p>
+<h4 id="Kafka-consumer-参数"><a href="#Kafka-consumer-参数" class="headerlink" title="Kafka consumer 参数"></a>Kafka consumer 参数</h4><ul>
+<li>bootstrap.servers：连接 broker 地址，<code>host：port</code> 格式。</li>
+<li>group.id：消费者隶属的消费组。</li>
+<li>key.deserializer：与生产者的<code>key.serializer</code>对应，key 的反序列化方式。</li>
+<li>value.deserializer：与生产者的<code>value.serializer</code>对应，value 的反序列化方式。</li>
+<li>session.timeout.ms：coordinator 检测失败的时间。默认 10s 该参数是 Consumer Group 主动检测 （组内成员 comsummer) 崩溃的时间间隔，类似于心跳过期时间。</li>
+<li>auto.offset.reset：该属性指定了消费者在读取一个没有偏移量后者偏移量无效（消费者长时间失效当前的偏移量已经过时并且被删除了）的分区的情况下，应该作何处理，默认值是 latest，也就是从最新记录读取数据（消费者启动之后生成的记录），另一个值是 earliest，意思是在偏移量无效的情况下，消费者从起始位置开始读取数据。</li>
+<li>enable.auto.commit：否自动提交位移，如果为<code>false</code>，则需要在程序中手动提交位移。对于精确到一次的语义，最好手动提交位移</li>
+<li>fetch.max.bytes：单次拉取数据的最大字节数量</li>
+<li>max.poll.records：单次 poll 调用返回的最大消息数，如果处理逻辑很轻量，可以适当提高该值。但是<code>max.poll.records</code>条数据需要在在 session.timeout.ms 这个时间内处理完 。默认值为 500</li>
+<li>request.timeout.ms：一次请求响应的最长等待时间。如果在超时时间内未得到响应，kafka 要么重发这条消息，要么超过重试次数的情况下直接置为失败。</li>
+</ul>
+<h4 id="Kafka-Rebalance"><a href="#Kafka-Rebalance" class="headerlink" title="Kafka Rebalance"></a>Kafka Rebalance</h4><p>rebalance 本质上是一种协议，规定了一个 consumer group 下的所有 consumer 如何达成一致来分配订阅 topic 的每个分区。比如某个 group 下有 20 个 consumer，它订阅了一个具有 100 个分区的 topic。正常情况下，Kafka 平均会为每个 consumer 分配 5 个分区。这个分配的过程就叫 rebalance。</p>
+<p><strong>什么时候 rebalance？</strong></p>
+<p>这也是经常被提及的一个问题。rebalance 的触发条件有三种：</p>
+<ul>
+<li>组成员发生变更（新 consumer 加入组、已有 consumer 主动离开组或已有 consumer 崩溃了——这两者的区别后面会谈到）</li>
+<li>订阅主题数发生变更</li>
+<li>订阅主题的分区数发生变更</li>
+</ul>
+<p><strong>如何进行组内分区分配？</strong></p>
+<p>Kafka 默认提供了两种分配策略：Range 和 Round-Robin。当然 Kafka 采用了可插拔式的分配策略，你可以创建自己的分配器以实现不同的分配策略。</p>
+<h3 id="答案关键字-2"><a href="#答案关键字-2" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li>Kafka 有哪些命令行工具？你用过哪些？<code>/bin</code>目录，管理 kafka 集群、管理 topic、生产和消费 kafka</li>
+<li>Kafka Producer 的执行过程？拦截器，序列化器，分区器和累加器</li>
+<li>Kafka Producer 有哪些常见配置？broker 配置，ack 配置，网络和发送参数，压缩参数，ack 参数</li>
+<li>如何让 Kafka 的消息有序？Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition</li>
+<li>Producer 如何保证数据发送不丢失？ack 机制，重试机制</li>
+<li>如何提升 Producer 的性能？批量，异步，压缩</li>
+<li>如果同一 group 下 consumer 的数量大于 part 的数量，kafka 如何处理？多余的 Part 将处于无用状态，不消费数据</li>
+<li>Kafka Consumer 是否是线程安全的？不安全，单线程消费，多线程处理</li>
+<li>讲一下你使用 Kafka Consumer 消费消息时的线程模型，为何如此设计？拉取和处理分离</li>
+<li>Kafka Consumer 的常见配置？broker, 网络和拉取参数，心跳参数</li>
+<li>Consumer 什么时候会被踢出集群？奔溃，网络异常，处理时间过长提交位移超时</li>
+<li>当有 Consumer 加入或退出时，Kafka 会作何反应？进行 Rebalance</li>
+<li>什么是 Rebalance，何时会发生 Rebalance？topic 变化，consumer 变化</li>
+</ul>
+<h2 id="高可用和性能"><a href="#高可用和性能" class="headerlink" title="高可用和性能"></a>高可用和性能</h2><h3 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h3><ul>
+<li>Kafka 如何保证高可用？</li>
+<li>Kafka 的交付语义？</li>
+<li>Replic 的作用？</li>
+<li>什么事 AR，ISR？</li>
+<li>Leader 和 Flower 是什么？</li>
+<li>Kafka 中的 HW、LEO、LSO、LW 等分别代表什么？</li>
+<li>Kafka 为保证优越的性能做了哪些处理？</li>
+</ul>
+<h3 id="分区与副本"><a href="#分区与副本" class="headerlink" title="分区与副本"></a>分区与副本</h3><p><img src="/../../images/640-20210428095405441" alt="图片">分区副本</p>
+<p>在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。</p>
+<p><strong>为什么 follower 副本不提供读服务？</strong></p>
+<p>这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。</p>
+<p><img src="/../../images/640-20210428095405438" alt="图片">watermark</p>
+<p><strong>只有 Leader 可以对外提供读服务，那如何选举 Leader</strong></p>
+<p>kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。</p>
+<p><strong>副本的存在就会出现副本同步问题</strong></p>
+<p>Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据<code>ack</code>配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会<code>ReplicaManager</code>服务来管理 flower 与 leader 之间的数据同步。</p>
+<p><img src="/../../images/640-20210428095405450" alt="图片">sync</p>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>partition 并发</li>
+<li>顺序读写磁盘</li>
+<li>page cache：按页读写</li>
+<li>预读：Kafka 会将将要消费的消息提前读入内存</li>
+<li>高性能序列化（二进制）</li>
+<li>内存映射</li>
+<li>无锁 offset 管理：提高并发能力</li>
+<li>Java NIO 模型</li>
+<li>批量：批量读写</li>
+<li>压缩：消息压缩，存储压缩，减小网络和 IO 开销</li>
+</ul>
+<h4 id="Partition-并发"><a href="#Partition-并发" class="headerlink" title="Partition 并发"></a>Partition 并发</h4><p>一方面，由于不同 Partition 可位于不同机器，因此可以充分利用集群优势，实现机器间的并行处理。另一方面，由于 Partition 在物理上对应一个文件夹，即使多个 Partition 位于同一个节点，也可通过配置让同一节点上的不同 Partition 置于不同的 disk drive 上，从而实现磁盘间的并行处理，充分发挥多磁盘的优势。</p>
+<h4 id="顺序读写"><a href="#顺序读写" class="headerlink" title="顺序读写"></a>顺序读写</h4><p>Kafka 每一个 partition 目录下的文件被平均切割成大小相等（默认一个文件是 500 兆，可以手动去设置）的数据文件， 每一个数据文件都被称为一个段（segment file）, 每个 segment 都采用 append 的方式追加数据。</p>
+<p><img src="/../../images/640-20210428095405444.png" alt="图片">追加数据</p>
+<h3 id="答案关键字-3"><a href="#答案关键字-3" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
+<li><p>Kafka 如何保证高可用？</p>
 <blockquote>
-<p>Circle sayHi()</p>
+<p>通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡</p>
 </blockquote>
-<p>可以看到我们顺利的从 IOC 容器中获取到了 Circle 对象，证明我们在配置类中导入的 Circle 类，确实被声明为了一个 Bean。</p>
-<p><strong>2. 配合自定义的 ImportSelector 使用</strong></p>
+</li>
+<li><p>Kafka 的交付语义？</p>
 <blockquote>
-<p><code>ImportSelector</code> 是一个接口，该接口中只有一个 selectImports 方法，用于返回全类名数组。所以利用该特性我们可以给容器<strong>动态导入 N 个</strong> Bean。</p>
+<p>交付语义一般有<code>at least once</code>、<code>at most once</code>和<code>exactly once</code>。kafka 通过 ack 的配置来实现前两种。</p>
 </blockquote>
-<ol>
-<li>创建普通 Java 类 Triangle。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Triangle</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span>&#123; </span><br><span class="line">System.out.println(<span class="string">&quot;Triangle sayHi()&quot;</span>); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li>创建 ImportSelector 实现类，selectImports 返回 Triangle 的全类名。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyImportSelector</span> <span class="keyword">implements</span> <span class="title class_">ImportSelector</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="keyword">public</span> String[] selectImports(AnnotationMetadata annotationMetadata) &#123; </span><br><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;annotation.importannotation.waytwo.Triangle&quot;</span>&#125;; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li>创建配置类，在原来的基础上还导入了 MyImportSelector。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;Circle.class,MyImportSelector.class&#125;)</span> </span><br><span class="line"><span class="meta">@Configuration</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfigTwo</span> &#123; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>创建测试类</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(MainConfigTwo.class); </span><br><span class="line"><span class="type">Circle</span> <span class="variable">circle</span> <span class="operator">=</span> context.getBean(Circle.class); </span><br><span class="line"><span class="type">Triangle</span> <span class="variable">triangle</span> <span class="operator">=</span> context.getBean(Triangle.class); </span><br><span class="line">circle.sayHi(); </span><br><span class="line">triangle.sayHi(); </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-
-<ol start="5">
-<li>运行结果：</li>
-</ol>
+</li>
+<li><p>Replic 的作用？</p>
 <blockquote>
-<p>Circle sayHi()<br>Triangle sayHi()</p>
+<p>实现数据的高可用</p>
 </blockquote>
-<p>可以看到 Triangle 对象也被 IOC 容器成功的实例化出来了。</p>
-<p><strong>3. 配合 ImportBeanDefinitionRegistrar 使用</strong></p>
+</li>
+<li><p>什么是 AR，ISR？</p>
 <blockquote>
-<p><code>ImportBeanDefinitionRegistrar</code> 也是一个接口，它可以<strong>手动注册bean到容器中</strong>，从而我们可以对类进行个性化的定制。(需要搭配 @Import 与 @Configuration 一起使用。）</p>
+<p>AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。</p>
 </blockquote>
-<ol>
-<li>创建普通 Java 类 Rectangle。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Rectangle</span> &#123; </span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHi</span><span class="params">()</span> &#123; </span><br><span class="line">  	System.out.println(<span class="string">&quot;Rectangle sayHi()&quot;</span>); </span><br><span class="line">  &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Leader 和 Flower 是什么？</p>
+</li>
+<li><p>Kafka 中的 HW 代表什么？</p>
+<blockquote>
+<p>高水位值 (High watermark)。这是控制消费者可读取消息范围的重要字段。一 个普通消费者只能“看到”Leader 副本上介于 Log Start Offset 和 HW（不含）之间的 所有消息。水位以上的消息是对消费者不可见的。</p>
+</blockquote>
+</li>
+<li><p>Kafka 为保证优越的性能做了哪些处理？</p>
+<blockquote>
+<p>partition 并发、顺序读写磁盘、page cache 压缩、高性能序列化（二进制）、内存映射 无锁 offset 管理、Java NIO 模型</p>
+</blockquote>
+</li>
+</ul>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-25T07:12:36.000Z" title="2021/4/25 下午3:12:36">2021-04-25</time>发表</span><span class="level-item"><time dateTime="2022-05-10T06:52:17.986Z" title="2022/5/10 下午2:52:17">2022-05-10</time>更新</span><span class="level-item">5 分钟读完 (大约709个字)</span></div></div><div class="content"><p>[TOC]</p>
+<h2 id="从ReentrantLock的实现看AQS的原理及应用"><a href="#从ReentrantLock的实现看AQS的原理及应用" class="headerlink" title="从ReentrantLock的实现看AQS的原理及应用"></a>从ReentrantLock的实现看AQS的原理及应用</h2><h3 id="1-ReentrantLock"><a href="#1-ReentrantLock" class="headerlink" title="1 ReentrantLock"></a>1 ReentrantLock</h3><p><strong>1.1 ReentrantLock特性概览</strong></p>
+<p><img src="/../../images/412d294ff5535bbcddc0d979b2a339e6102264.png" alt="img"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// **************************Synchronized的使用方式**************************</span></span><br><span class="line"><span class="comment">// 1.用于代码块</span></span><br><span class="line"><span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;&#125;</span><br><span class="line"><span class="comment">// 2.用于对象</span></span><br><span class="line"><span class="keyword">synchronized</span> (object) &#123;&#125;</span><br><span class="line"><span class="comment">// 3.用于方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title function_">test</span> <span class="params">()</span> &#123;&#125;</span><br><span class="line"><span class="comment">// 4.可重入</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">	<span class="keyword">synchronized</span> (<span class="built_in">this</span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// **************************ReentrantLock的使用方式**************************</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span> <span class="params">()</span> <span class="keyword">throw</span> Exception &#123;</span><br><span class="line">	<span class="comment">// 1.初始化选择公平锁、非公平锁</span></span><br><span class="line">	<span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>(<span class="literal">true</span>);</span><br><span class="line">	<span class="comment">// 2.可用于代码块</span></span><br><span class="line">	lock.lock();</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">// 3.支持多种加锁方式，比较灵活; 具有可重入特性</span></span><br><span class="line">			<span class="keyword">if</span>(lock.tryLock(<span class="number">100</span>, TimeUnit.MILLISECONDS))&#123; &#125;</span><br><span class="line">		&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			<span class="comment">// 4.手动释放锁</span></span><br><span class="line">			lock.unlock()</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">		lock.unlock();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ol start="2">
-<li>创建 ImportBeanDefinitionRegistrar 实现类，实现方法直接手动注册一个名叫 rectangle 的 Bean 到 IOC 容器中。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyImportBeanDefinitionRegistrar</span> <span class="keyword">implements</span> <span class="title class_">ImportBeanDefinitionRegistrar</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">registerBeanDefinitions</span><span class="params">(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry beanDefinitionRegistry)</span> &#123; </span><br><span class="line"></span><br><span class="line"><span class="type">RootBeanDefinition</span> <span class="variable">rootBeanDefinition</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RootBeanDefinition</span>(Rectangle.class); </span><br><span class="line"><span class="comment">// 注册一个名字叫做 rectangle 的 bean </span></span><br><span class="line">beanDefinitionRegistry.registerBeanDefinition(<span class="string">&quot;rectangle&quot;</span>, rootBeanDefinition); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p><strong>1.2 ReentrantLock与AQS的关联</strong></p>
+<p>ReentrantLock支持公平锁和非公平锁，并且ReentrantLock的底层就是由AQS来实现的。<br>非公平锁源码中的加锁流程如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.util.concurrent.locks.ReentrantLock#NonfairSync</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 非公平锁</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">NonfairSync</span> <span class="keyword">extends</span> <span class="title class_">Sync</span> &#123;</span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">lock</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">			setExclusiveOwnerThread(Thread.currentThread());</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			acquire(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ol start="3">
-<li>创建配置类，导入 MyImportBeanDefinitionRegistrar 类。</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Import(&#123;Circle.class, MyImportSelector.class, MyImportBeanDefinitionRegistrar.class&#125;)</span> </span><br><span class="line"><span class="meta">@Configuration</span> </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfigThree</span> &#123; </span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>这块代码的含义为：</p>
+<ul>
+<li>若通过CAS设置变量State（同步状态）成功，也就是获取锁成功，则将当前线程设置为独占线程。</li>
+<li>若通过CAS设置变量State（同步状态）失败，也就是获取锁失败，则进入Acquire方法进行后续处理。</li>
+</ul>
+<p>平锁源码中获锁的方式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.util.concurrent.locks.ReentrantLock#FairSync</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">FairSync</span> <span class="keyword">extends</span> <span class="title class_">Sync</span> &#123;</span><br><span class="line">  ...  </span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">lock</span><span class="params">()</span> &#123;</span><br><span class="line">		acquire(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<ol start="4">
-<li>创建测试类。</li>
-</ol>
-</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2020/11/28/90000%E6%96%87%E7%AB%A0/90011TCP%E6%B2%A1%E5%8F%91%E5%AE%8C%E6%95%B0%E6%8D%AE%E5%86%85%E6%A0%B8%E4%BC%9A%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86/"><img class="fill" src="/../../images/cover11.jpg" alt="90011TCP没发完数据内核会怎么处理"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2020-11-28T02:07:28.000Z" title="2020/11/28 上午10:07:28">2020-11-28</time>发表</span><span class="level-item"><time dateTime="2022-05-08T11:55:16.850Z" title="2022/5/8 下午7:55:16">2022-05-08</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E7%BD%91%E7%BB%9C/">网络</a></span><span class="level-item">9 分钟读完 (大约1286个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2020/11/28/90000%E6%96%87%E7%AB%A0/90011TCP%E6%B2%A1%E5%8F%91%E5%AE%8C%E6%95%B0%E6%8D%AE%E5%86%85%E6%A0%B8%E4%BC%9A%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86/">90011TCP没发完数据内核会怎么处理</a></h1><div class="content"><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>有一次，<code>光神</code> 在群问了个问题：</p>
-<p><strong>当 close 一个 TCP 连接时，如果还有没发送完的数据在缓冲区中，内核会怎么处理？</strong></p>
-<p>当时我认为，因为关闭 TCP 连接会触发四次挥手过程，而为了让四次挥手能够快速完成，应该会把发送缓冲区的数据清空，然后发送四次挥手的数据包。</p>
-<p>带着疑问，我去查阅 Linux 源码的实现，下面就是关闭一个 TCP 连接的过程。</p></div><a class="article-more button is-small is-size-7" href="/2020/11/28/90000%E6%96%87%E7%AB%A0/90011TCP%E6%B2%A1%E5%8F%91%E5%AE%8C%E6%95%B0%E6%8D%AE%E5%86%85%E6%A0%B8%E4%BC%9A%E6%80%8E%E4%B9%88%E5%A4%84%E7%90%86/#more">阅读更多</a></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/12/">上一页</a></div><div class="pagination-next"><a href="/page/14/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link is-current" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">132</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">17</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">中间件</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="level-start"><span class="level-item">数据库</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">24</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Bean/"><span class="tag">Bean</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySql/"><span class="tag">MySql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Netty/"><span class="tag">Netty</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Stream/"><span class="tag">Stream</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZooKeeper/"><span class="tag">ZooKeeper</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"><span class="tag">代码优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/"><span class="tag">公众号</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"><span class="tag">单点登录</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"><span class="tag">大数据</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tag">线程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/"><span class="tag">自动装配</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T01:46:49.745Z">2022-05-07</time></p><p class="title"><a href="/2022/05/07/90000%E6%96%87%E7%AB%A0/90012Bean%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2%E7%A5%9E%E5%99%A8Mapstruct/">自动转换神器 Mapstruct</a></p><p class="categories"><a href="/categories/Spring/">Spring</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000%E6%96%87%E7%AB%A0/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/90005Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/">90005Stream代码优化</a></p><p class="categories"><a href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-04-29T15:15:26.673Z">2022-04-29</time></p><p class="title"><a href="/2022/04/29/30000Spring/30101%20SecurityContextHolder/"> </a></p></div></article></div></div><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a><p class="is-size-7"><span>&copy; 2022 Tonygeli</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+<h3 id="2-1-原理概览"><a href="#2-1-原理概览" class="headerlink" title="2.1 原理概览"></a>2.1 原理概览</h3><p><img src="/../../images/7132e4cef44c26f62835b197b239147b18062.png" alt="img"></p>
+<p>AQS使用一个Volatile的int类型的成员变量来表示同步状态，通过内置的FIFO队列来完成资源获取的排队工作，通过CAS完成对State值的修改。</p>
+<p><strong>2.1.1 AQS数据结构</strong></p>
+<p>AQS中最基本的数据结构——Node，Node即为上面CLH变体队列中的节点。</p>
+<p>解释一下几个方法和属性值的含义：</p>
+<table>
+<thead>
+<tr>
+<th align="left">方法和属性值</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">waitStatus</td>
+<td align="left">当前节点在队列中的状态</td>
+</tr>
+<tr>
+<td align="left">thread</td>
+<td align="left">表示处于该节点的线程</td>
+</tr>
+<tr>
+<td align="left">prev</td>
+<td align="left">前驱指针</td>
+</tr>
+<tr>
+<td align="left">predecessor</td>
+<td align="left">返回前驱节点，没有的话抛出npe</td>
+</tr>
+<tr>
+<td align="left">nextWaiter</td>
+<td align="left">指向下一个处于CONDITION状态的节点（由于本篇文章不讲述Condition Queue队列，这个指针不多介绍）</td>
+</tr>
+<tr>
+<td align="left">next</td>
+<td align="left">后继指针</td>
+</tr>
+</tbody></table>
+<p>线程两种锁的模式：</p>
+<table>
+<thead>
+<tr>
+<th align="left">模式</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">SHARED</td>
+<td align="left">表示线程以共享的模式等待锁</td>
+</tr>
+<tr>
+<td align="left">EXCLUSIVE</td>
+<td align="left">表示线程正在以独占的方式等待锁</td>
+</tr>
+</tbody></table>
+<p>waitStatus有下面几个枚举值：</p>
+<table>
+<thead>
+<tr>
+<th align="left">枚举</th>
+<th align="left">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">0</td>
+<td align="left">当一个Node被初始化的时候的默认值</td>
+</tr>
+<tr>
+<td align="left">CANCELLED</td>
+<td align="left">为1，表示线程获取锁的请求已经取消了</td>
+</tr>
+<tr>
+<td align="left">CONDITION</td>
+<td align="left">为-2，表示节点在等待队列中，节点线程等待唤醒</td>
+</tr>
+<tr>
+<td align="left">PROPAGATE</td>
+<td align="left">为-3，当前线程处在SHARED情况下，该字段才会使用</td>
+</tr>
+<tr>
+<td align="left">SIGNAL</td>
+<td align="left">为-1，表示线程已经准备好了，就等资源释放了</td>
+</tr>
+</tbody></table>
+<h4 id="2-1-2-同步状态State"><a href="#2-1-2-同步状态State" class="headerlink" title="2.1.2 同步状态State"></a>2.1.2 同步状态State</h4></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-16T09:42:56.000Z" title="2021/4/16 下午5:42:56">2021-04-16</time>发表</span><span class="level-item"><time dateTime="2021-04-16T09:42:56.000Z" title="2021/4/16 下午5:42:56">2021-04-16</time>更新</span><span class="level-item">几秒读完 (大约67个字)</span></div></div><div class="content"><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FROM composer:2.0</span><br><span class="line"></span><br><span class="line">RUN docker-php-source extract \</span><br><span class="line">    &amp;&amp; apk add --no-cache --virtual .phpize-deps-configure $PHPIZE_DEPS \</span><br><span class="line">    &amp;&amp; pecl install channel://pecl.php.net/apcu-5.1.20 \</span><br><span class="line">    &amp;&amp; pecl install channel://pecl.php.net/yac-2.3.0 \</span><br><span class="line">    &amp;&amp; docker-php-ext-enable apcu \</span><br><span class="line">    &amp;&amp; docker-php-ext-enable yac \</span><br><span class="line">    &amp;&amp; apk del .phpize-deps-configure \</span><br><span class="line">    &amp;&amp; docker-php-source delete</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --<span class="built_in">rm</span> -it -v <span class="string">&quot;<span class="variable">$PWD</span>:/app&quot;</span> -v <span class="string">&quot;<span class="variable">$HOME</span>/.ssh:/root/.ssh&quot;</span> xiongyouli/composer composer  install</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-14T06:00:40.000Z" title="2021/4/14 下午2:00:40">2021-04-14</time>发表</span><span class="level-item"><time dateTime="2022-04-05T09:21:16.015Z" title="2022/4/5 下午5:21:16">2022-04-05</time>更新</span><span class="level-item">4 分钟读完 (大约623个字)</span></div></div><div class="content"><p>[TOC]</p>
+<h2 id="Mac-OS"><a href="#Mac-OS" class="headerlink" title="Mac OS"></a>Mac OS</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">macOS Mojave</span><br><span class="line">10.14.6</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装PHP7-4"><a href="#安装PHP7-4" class="headerlink" title="安装PHP7.4"></a>安装PHP7.4</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">brew install php@7.4</span><br><span class="line"></span><br><span class="line">Now homebrew-php has been migrated to homebrew-core and by default, PECL should be installed along with your PHP.</span><br><span class="line">现在，homebrew php已经迁移到homebrew core，默认情况下，PECL应该与php一起安装。</span><br><span class="line">To install PHP extensions, you need to use PECL as a recommended way. </span><br><span class="line">要安装PHP扩展，建议使用PECL。</span><br><span class="line">For example: pecl install apc or pecl install xdebug.</span><br><span class="line"></span><br><span class="line">查找apcu扩展</span><br><span class="line">pecl search apcu</span><br><span class="line">sudo pecl install APCu</span><br></pre></td></tr></table></figure>
+
+<h2 id="Mac环境目录"><a href="#Mac环境目录" class="headerlink" title="Mac环境目录"></a>Mac环境目录</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 通过phpinfo()打印页面</span><br><span class="line"></span><br><span class="line">1. php.ini文件目录</span><br><span class="line">Loaded Configuration File</span><br><span class="line">/usr/local/etc/php/7.1/php.ini</span><br><span class="line"></span><br><span class="line">2.扩展存放目录</span><br><span class="line">extension_dir</span><br><span class="line">/usr/local/lib/php/pecl/20160303</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装apcu"><a href="#安装apcu" class="headerlink" title="安装apcu"></a>安装apcu</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 1.下载源码  </span><br><span class="line">git clone https://github.com/krakjoe/apcu</span><br><span class="line">// 2.编译安装  </span><br><span class="line">cd apcu</span><br><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line">// 3. 修改php.ini文件</span><br><span class="line">extension=apcu.so</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Installing shared extensions:     /usr/lib/php/extensions/no-debug-non-zts-20160303/</span><br></pre></td></tr></table></figure>
+
+<h2 id="phpize编译提示Cannot-find-autoconf解决办法"><a href="#phpize编译提示Cannot-find-autoconf解决办法" class="headerlink" title="phpize编译提示Cannot find autoconf解决办法"></a>phpize编译提示Cannot find autoconf解决办法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install autoconf</span><br></pre></td></tr></table></figure>
+
+<h2 id="make命令-x2F-apc-h-67-10-fatal-error-‘php-h’-file-not-found"><a href="#make命令-x2F-apc-h-67-10-fatal-error-‘php-h’-file-not-found" class="headerlink" title="make命令 .&#x2F;apc.h:67:10: fatal error: ‘php.h’ file not found"></a>make命令 .&#x2F;apc.h:67:10: fatal error: ‘php.h’ file not found</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg</span><br></pre></td></tr></table></figure>
+
+<h3 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">装不了php的扩展，make install失败</span><br><span class="line"></span><br><span class="line">RudonMacBook:igbinary-master rudon$ make install</span><br><span class="line">Installing shared extensions:   /usr/lib/php/extensions/no-debug-non-zts-20131226/</span><br><span class="line">cp: /usr/lib/php/extensions/no-debug-non-zts-20131226/#INST@12567#: Operation not permitted</span><br><span class="line">make: *** [install-modules] Error 1</span><br><span class="line"></span><br><span class="line">cp: /usr/lib/php/extensions/no-debug-non-zts-20121212/#INST@17000#: Operation not permitted</span><br></pre></td></tr></table></figure>
+
+<p>原来是OSX 10.11 El Capitan（或更高）新添加了一个新的安全机制叫系统完整性保护System Integrity Protection (SIP)，所以对于目录<br>&#x2F;System<br>&#x2F;sbin<br>&#x2F;usr<br>不包含(&#x2F;usr&#x2F;local&#x2F;)<br>仅仅供系统使用，其它用户或者程序无法直接使用，而我们的&#x2F;usr&#x2F;lib&#x2F;php&#x2F;extensions&#x2F;刚好在受保护范围内</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>所以解决方法就是禁掉SIP保护机制，步骤是：</p>
+<ul>
+<li>重启系统</li>
+<li>按住Command + R  （重新亮屏之后就开始按，象征地按几秒再松开，出现苹果标志，ok）</li>
+<li>菜单“实用工具” &#x3D;&#x3D;&gt;&gt; “终端” &#x3D;&#x3D;&gt;&gt; 输入<strong>csrutil disable</strong>；执行后会输出：Successfully disabled System Integrity Protection. Please restart the machine for the changes to take effect.</li>
+<li>再次重启系统</li>
+</ul>
+<p>禁止掉SIP后，就可以顺利的安装了，当然装完了以后你可以重新打开SIP，方法同上，只是命令是csrutil enable</p>
+<h3 id="错误’pcre2-h’-file-not-found"><a href="#错误’pcre2-h’-file-not-found" class="headerlink" title="错误’pcre2.h’ file not found"></a>错误’pcre2.h’ file not found</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/opt/homebrew/Cellar/php@7.4/7.4.16/include/php/ext/pcre/php_pcre.h:25:10: fatal error: &#x27;pcre2.h&#x27; file not found</span><br><span class="line">#include &quot;pcre2.h&quot;</span><br><span class="line">         ^~~~~~~~~</span><br><span class="line">1 error generated.</span><br><span class="line">make: *** [php_apc.lo] Error 1</span><br><span class="line">ERROR: `make&#x27; failed</span><br></pre></td></tr></table></figure>
+
+<p>.&#x2F;configure --with-php-config&#x3D;&#x2F;opt&#x2F;homebrew&#x2F;opt&#x2F;<a href="mailto:&#x70;&#104;&#x70;&#64;&#55;&#46;&#52;">&#x70;&#104;&#x70;&#64;&#55;&#46;&#52;</a>&#x2F;bin&#x2F;php-config</p>
+<h3 id="112-x68-112-x40-x37-x2e-x32-安装php-redis"><a href="#112-x68-112-x40-x37-x2e-x32-安装php-redis" class="headerlink" title="&#112;&#x68;&#112;&#x40;&#x37;&#x2e;&#x32;安装php-redis"></a><a href="mailto:&#112;&#x68;&#112;&#x40;&#x37;&#x2e;&#x32;">&#112;&#x68;&#112;&#x40;&#x37;&#x2e;&#x32;</a>安装php-redis</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/opt/php@7.2/bin/php-config</span><br><span class="line"></span><br><span class="line">git clone https://www.github.com/phpredis/phpredis.git</span><br><span class="line">phpize &amp;&amp; ./configure  --with-php-config=/usr/local/etc/php/7.2 &amp;&amp; make &amp;&amp; sudo make install</span><br><span class="line"></span><br><span class="line">Installing shared extensions:     /usr/local/Cellar/php@7.2/7.2.34_4/pecl/20170718/</span><br></pre></td></tr></table></figure>
+
+
+
+</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/04/14/15000%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4/15001%E7%A6%BB%E7%BA%BF%E9%83%A8%E7%BD%B2docker%E9%A1%B9%E7%9B%AE%E6%96%B9%E6%A1%88/"><img class="fill" src="/../../images/cover1.jpg" alt="离线部署docker项目方案"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-14T05:12:40.000Z" title="2021/4/14 下午1:12:40">2021-04-14</time>发表</span><span class="level-item"><time dateTime="2022-05-08T11:51:23.192Z" title="2022/5/8 下午7:51:23">2022-05-08</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/Linux/">Linux</a></span><span class="level-item">10 分钟读完 (大约1539个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/04/14/15000%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4/15001%E7%A6%BB%E7%BA%BF%E9%83%A8%E7%BD%B2docker%E9%A1%B9%E7%9B%AE%E6%96%B9%E6%A1%88/">离线部署docker项目方案</a></h1><div class="content"><h1 id="离线部署docker项目方案"><a href="#离线部署docker项目方案" class="headerlink" title="离线部署docker项目方案"></a>离线部署docker项目方案</h1><h2 id="1-项目背景"><a href="#1-项目背景" class="headerlink" title="1. 项目背景"></a>1. 项目背景</h2><p>​    目前我行的信用卡项目使用docker部署，由于生产环境不能联网，因此不能通过dockerfile来进行构建并部署。本文主要介绍在离线环境下运行docker项目的方法，为项目的部署和实施提供参考。</p></div><a class="article-more button is-small is-size-7" href="/2021/04/14/15000%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4/15001%E7%A6%BB%E7%BA%BF%E9%83%A8%E7%BD%B2docker%E9%A1%B9%E7%9B%AE%E6%96%B9%E6%A1%88/#more">阅读更多</a></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-14T05:11:35.000Z" title="2021/4/14 下午1:11:35">2021-04-14</time>发表</span><span class="level-item"><time dateTime="2021-04-14T05:11:35.000Z" title="2021/4/14 下午1:11:35">2021-04-14</time>更新</span><span class="level-item">15 分钟读完 (大约2297个字)</span></div></div><div class="content"><table>
+<thead>
+<tr>
+<th>Docker Index(Host)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Docker Daemon</td>
+</tr>
+<tr>
+<td>Container 1</td>
+</tr>
+<tr>
+<td>Container 2</td>
+</tr>
+<tr>
+<td>Container 3</td>
+</tr>
+</tbody></table>
+<p>Docker ClientDocker Indexdocker pulldocker rundocker …Docker ClientDocker Index</p>
+<blockquote>
+<p>The Docker daemon<br>如上图所示，daemon在主机上面执行。用户只能通过client同daemon通讯。<br>The Docker client<br>Docker client是用户与Docker之间的重要接口。它从用户那里接受命令，并且将daemon的返回数据展现出来。 Inside Docker<br>为了深入理解docker的内部机制，需要了解以下三个组件：<br>Docker images.(镜像)<br>Docker registries.(仓库)<br>Docker containers.(容器)</p>
+</blockquote>
+<h3 id="So-how-does-Docker-work"><a href="#So-how-does-Docker-work" class="headerlink" title="So how does Docker work?"></a>So how does Docker work?</h3><p>目前为止，我们已经可以完成以下几个工作：</p>
+<p>1、创建一个包含你需要执行应用的镜像。<br>2、根据这个镜像，你可以创建一个容器。<br>3、你可以将这个容器上传到仓库中提供给其他人使用。</p>
+<p>下面，我们看一下如何执行Docker。</p>
+<h3 id="How-does-a-Docker-Image-work"><a href="#How-does-a-Docker-Image-work" class="headerlink" title="How does a Docker Image work?"></a>How does a Docker Image work?</h3><p>我们知道Docker containers启动时所以来的Docker images其实是一个只读性质的模板。每个模板都包含若干层。Docker采取了 union file systems 的机制将这些曾聚合为一个image。Union file systems 允许物理隔离的文件或者目录，相互重叠覆盖，形成线性的文件系统。</p>
+<p>Docker也正是基于上述层的实现方式而做到了轻量级。当你修改一个image时，docker并没有修改原有的image数据，而是新建了一个数据层。当你在docker中修改整个image或者重建实体时，原有数据都没有变化，只是若干层发生了变化。所以当image发生了变化时，不需要重新同步整个image，而只要将发生变化的层同步一次就可以。这样就使docker image做的快速并且简单。</p>
+<p>每个image都是从base image演变过来的。你可以创建你的base image。如果你有apache的image，就可以把这个镜像作为你应用程序的base image。</p>
+<p>Note：Docker 一般都是从Dock Hub上面获取base images。</p>
+<p>Docker通过一些很简单的步骤就可以依据base images创建新的image。每执行一个步骤，新的image就会创建一个新层(layer)。基本的步骤如下：</p>
+<ul>
+<li>Run a command.</li>
+<li>Add a file or directory.</li>
+<li>Create an environment variable.</li>
+<li>What process to run when launching a container from this image.</li>
+</ul>
+<p>这些命令可以再Dockerfile中定义。当你需要新建一个image是，docker可以自动读取Dockerfile中的命令，并且执行这些命令。最终生成一个新的image。</p>
+<h3 id="How-does-a-Docker-registry-work"><a href="#How-does-a-Docker-registry-work" class="headerlink" title="How does a Docker registry work?"></a>How does a Docker registry work?</h3><p>Docker registry是用来保存images的。当你新建好image后，就可以将image上传到Dock Hub或者你私有的store中。</p>
+<p>借助于Docker client，你可以在Dock Hub检索你所需的image，同时将这些image下载到本地。</p>
+<p>同时Dock Hub也提供公开和私有两种模式，处于公开模式下的image，所有人都可以下载和使用这些image。而处于私有模式下的image，只有本人或者经过授权后的人才能下载并且使用这些image。</p>
+<h3 id="How-does-a-container-work"><a href="#How-does-a-container-work" class="headerlink" title="How does a container work?"></a>How does a container work?</h3><p>一个标准容器包括：操作系统，用户自定义的文件和原数据。正如我们所知的那样，每个容器都是由image所创建的。image告诉docker，这个容器运行时，应该有哪些进程和应该有哪些配置参数。因为image是只读的，所以容器在运行时会在image原有层的基础上面创建一些可读可写的新层。而你的应用运行所需的数据将会被记录到这些数据层中。</p>
+<h3 id="What-happens-when-you-run-a-container"><a href="#What-happens-when-you-run-a-container" class="headerlink" title="What happens when you run a container?"></a>What happens when you run a container?</h3><p>不论是使用docker程序或者API，docker client都会通知docker daemon如何操作容器。</p>
+<p>当我们执行如下命令时：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -i -t ubuntu /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>docker client会启动，然后使用后面的run参数来通知docker daemon启动一个新容器。这个简短的命令将会通知docker daemon以下信息：</p>
+<p>1.容器所需的image在哪里，这里image名称是ubuntu，是一个base image。<br>2.当容器启动时，你想让容器初始化的动作，这里我们需要容器启动时自动切换到&#x2F;bin&#x2F;bash下面。</p>
+<p>所以当我们敲下回车后，docker将会如何处理呢？</p>
+<ul>
+<li><strong>Pulls the ubuntu image:</strong><br>Docker检测image是否存在，如果本地不存在，则默认从Dock Hub下载。如果本地存在，则使用本地的image启动容器。</li>
+<li><strong>Creates a new container:</strong><br>Docker加载image，然后创建容器。 Allocates a filesystem and mounts a read-write layer : 容器开始创建文件系统，并且在image上面添加可读可写的数据层。</li>
+<li><strong>Allocates a network &#x2F; bridge interface:</strong> Docker开始创建网络接口，并且允许容器同主机进行关联。</li>
+<li><strong>Sets up an IP address:</strong><br>Docker从IP资源池中挑选一个分配给容器。</li>
+<li><strong>Executes a process that you specify:</strong> Docker开始执行指定的应用或者命令</li>
+<li><strong>Captures and provides application output:</strong> Docker将执行过程当中的输出或者错误信息返回给Client。让用户可以知道当前应用执行的情况.</li>
+</ul>
+<p>以上是容器的执行过程，下面我们将开始描述如何管理容器，包括：结束，停止和移除。</p>
+<h3 id="The-underlying-technology"><a href="#The-underlying-technology" class="headerlink" title="The underlying technology"></a>The underlying technology</h3><p>Docker 底层使用的是Linux内核中的虚拟化技术，来呈现我们刚才所看到的一切功能。</p>
+<h3 id="Namespaces"><a href="#Namespaces" class="headerlink" title="Namespaces"></a>Namespaces</h3><p>Docker采用了称之为”Namespaces”的技术解决方案来隔离不同的workspace(也就是上面所定义的容器)。当你执行一个容器时，docker会为这个容器创建一系列的namespace。</p>
+<p>以下是docker所创建的namespace：</p>
+<ul>
+<li><strong>The pid namespace</strong>: 用来隔离进程。(PID就是process id)</li>
+<li><strong>The net namespace</strong>: 用来管理网络接口</li>
+<li><strong>The ipc namespace</strong>: 用来控制IPC资源的访问。</li>
+<li><strong>The mnt namespace</strong>: 用来管理挂载点(mnt是 mount point)</li>
+<li><strong>The uts namespace</strong>: 用来隔离内核和版本信息(UTS，分时复用系统 Unix Timesharing System)</li>
+</ul>
+<h3 id="Control-groups"><a href="#Control-groups" class="headerlink" title="Control groups"></a>Control groups</h3><p>Docker同时也采用了一种称之为”cgroups”的技术来控制group。不同应用之间隔离的关键在于，每个应用只能访问属于自己的资源。这样才能确保主机上面同时存在多个用户。Cgroups可以确保docker将可用的硬件资源共享给所有容器，并且可以在必要时间，对容器限制硬件资源。例如可以限制每个容器可以访问的内存容量。</p>
+<h3 id="Union-file-systems"><a href="#Union-file-systems" class="headerlink" title="Union file systems"></a>Union file systems</h3><p>Union file systems 或者称为”UnionFS”是docker在创建层时采用的文件系统。这种文件系统使docker变得很轻量级并且执行速度很快。Docker使用UnionFS为容器提供相对应的数据块(data blocks)。Docker可以使用多种类型的UnionFS，比如：AUFS, btrfs, vfs, and DeviceMapper.</p>
+<h3 id="Container-format"><a href="#Container-format" class="headerlink" title="Container format"></a>Container format</h3><p>Docker将上面我们所描述的各种组件封装成container数据类型(我们就称其为容器)。默认的容器类型是libcontainer。Docker同样也支持传统Linux使用LXC实现的容器类型。再未来，Docker也将支持其他类型的容器，比如：BSD Jails 或者Solaris Zones 版本的容器类型。</p>
+<h4 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install docker.io</span><br><span class="line">sudo usermod -a -G docker &lt;your username&gt;</span><br><span class="line">restart your linux</span><br><span class="line"></span><br><span class="line">usermod:</span><br><span class="line">-modify a user account</span><br><span class="line">-a add the user to the supplementary group. Use only with -G option</span><br></pre></td></tr></table></figure>
+
+<p>Q:Cannot connect to the Docker daemon. Is the docker daemon running on this host?</p>
+<blockquote>
+<p>A:The docker daemon binds to a Unix socket instead of a TCP port. By default that Unix socket is owned by the user root and other users can access it with sudo. For this reason, docker daemon always runs as the <strong>root</strong> user.</p>
+</blockquote>
+<blockquote>
+<p>To avoid having to use sudo when you use the docker command, create a Unix group called <strong>docker</strong> and <strong>add users to it</strong>. When the docker daemon starts, it makes the ownership of the Unix socket read&#x2F;writable by the docker group.</p>
+</blockquote>
+<h4 id="测试Docker"><a href="#测试Docker" class="headerlink" title="测试Docker"></a>测试Docker</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">service docker status</span><br><span class="line">sudo docker run hello-world</span><br><span class="line">sudo docker run docker/whalesay cowsay xxx123</span><br></pre></td></tr></table></figure>
+
+<h4 id="显示所有images"><a href="#显示所有images" class="headerlink" title="显示所有images"></a>显示所有images</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker images</span><br></pre></td></tr></table></figure>
+
+<h4 id="显示所有containers"><a href="#显示所有containers" class="headerlink" title="显示所有containers"></a>显示所有containers</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker ps -a</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除container和image"><a href="#删除container和image" class="headerlink" title="删除container和image"></a>删除container和image</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo docker rm xxx_container</span><br><span class="line">sudo docker rmi yyy_image</span><br></pre></td></tr></table></figure>
+
+<h4 id="交互启动container"><a href="#交互启动container" class="headerlink" title="交互启动container"></a>交互启动container</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker start -a -i xxx_container</span><br></pre></td></tr></table></figure>
+
+<h4 id="交互式运行image"><a href="#交互式运行image" class="headerlink" title="交互式运行image"></a>交互式运行image</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker run -it xxx_container bash</span><br></pre></td></tr></table></figure>
+
+<h4 id="挂载某container"><a href="#挂载某container" class="headerlink" title="挂载某container"></a>挂载某container</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker attach xxx_container</span><br></pre></td></tr></table></figure>
+
+<h4 id="显示container或者image相关信息"><a href="#显示container或者image相关信息" class="headerlink" title="显示container或者image相关信息"></a>显示container或者image相关信息</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker inspect img_name | container_name</span><br></pre></td></tr></table></figure>
+
+<h4 id="显示container-IP"><a href="#显示container-IP" class="headerlink" title="显示container IP"></a>显示container IP</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker inspect -f &#x27;&#123;&#123;.NetworkSettings.IPAddress&#125;&#125;&#x27; xxx_container</span><br></pre></td></tr></table></figure>
+
+<h4 id="复制文件"><a href="#复制文件" class="headerlink" title="复制文件"></a>复制文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo docker cp local_file_path container:container_file_path</span><br><span class="line">sudo docker cp container:container_file_path local_file_path</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建镜像image"><a href="#创建镜像image" class="headerlink" title="创建镜像image"></a>创建镜像image</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo docker build -f dockerfile -t img_name .</span><br></pre></td></tr></table></figure>
+
+<h4 id="保存镜像为文件"><a href="#保存镜像为文件" class="headerlink" title="保存镜像为文件"></a>保存镜像为文件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker save -o filename.tgz img_name</span><br></pre></td></tr></table></figure>
+
+<h4 id="导入镜像"><a href="#导入镜像" class="headerlink" title="导入镜像"></a>导入镜像</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker load -i img_name </span><br></pre></td></tr></table></figure>
+
+<h4 id="SSH-到镜像，即登录进行进行debug"><a href="#SSH-到镜像，即登录进行进行debug" class="headerlink" title="SSH 到镜像，即登录进行进行debug"></a>SSH 到镜像，即登录进行进行debug</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it img_name /bin/bash</span><br><span class="line">Docker Registry基本操作</span><br><span class="line"></span><br><span class="line">docker registry: https://github.com/docker/distribution.git</span><br><span class="line">Start docker registry server:</span><br><span class="line"></span><br><span class="line">docker run -d -it \ --name con_docker_registry \ -h hostname \ -v /data/docker-registry:/var/lib/registry \ -p 5000:5000 \ docker-registry</span><br><span class="line">View the image list</span><br><span class="line"></span><br><span class="line">curl -v -X GET localhost:5000/v2/_catalog</span><br></pre></td></tr></table></figure></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-14T05:11:04.000Z" title="2021/4/14 下午1:11:04">2021-04-14</time>发表</span><span class="level-item"><time dateTime="2021-04-14T05:11:04.000Z" title="2021/4/14 下午1:11:04">2021-04-14</time>更新</span><span class="level-item">5 分钟读完 (大约782个字)</span></div></div><div class="content"><h2 id="Docker-via-Homebrew"><a href="#Docker-via-Homebrew" class="headerlink" title="Docker via Homebrew"></a>Docker via Homebrew</h2><p>Running Docker on Mac requires VirtualBox so if you don’t have it already:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew cask install virtualbox</span><br></pre></td></tr></table></figure>
+
+<p>Then install Docker and the helper tool boot2docker:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">brew install docker</span><br><span class="line">brew install boot2docker</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用命令行"><a href="#使用命令行" class="headerlink" title="使用命令行"></a>使用命令行</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">1、 创建一个新的 Boot2Docker 虚拟机</span><br><span class="line">&gt;$ boot2docker init</span><br><span class="line">这会创建一个新的虚拟主机，你只需要运行一次这个命令就可以了，以后就不需要了。</span><br><span class="line"></span><br><span class="line">2、 启动 boot2docker 虚拟机。</span><br><span class="line">&gt;$ boot2docker start</span><br><span class="line">To connect the Docker client to the Docker daemon, please <span class="built_in">set</span>:</span><br><span class="line">    <span class="built_in">export</span> DOCKER_CERT_PATH=/Users/user/.boot2docker/certs/boot2docker-vm</span><br><span class="line">    <span class="built_in">export</span> DOCKER_TLS_VERIFY=1</span><br><span class="line">    <span class="built_in">export</span> DOCKER_HOST=tcp://192.168.59.103:2376</span><br><span class="line"></span><br><span class="line">Or run: `<span class="built_in">eval</span> <span class="string">&quot;<span class="subst">$(boot2docker shellinit)</span>&quot;</span>`</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">3、 通过 docker 客户端来查看环境变量</span><br><span class="line">&gt;$ boot2docker shellinit</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">4、 使用 shell 命令来设置环境变量。</span><br><span class="line">&gt;$ <span class="built_in">eval</span> <span class="string">&quot;<span class="subst">$(boot2docker shellinit)</span>&quot;</span></span><br><span class="line">Writing /Users/user/.boot2docker/certs/boot2docker-vm/ca.pem</span><br><span class="line">Writing /Users/user/.boot2docker/certs/boot2docker-vm/cert.pem</span><br><span class="line">Writing /Users/user/.boot2docker/certs/boot2docker-vm/key.pem</span><br><span class="line"></span><br><span class="line">5、 运行 hello-word 容器来验证安装。</span><br><span class="line">&gt;$ docker run hello-world</span><br></pre></td></tr></table></figure>
+
+<h2 id="Boot2Docker-基本练习"><a href="#Boot2Docker-基本练习" class="headerlink" title="Boot2Docker 基本练习"></a>Boot2Docker 基本练习</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt;$ boot2docker status</span><br><span class="line">&gt;$ docker version </span><br><span class="line"></span><br><span class="line">容器端口访问</span><br><span class="line">1、 在 Docker 主机上启动一个 Nginx 容器。</span><br><span class="line">&gt;$ docker run -d -P --name web nginx</span><br></pre></td></tr></table></figure>
+
+<p>一般来说，docker run 命令会启动一个容器，运行这个容器，然后退出。-d 标识可以让容器在 docker run 命令完成之后继续在后台运行。 -P 标识会将容器的端口暴露给主机，这样你就可以从你的 MAC 上访问它。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">2、 使用 docker ps 命令来查看你运行的容器</span><br><span class="line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                                           NAMES</span><br><span class="line">d478595f206d        nginx               <span class="string">&quot;nginx -g &#x27;daemon off&quot;</span>   4 minutes ago       Up 4 minutes        0.0.0.0:32769-&gt;80/tcp, 0.0.0.0:32768-&gt;443/tcp   web</span><br><span class="line"></span><br><span class="line">3、 查看容器端口</span><br><span class="line">&gt; docker port web</span><br><span class="line">443/tcp -&gt; 0.0.0.0:32768</span><br><span class="line">80/tcp -&gt; 0.0.0.0:32769</span><br><span class="line">上边的显示告诉我们，web 容器将 80 端口映射到 Docker 主机的 32769 端口上。</span><br><span class="line"></span><br><span class="line">4、 在浏览器输入地址 http://localhost:32769/ (localhost 是 0.0.0.0):</span><br><span class="line"></span><br><span class="line">没有正常工作。没有正常工作的原因是 DOCKER_HOST 主机的地址不是 localhost (0.0.0.0),但是你可以使用 boot2docker 虚拟机的IP地址来访问。</span><br><span class="line"></span><br><span class="line">5、 获取 boot2docker 主机地址</span><br><span class="line">&gt;$ boot2docker ip</span><br><span class="line">192.168.59.103</span><br><span class="line">6、在浏览器中输入 http://192.168.59.103:49157</span><br><span class="line">7、 通过如下方法，停止并删除 nginx 容器。</span><br><span class="line">&gt;$ docker stop web</span><br><span class="line">&gt;$ docker <span class="built_in">rm</span> web</span><br></pre></td></tr></table></figure>
+
+<h2 id="给容器挂载一个卷"><a href="#给容器挂载一个卷" class="headerlink" title="给容器挂载一个卷"></a>给容器挂载一个卷</h2><p>当你启动 boot2docker 的时候，它会自动共享 &#x2F;Users 目录给虚拟机。你可以利用这一点，将本地目录挂载到容器中。这个练习中我们将告诉你如何进行操作。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1、 回到你的 <span class="variable">$HOME</span> 目录</span><br><span class="line"> $ <span class="built_in">cd</span> <span class="variable">$HOME</span></span><br><span class="line">2、 创建一个新目录，并命名为 site</span><br><span class="line">$ <span class="built_in">mkdir</span> site</span><br><span class="line">3、 进入 site 目录。</span><br><span class="line">$ <span class="built_in">cd</span> site</span><br><span class="line">4、 创建一个 index.html 文件。</span><br><span class="line">$ <span class="built_in">echo</span> <span class="string">&quot;my new site&quot;</span> &gt; index.html</span><br><span class="line">5、 启动一个新的 nginx 容器,并将本地的 site 目录替换容器中的 html 文件夹。</span><br><span class="line">&gt;$ docker run -d -P -v <span class="variable">$HOME</span>/site:/usr/share/nginx/html --name mysite nginx</span><br><span class="line">6、 获取 mysite 容器端口</span><br><span class="line">&gt;$ docker port mysite</span><br><span class="line">80/tcp -&gt; 0.0.0.0:49166</span><br><span class="line">443/tcp -&gt; 0.0.0.0:49165</span><br><span class="line">7、 在浏览器中打开站点。</span><br><span class="line"></span><br><span class="line">8、 现在尝试在 <span class="variable">$HOME</span>/site 中创建一个页面</span><br><span class="line">&gt;$ <span class="built_in">echo</span> <span class="string">&quot;This is cool&quot;</span> &gt; cool.html</span><br><span class="line">9、 在浏览器中打开新创建的页面。</span><br><span class="line"></span><br><span class="line">10、 停止并删除 mysite 容器。</span><br><span class="line">&gt;$ docker stop mysite</span><br><span class="line">&gt;$ docker <span class="built_in">rm</span> mysite  </span><br></pre></td></tr></table></figure></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-14T05:10:15.000Z" title="2021/4/14 下午1:10:15">2021-04-14</time>发表</span><span class="level-item"><time dateTime="2021-04-14T05:10:15.000Z" title="2021/4/14 下午1:10:15">2021-04-14</time>更新</span><span class="level-item">几秒读完 (大约103个字)</span></div></div><div class="content"><h1 id="windows-docker-问题"><a href="#windows-docker-问题" class="headerlink" title="windows docker 问题"></a>windows docker 问题</h1><p><strong>env: ubuntu</strong></p>
+<p>ifconfig not found?</p>
+<p>apt-get update</p>
+<p>apt install net-tools    # ifconfig </p>
+<p>apt install iputils-ping   # ping</p>
+<p><strong>进入container</strong></p>
+<p>docker attach name</p>
+<p>docker exec -it name &#x2F;bin&#x2F;bash</p>
+<p><strong>Ubuntu中文显示乱码</strong></p>
+<p>apt-get update</p>
+<p>apt-get install locales</p>
+<p>Ubuntu默认的中文字符编码为zh_CN.UTF-8</p>
+<p>sudo dpkg-reconfigure locales</p>
+<p>选择zh_CN.UTF-8</p>
+<p>ssh重新连接</p>
+<p>db_rcm</p>
+<p>db_kdkj</p>
+<p>db_kdkj_rd</p>
+<p>db_kdkj_risk</p>
+<p>‘kdkj_behavior’</p>
+<p>mongodb_log</p>
+<p>mongodb_new</p>
+<p>mongodb_data_snapshot</p>
+<p>‘mongodb_data_snapshot_02’</p>
+<p>‘redis_risk_permanent’</p>
+<p>‘uniform_alarm’ </p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-14T05:09:55.000Z" title="2021/4/14 下午1:09:55">2021-04-14</time>发表</span><span class="level-item"><time dateTime="2021-04-14T05:09:55.000Z" title="2021/4/14 下午1:09:55">2021-04-14</time>更新</span><span class="level-item">2 分钟读完 (大约338个字)</span></div></div><div class="content"><h3 id="使用Dockerfile构建容器"><a href="#使用Dockerfile构建容器" class="headerlink" title="使用Dockerfile构建容器"></a>使用Dockerfile构建容器</h3><p>$touch Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER Tony </span><br><span class="line">ENV REFRESHED_AT 2017-05-08</span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get -y -q install nginx</span><br><span class="line">RUN <span class="built_in">mkdir</span> -p /var/www/html</span><br><span class="line">ADD nginx/global.conf /etc/nginx/conf.d/</span><br><span class="line"></span><br><span class="line">ADD nginx/nginx.conf /etc/nginx/nginx.conf</span><br><span class="line">EXPOSE 80</span><br></pre></td></tr></table></figure>
+
+<p>这个Dockerfile内容包括以下几项。</p>
+<ul>
+<li>安装Nginx</li>
+<li>在容器中创建一个目录&#x2F;var&#x2F;www&#x2F;html</li>
+<li>将来自我们下载的本地文件的Nginx配置文件添加到镜像中。</li>
+<li>公开镜像80端口</li>
+</ul>
+<p>将文件nginx&#x2F;global.conf用ADD指令复制到&#x2F;etc&#x2F;nginx&#x2F;conf.d目录中。</p>
+<p>global.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">server&#123;</span><br><span class="line">    listen 0.0.0.0:80;</span><br><span class="line">    server_name _;</span><br><span class="line">    </span><br><span class="line">    root /var/www/html/website;</span><br><span class="line">    index index.html index.htm;</span><br><span class="line"></span><br><span class="line">    access_log /var/log/nginx/default_access.log;</span><br><span class="line">    error_log /var/log/nginx/default_error.log;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个文件将Nginx设置为监听80端口，并将网络服务的根路径设置为&#x2F;var&#x2F;www&#x2F;html&#x2F;website，这个目录是我们用RUN指令创建的。</p>
+<p>然后我们还需要将Nginx配置为非守护进程的模式，这样可以让Nginx在Docker容器里工作。将文件nginx&#x2F;nginx.conf复制到&#x2F;etc&#x2F;nginx目录就可以达到这个目的。</p>
+<p>nginx.conf配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">user www-data;</span><br><span class="line">worker_processes 4;</span><br><span class="line">pid /run/nginx.pid;</span><br><span class="line">daemon off;</span><br><span class="line"></span><br><span class="line">events &#123;  &#125;</span><br><span class="line">http&#123;</span><br><span class="line">    sendfile on;</span><br><span class="line">    tcp_nopush on;</span><br><span class="line">    tcp_nodelay on;</span><br><span class="line">    keepalive_timeout 65;</span><br><span class="line">    types_hash_max_size 2048;</span><br><span class="line">    include /etc/nginx/mime.types;</span><br><span class="line">    default_type application/octet-stream;</span><br><span class="line">    access_log /var/log/nginx/access.log;</span><br><span class="line">    error_log /var/log/nginx/error.log;</span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_disable <span class="string">&quot;msie6&quot;</span>;</span><br><span class="line">    include /etc/nginx/conf.d/*.conf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/12/">上一页</a></div><div class="pagination-next"><a href="/page/14/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link is-current" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li><li><a class="pagination-link" href="/page/15/">15</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">146</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">10</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">18</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">中间件</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="level-start"><span class="level-item">数据库</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">时间管理</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AF%BB%E4%B9%A6/"><span class="level-start"><span class="level-item">读书</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">24</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Bean/"><span class="tag">Bean</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySql/"><span class="tag">MySql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Netty/"><span class="tag">Netty</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Stream/"><span class="tag">Stream</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZooKeeper/"><span class="tag">ZooKeeper</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"><span class="tag">代码优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/"><span class="tag">公众号</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"><span class="tag">单点登录</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"><span class="tag">大数据</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tag">线程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/"><span class="tag">自动装配</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-10T06:58:05.176Z">2022-05-10</time></p><p class="title"><a href="/2022/05/10/3.%E8%AF%BB%E4%B9%A6/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E6%97%B6%E9%97%B4/">职场上如何管理时间</a></p><p class="categories"><a href="/categories/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/">时间管理</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-09T06:10:31.715Z">2022-05-09</time></p><p class="title"><a href="/2022/05/09/15000%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4/15030k8s-Master/">Kubernetes架构与工作流程及核心概念</a></p><p class="categories"><a href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-08T15:13:17.249Z">2022-05-08</time></p><p class="title"><a href="/2022/05/08/213Linux/13001Linux%E5%91%BD%E4%BB%A4lsof/">Linux虚拟文件系统</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-08T13:02:44.791Z">2022-05-08</time></p><p class="title"><a href="/2022/05/08/3.%E8%AF%BB%E4%B9%A6/Kubernetes%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%AE%9E%E8%B7%B5/">Kubernetes从入门到实践</a></p><p class="categories"><a href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T01:46:49.745Z">2022-05-07</time></p><p class="title"><a href="/2022/05/07/90000%E6%96%87%E7%AB%A0/90012Bean%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2%E7%A5%9E%E5%99%A8Mapstruct/">自动转换神器 Mapstruct</a></p><p class="categories"><a href="/categories/Spring/">Spring</a></p></div></article></div></div><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a><p class="is-size-7"><span>&copy; 2022 Tonygeli</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,

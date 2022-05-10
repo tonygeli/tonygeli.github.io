@@ -27,853 +27,366 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-15T15:02:27.000Z" title="2021/5/15 下午11:02:27">2021-05-15</time>发表</span><span class="level-item"><time dateTime="2021-05-15T15:02:27.000Z" title="2021/5/15 下午11:02:27">2021-05-15</time>更新</span><span class="level-item">4 分钟读完 (大约644个字)</span></div></div><div class="content"><h1 id="2-2-2-Mysql索引"><a href="#2-2-2-Mysql索引" class="headerlink" title="2.2.2 Mysql索引"></a>2.2.2 Mysql索引</h1><p><strong>从数据结构角度</strong></p>
-<p>1、B+树索引(O(log(n)))：关于B+树索引</p>
-<p>2、hash索引：<br>a 仅仅能满足”&#x3D;”,”IN”和”&lt;&#x3D;&gt;”查询，不能使用范围查询<br>b 其检索效率非常高，索引的检索可以一次定位，不像B-Tree 索引需要从根节点到枝节点，最后才能访问到页节点这样多次的IO访问，所以 Hash 索引的查询效率要远高于 B-Tree 索引<br>c 只有Memory存储引擎显示支持hash索引</p>
-<p>3、FULLTEXT索引（现在MyISAM和InnoDB引擎都支持了）</p>
-<p>4、R-Tree索引（用于对GIS数据类型创建SPATIAL索引）</p>
-<p><strong>从物理存储角度</strong></p>
-<p>1、聚集索引（clustered index）</p>
-<p>2、非聚集索引（non-clustered index）</p>
-<p><strong>从逻辑角度</strong></p>
-<p>1、<strong>主键索引</strong>：主键索引是一种特殊的唯一索引，不允许有空值</p>
-<p>2、<strong>普通索引</strong>或者单列索引</p>
-<p>3、<strong>复合索引</strong>：复合索引指多个字段上创建的索引，只有在查询条件中使用了创建索引时的第一个字段，索引才会被使用。使用复合索引时遵循最左前缀集合</p>
-<p>4、<strong>唯一索引</strong>或者非唯一索引</p>
-<p>5、<strong>空间索引</strong>：空间索引是对空间数据类型的字段建立的索引，MYSQL中的空间数据类型有4种，分别是GEOMETRY、POINT、LINESTRING、POLYGON。<br>MYSQL使用SPATIAL关键字进行扩展，使得能够用于创建正规索引类型的语法创建空间索引。创建空间索引的列，必须将其声明为NOT NULL，空间索引只能在存储引擎为MYISAM的表中创建</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE table_name[col_name data type]</span><br><span class="line">[unique|fulltext|spatial][index|key][index_name](col_name[length])[asc|desc]</span><br></pre></td></tr></table></figure>
-
-<p>1、unique|fulltext|spatial为可选参数，分别表示唯一索引、全文索引和空间索引；</p>
-<p>2、index和key为同义词，两者作用相同，用来指定创建索引</p>
-<p>3、col_name为需要创建索引的字段列，该列必须从数据表中该定义的多个列中选择；</p>
-<p>4、index_name指定索引的名称，为可选参数，如果不指定，MYSQL默认col_name为索引值；</p>
-<p>5、length为可选参数，表示索引的长度，只有字符串类型的字段才能指定索引长度；</p>
-<p>6、asc或desc指定升序或降序的索引值存储</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-15T15:01:17.000Z" title="2021/5/15 下午11:01:17">2021-05-15</time>发表</span><span class="level-item"><time dateTime="2021-05-15T15:01:17.000Z" title="2021/5/15 下午11:01:17">2021-05-15</time>更新</span><span class="level-item">几秒读完 (大约6个字)</span></div></div><div class="content"><p>平滑增加字段</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-15T14:40:20.000Z" title="2021/5/15 下午10:40:20">2021-05-15</time>发表</span><span class="level-item"><time dateTime="2021-05-15T14:40:20.000Z" title="2021/5/15 下午10:40:20">2021-05-15</time>更新</span><span class="level-item">1 分钟读完 (大约125个字)</span></div></div><div class="content"><h1 id="2-4-SpringBoot的启动原理"><a href="#2-4-SpringBoot的启动原理" class="headerlink" title="2.4 SpringBoot的启动原理"></a>2.4 SpringBoot的启动原理</h1><p><a href="#1.%E8%8E%B7%E5%8F%96%E5%B9%B6%E5%90%AF%E5%8A%A8%E7%9B%91%E5%90%AC%E5%99%A8">1.获取并启动监听器</a><br><a href="#2.%E7%8E%AF%E5%A2%83%E6%9E%84%E5%BB%BA">2.环境构建</a><br><a href="#3.%E5%88%9B%E5%BB%BA%E5%AE%B9%E5%99%A8">3.创建容器</a><br><a href="#4.%E5%89%8D%E7%BD%AE%E5%A4%84%E7%90%86">4.前置处理</a><br><a href="#5.%E5%88%B7%E6%96%B0%E5%AE%B9%E5%99%A8">5.刷新容器</a><br><a href="#6.%E5%90%8E%E7%BD%AE%E5%A4%84%E7%90%86">6.后置处理</a><br><a href="#7.%E5%8F%91%E5%87%BA%E4%BA%8B%E4%BB%B6">7.发出事件</a><br><a href="#8.%E6%89%A7%E8%A1%8CRunner">8.执行Runner</a><br><a href="#9.%E8%BF%94%E5%9B%9E%E5%AE%B9%E5%99%A8">9.返回容器</a></p>
-<h2 id="1-获取并启动监听器"><a href="#1-获取并启动监听器" class="headerlink" title="1.获取并启动监听器"></a>1.获取并启动监听器</h2><h2 id="2-环境构建"><a href="#2-环境构建" class="headerlink" title="2.环境构建"></a>2.环境构建</h2><h2 id="3-创建容器"><a href="#3-创建容器" class="headerlink" title="3.创建容器"></a>3.创建容器</h2><h2 id="4-前置处理"><a href="#4-前置处理" class="headerlink" title="4.前置处理"></a>4.前置处理</h2><h2 id="5-刷新容器"><a href="#5-刷新容器" class="headerlink" title="5.刷新容器"></a>5.刷新容器</h2><p>Spring Framework</p>
-<h2 id="6-后置处理"><a href="#6-后置处理" class="headerlink" title="6.后置处理"></a>6.后置处理</h2><h2 id="7-发出事件"><a href="#7-发出事件" class="headerlink" title="7.发出事件"></a>7.发出事件</h2><h2 id="8-执行Runner"><a href="#8-执行Runner" class="headerlink" title="8.执行Runner"></a>8.执行Runner</h2><h2 id="9-返回容器"><a href="#9-返回容器" class="headerlink" title="9.返回容器"></a>9.返回容器</h2></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-15T12:22:18.000Z" title="2021/5/15 下午8:22:18">2021-05-15</time>发表</span><span class="level-item"><time dateTime="2021-05-15T12:22:18.000Z" title="2021/5/15 下午8:22:18">2021-05-15</time>更新</span><span class="level-item">2 分钟读完 (大约350个字)</span></div></div><div class="content"><h1 id="2-6-4消息的分发策略"><a href="#2-6-4消息的分发策略" class="headerlink" title="2.6.4消息的分发策略"></a>2.6.4消息的分发策略</h1><h2 id="消息的分发策略"><a href="#消息的分发策略" class="headerlink" title="消息的分发策略"></a>消息的分发策略</h2><p>MQ消息队列有以下几个角色</p>
-<p>1.生产者<br>2.存储消息<br>3.消费者<br>那么生产者生成消息以后，MQ进行存储，消费者是2如何获取消息的呢？一般获取数据的方式无外乎推（push）或者拉（pull）两种方式，典型的git就有推拉机制，我们发送的http请求就是一种典型的拉取数据库数据返回的过程。而消息队列MQ是一种推送的过程，而这些推送机制会适用到很多的业务场景也有很多对应推机制策略。</p>
-<h2 id="消息的重试"><a href="#消息的重试" class="headerlink" title="消息的重试"></a>消息的重试</h2><p>在发送消息的过程中可能会出现异常，或网络的抖动，故障等等。因为造成消息的无法消费，比如用户在下订单，消费MQ接受，订单系统出现故障，导致用户支付失败。那么这个时候就需要消息中间件就必须支持消息重试机制策略。</p>
-<h2 id="消息的分发策略的机制和对比"><a href="#消息的分发策略的机制和对比" class="headerlink" title="消息的分发策略的机制和对比"></a>消息的分发策略的机制和对比</h2><table>
-<thead>
-<tr>
-<th></th>
-<th>ActiveMQ</th>
-<th>RabbtiMQ</th>
-<th>Kafka</th>
-<th>RocketMQ</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>发布订阅</td>
-<td>支持</td>
-<td>支持</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>轮询分发</td>
-<td>支持</td>
-<td>支持</td>
-<td>支持</td>
-<td>&#x2F;</td>
-</tr>
-<tr>
-<td>公平分发</td>
-<td>&#x2F;</td>
-<td>支持</td>
-<td>支持</td>
-<td>&#x2F;</td>
-</tr>
-<tr>
-<td>重发</td>
-<td>支持</td>
-<td>支持</td>
-<td>&#x2F;</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>消息拉取</td>
-<td>&#x2F;</td>
-<td>支持</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-</tbody></table>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-15T12:05:32.000Z" title="2021/5/15 下午8:05:32">2021-05-15</time>发表</span><span class="level-item"><time dateTime="2021-05-15T12:05:32.000Z" title="2021/5/15 下午8:05:32">2021-05-15</time>更新</span><span class="level-item">几秒读完 (大约67个字)</span></div></div><div class="content"><h1 id="2-6-3消息队列的持久化"><a href="#2-6-3消息队列的持久化" class="headerlink" title="2.6.3消息队列的持久化"></a>2.6.3消息队列的持久化</h1><h2 id="持久化："><a href="#持久化：" class="headerlink" title="持久化："></a>持久化：</h2><p>数据能够永久保存，内存中的数据在机器重启后就消失了。</p>
-<h2 id="常见的持久化方式"><a href="#常见的持久化方式" class="headerlink" title="常见的持久化方式"></a>常见的持久化方式</h2><table>
-<thead>
-<tr>
-<th></th>
-<th>ActiveMQ</th>
-<th>RabbitMQ</th>
-<th>Kafka</th>
-<th>RocketMQ</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>文件存储</td>
-<td>支持</td>
-<td>支持</td>
-<td>支持</td>
-<td>支持</td>
-</tr>
-<tr>
-<td>数据库</td>
-<td>支持</td>
-<td>&#x2F;</td>
-<td>&#x2F;</td>
-<td>&#x2F;</td>
-</tr>
-</tbody></table>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-14T02:54:36.000Z" title="2021/5/14 上午10:54:36">2021-05-14</time>发表</span><span class="level-item"><time dateTime="2021-05-14T02:54:36.000Z" title="2021/5/14 上午10:54:36">2021-05-14</time>更新</span><span class="level-item">8 分钟读完 (大约1270个字)</span></div></div><div class="content"><h1 id="2-4-2-Spring-Bean依赖注入"><a href="#2-4-2-Spring-Bean依赖注入" class="headerlink" title="2.4.2 Spring Bean依赖注入"></a>2.4.2 Spring Bean依赖注入</h1><h2 id="一、什么是Spring中的依赖注入？"><a href="#一、什么是Spring中的依赖注入？" class="headerlink" title="一、什么是Spring中的依赖注入？"></a>一、什么是Spring中的依赖注入？</h2><p>依赖注入是控制反转（IoC）的一个方面，它是一个通用概念，它可以用许多不同的方式表达。这个概念说你不创建你的对象，而是描述它们应该如何创建。您不能在代码中直接连接组件和服务，而是描述配置文件中哪些组件需要哪些服务。然后，一个容器（IOC容器）负责将其全部挂起。</p>
-<h2 id="二、有哪些不同类型的IoC（依赖注入）？"><a href="#二、有哪些不同类型的IoC（依赖注入）？" class="headerlink" title="二、有哪些不同类型的IoC（依赖注入）？"></a>二、有哪些不同类型的IoC（依赖注入）？</h2><p>1.构造函数的依赖注入：当容器调用具有许多参数的类构造函数时，完成基于构造函数的DI，每个参数表示对其他类的依赖。<br>2.Setter的依赖注入：基于Setter的DI是在调用无参数构造函数或无参数静态工厂方法来实例化bean之后，通过容器调用bean上的setter方法来完成的。</p>
-<h2 id="三、Spring-bean是什么？"><a href="#三、Spring-bean是什么？" class="headerlink" title="三、Spring bean是什么？"></a>三、Spring bean是什么？</h2><p>Spring Beans是构成Spring应用程序主干的Java对象。它们由Spring IoC容器实例化，组装和管理。这些bean是使用提供给容器的配置元数据创建的（以XML定义、注解）。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=<span class="string">&quot;testController&quot;</span> class=<span class="string">&quot;com.**.TestController&quot;</span> scope=<span class="string">&quot;prototype&quot;</span> init-method=<span class="string">&quot;init&quot;</span> destroy-method=<span class="string">&quot;destory&quot;</span>/&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/&quot;)</span></span><br><span class="line"><span class="meta">@Scope(&quot;prototype&quot;)</span>			<span class="comment">// 创建多实例</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestController</span> &#123;</span><br><span class="line">   <span class="meta">@PostConstruct</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">   <span class="meta">@PreDestory</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destory</span><span class="params">()</span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>scope属性：<br>1.singleton： 表示在spring容器中的单例，通过spring容器获得该bean时总是返回唯一的实例；<br>2.prototype：与单例模式相反，表示为每一个bean请求都会提供一个实例；<br>3.request：在请求范围内会为每一个来自客户端的网络请求提供一个实例，在请求完成后，bean会失效并被垃圾回收器回收；<br>4.session：与请求范围类似，表示确保每个session中有个Bean的实例，在session过期后随之消失；<br>5.global-session：表示在全局会话内有效。</p>
-<h2 id="四、有三种方式向Spring-容器提供元数据"><a href="#四、有三种方式向Spring-容器提供元数据" class="headerlink" title="四、有三种方式向Spring 容器提供元数据:"></a>四、有三种方式向Spring 容器提供元数据:</h2><p>1.XML配置文件<br>2.基于注解配置<br>3.基于Java的配置</p>
-<p>基于Java类定义Bean配置元数据，其实就是通过Java类定义Spring配置元数据，且直接消除XML配置文件。<br>首先让我们看一下基于Java类如何定义Bean配置元数据，具体步骤如下：<br>  1.使用@Configuration注解需要作为配置的类，表示该类将定义Bean的元数据<br>  2.使用@Bean注解相应的方法，该方法名默认就是Bean的名称，该方法返回值就是Bean的对象。<br>  3.AnnotationConfigApplicationContext或子类进行加载基于java类的配置<br><strong>注意</strong>：<strong>使用bean注解的方法不能是private、final、static的。</strong></p>
-<p>基于Java方式的配置方式不是为了完全替代基于XML方式的配置，两者可以结合使用，因此可以有两种结合使用方式：<br>    <strong>1.在基于Java方式的配置类中引入基于XML方式的配置文件</strong>	</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=<span class="string">&quot;message&quot;</span> class=<span class="string">&quot;java.lang.String&quot;</span>&gt;</span><br><span class="line">    &lt;constructor-arg index=<span class="string">&quot;0&quot;</span> value=<span class="string">&quot;test&quot;</span>&gt;&lt;/constructor-arg&gt;</span><br><span class="line">&lt;/bean&gt;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="meta">@Configuration(&quot;ctxConfig&quot;)</span></span><br><span class="line"><span class="meta">@ImportResource(&quot;classpath:com/jike/***/appCtx.xml&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ApplicationContextConfig</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到在java程序中使用**@** <strong>ImportResource</strong>导入了XML的配置文件</p>
-<p>​	<strong>2.在基于XML方式的配置文件中中引入基于Java方式的配置</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;context:annotation-config/&gt;</span><br><span class="line">&lt;bean id=<span class="string">&quot;ctxConfig&quot;</span> class=“com.jike.***..ApplicationContextConfig<span class="string">&quot;/&gt;</span></span><br><span class="line"><span class="string"> </span></span><br><span class="line"><span class="string">//测试类</span></span><br><span class="line"><span class="string">public void testXmlConfig() &#123;</span></span><br><span class="line"><span class="string">  String configLocations[] = &#123;&quot;</span> classpath:com/jike<span class="comment">/***/</span>appCtx.xml<span class="string">&quot;&#125;;</span></span><br><span class="line"><span class="string">  ApplicationContext ctx = new ClassPathXmlApplicationContext(configLocations);</span></span><br><span class="line"><span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看到在XML的配置文件当中将java的配置类当中Bean来声明，第一行的是开启注解驱动支持。<br>值得注意的是必须得配置 <a href="context:annotation-config/">context:annotation-config/</a> 在XML配置文件中。</p>
-<p>Spring提供了一个AnnotationConfigApplicanContext类，能够直接通过标注@Configuration的Java类启动Spring容器：<br><strong>通过构造函数加载配置类:</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ApplicationContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>(AppConf.class);</span><br></pre></td></tr></table></figure>
-
-<p><strong>通过编码方式注册配置类：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">AnnotationConfigApplicationContext</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AnnotationConfigApplicationContext</span>();</span><br><span class="line">ctx.register(DaoConfig.class);</span><br><span class="line">ctx.register(ServiceConfig.class);</span><br><span class="line">ctx.refresh();</span><br></pre></td></tr></table></figure>
-
-<p>可以看到ctx注册了多个configuration类，然后通过refresh类来刷新容器以应用这些配置文件。<br>可以通过代码一个个的引入配置类，当然也可以使用**@Import**注解来引入配置类</p>
-<p><strong>引入多个配置类：</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Import(DaoConfig.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ServiceConfig</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>总结：不同配置方式比较</strong></p>
-<table>
-<thead>
-<tr>
-<th>Bean</th>
-<th>XML配置文件</th>
-<th>注解配置</th>
-<th>Java的配置</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Bean定义</td>
-<td><bean id=""></bean></td>
-<td>@Component</td>
-<td>标注了@Configuration的java类中，类方法上标注了@Bean</td>
-</tr>
-<tr>
-<td>Bean名称</td>
-<td>id或name&#x3D;”userDao”</td>
-<td>@Component(“userDao”)</td>
-<td>@Bean(“userDao”)</td>
-</tr>
-<tr>
-<td>Bean注入</td>
-<td>通过<property>子元素或通过p命名空间的动态属性注入</td>
-<td>通过标出@Autowired，按类型匹配自动,配合@Qualifier按名称匹配</td>
-<td>1.@Autowired方法入参绑定Bean 2.配置类的@Bean方法注入</td>
-</tr>
-<tr>
-<td>生命过程方法</td>
-<td>通过<bean>的init-method和destory-method属性指定Bean实现类方法名</td>
-<td>@PostContruct和@PreDestroy</td>
-<td>@Bean(initMethod &#x3D; “”, destroyMethod &#x3D; “”)</td>
-</tr>
-<tr>
-<td>作用范围</td>
-<td><bean>的scope属性</td>
-<td>@Scope</td>
-<td>@Scope</td>
-</tr>
-<tr>
-<td>延迟初始化</td>
-<td>Lazy-init,默认为default</td>
-<td>@Lazy</td>
-<td>@Lazy</td>
-</tr>
-</tbody></table>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-13T11:17:55.000Z" title="2021/5/13 下午7:17:55">2021-05-13</time>发表</span><span class="level-item"><time dateTime="2021-05-13T11:17:55.000Z" title="2021/5/13 下午7:17:55">2021-05-13</time>更新</span><span class="level-item">41 分钟读完 (大约6162个字)</span></div></div><div class="content"><h1 id="2-4-3-Spring注解"><a href="#2-4-3-Spring注解" class="headerlink" title="2.4.3 Spring注解"></a>2.4.3 Spring注解</h1><p>注解是个好东西，但好东西我们也是看见过，整理过，理解过，用过才知道好。不求我们每个都记住，但求保有印象，在需要的时候能提取出来再查找相关资料，平时工作就不会显得那么被动了。</p>
-<h2 id="1-Configuration注解"><a href="#1-Configuration注解" class="headerlink" title="1.@Configuration注解"></a>1.@Configuration注解</h2><p>该类等价 与XML中配置beans，相当于Ioc容器，它的某个方法头上如果注册了@Bean，就会作为这个Spring容器中的Bean，与xml中配置的bean意思一样。</p>
-<p>@Configuration注解的类必需使用<code>context:component-scanbase-package=&quot;XXX&quot;</code>扫描.如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span> <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MainConfig</span> &#123;</span><br><span class="line">	<span class="comment">//在properties文件里配置  </span></span><br><span class="line">  <span class="meta">@Value(&quot;$&#123;wx_appid&#125;&quot;)</span> </span><br><span class="line">  <span class="keyword">public</span> String appid;</span><br><span class="line">	<span class="keyword">protected</span> <span class="title function_">MainConfig</span><span class="params">()</span>&#123;&#125; </span><br><span class="line">  <span class="meta">@Bean</span></span><br><span class="line">  <span class="keyword">public</span> WxMpService <span class="title function_">wxMpService</span><span class="params">()</span> &#123;    </span><br><span class="line">    <span class="type">WxMpService</span> <span class="variable">wxMpService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">WxMpServiceImpl</span>();</span><br><span class="line">    wxMpService.setWxMpConfigStorage(wxMpConfigStorage());    </span><br><span class="line">    <span class="keyword">return</span> wxMpService;</span><br><span class="line">	&#125;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>定义一个MainConfig，用@Configuration注解，那MainConfig相当于xml里的beans,里面用@Bean注解的和xml里定义的bean等价，用<code>context:component-scanbase-package=”XXX”</code>扫描该类，最终我们可以在程序里用<code>@AutoWired</code>或<code>@Resource</code>注解取得用<code>@Bean</code>注解的<code>bean</code>，和用xml先配置bean然后在程序里自动注入一样。目的是减少xml里配置。</p>
-<h2 id="2-Value注解"><a href="#2-Value注解" class="headerlink" title="2.@Value注解"></a>2.@Value注解</h2><p>为了简化从properties里取配置，可以使用@Value, 可以在properties文件中的配置值。在dispatcher-servlet.xml里引入properties文件。在程序里使用@Value:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Value(&quot;$&#123;wx_appid&#125;&quot;)</span></span><br><span class="line"><span class="keyword">public</span> String appid；</span><br></pre></td></tr></table></figure>
-
-<p>即使给变量赋了初值也会以配置文件的值为准。</p>
-<h2 id="3-Controller-Service-Repository-Component"><a href="#3-Controller-Service-Repository-Component" class="headerlink" title="3.@Controller,@Service,@Repository,@Component"></a>3.@Controller,@Service,@Repository,@Component</h2><p>目前4种注解意思是一样，并没有什么区别，区别只是名字不同。使用方法：</p>
-<p>​	1.使用context:component-scanbase-package&#x3D;”XXX”&#x2F;扫描被注解的类<br>​	2.在类上写注解：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestController</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="4-PostConstruct-和-PreDestory"><a href="#4-PostConstruct-和-PreDestory" class="headerlink" title="4.@PostConstruct 和 @PreDestory"></a>4.@PostConstruct 和 @PreDestory</h2><p>实现初始化和销毁bean之前进行的操作，只能有一个方法可以用此注释进行注释，方法不能有参数，返回值必需是void,方法需要是非静态的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestService</span> &#123;</span><br><span class="line">	<span class="meta">@PostConstruct</span>  </span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;		<span class="comment">// 在构造方法和init方法(如果有的话)之间得到调用，且只会执行一次。</span></span><br><span class="line">		System.out.println(<span class="string">&quot;初始化&quot;</span>);  </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@PreDestroy</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span>  <span class="title function_">dostory</span><span class="params">()</span>&#123;		<span class="comment">// 注解的方法在destory()方法调用后得到执行。</span></span><br><span class="line">		System.out.println(<span class="string">&quot;销毁&quot;</span>);  </span><br><span class="line">  &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>流程图：</p>
-<p><img src="/../../images/2e803639d7ea863b9cdcc0abde546050.png" alt="2e803639d7ea863b9cdcc0abde546050.png"></p>
-<p>引深一点，Spring 容器中的 Bean 是有生命周期的，Spring 允许在 Bean 在初始化完成后以及 Bean 销毁前执行特定的操作，常用的设定方式有以下三种：</p>
-<p>1.通过实现 InitializingBean&#x2F;DisposableBean 接口来定制初始化之后&#x2F;销毁之前的操作方法；</p>
-<p>2.通过 元素的 init-method&#x2F;destroy-method属性指定初始化之后 &#x2F;销毁之前调用的操作方法；</p>
-<p>3.在指定方法上加上@PostConstruct 或@PreDestroy注解来制定该方法是在初始化之后还是销毁之前调用</p>
-<p>但他们之前并不等价。即使3个方法都用上了，也有先后顺序.</p>
-<p>Constructor &gt; @PostConstruct &gt;InitializingBean &gt; init-method</p>
-<ol start="5">
-<li>@Primary<br>自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常。</li>
-</ol>
-<p>例如：</p>
-<p>@Component public class Apple implements Fruit{<br>@Override  public String hello() {      return “我是苹果”;  }<br>}</p>
-<p>@Component @Primary public class Pear implements Fruit{<br>@Override  public String hello(String lyrics) {      return “梨子”;  }<br>}</p>
-<p>public class FruitService {<br>&#x2F;&#x2F;Fruit有2个实例子类，因为梨子用@Primary，那么会使用Pear注入  @Autowired  private Fruit fruit;</p>
-<p>public String hello(){      return fruit.hello();  }<br>}</p>
-<ol start="6">
-<li><p>@Lazy(true)<br>用于指定该Bean是否取消预初始化，用于注解类，延迟初始化。</p>
-</li>
-<li><p>@Autowired<br>Autowired默认先按byType，如果发现找到多个bean，则，又按照byName方式比对，如果还有多个，则报出异常。</p>
-</li>
-</ol>
-<p>1.可以手动指定按byName方式注入，使用@Qualifier。</p>
-<p>&#x2F;&#x2F;通过此注解完成从spring配置文件中 查找满足Fruit的bean,然后按&#x2F;&#x2F;@Qualifier指定pean</p>
-<p>@Autowired</p>
-<p>@Qualifier(“pean”)</p>
-<p>public Fruit fruit;</p>
-<p>2.如果要允许null 值，可以设置它的required属性为false，如：</p>
-<p>@Autowired(required&#x3D;false)</p>
-<p>public Fruit fruit;</p>
-<ol start="8">
-<li>@Resource<br>默认按 byName自动注入,如果找不到再按byType找bean,如果还是找不到则抛异常，无论按byName还是byType如果找到多个，则抛异常。</li>
-</ol>
-<p>可以手动指定bean,它有2个属性分别是name和type，使用name属性，则使用byName的自动注入，而使用type属性时则使用byType自动注入。</p>
-<p>@Resource(name&#x3D;”bean名字”)</p>
-<p>或</p>
-<p>@Resource(type&#x3D;”bean的class”)</p>
-<p>这个注解是属于J2EE的，减少了与spring的耦合。</p>
-<ol start="9">
-<li>@Async<br>java里使用线程用3种方法：</li>
-</ol>
-<p>继承Thread，重写run方法<br>实现Runnable,重写run方法<br>使用Callable和Future接口创建线程，并能得到返回值。<br>前2种简单，第3种方式特别提示一下，例子如下：</p>
-<p>class MyCallable implements Callable {  private int i &#x3D; 0;  &#x2F;&#x2F; 与run()方法不同的是，call()方法具有返回值  @Override  public Integer call() {  int sum &#x3D; 0;  for (; i &lt; 100; i++) {  System.out.println(Thread.currentThread().getName() + “ “ + i);  sum +&#x3D; i;  }  return sum;  } }</p>
-<p>main方法：</p>
-<p>public static void main(String[] args) {  Callable myCallable &#x3D; new MyCallable(); &#x2F;&#x2F; 创建MyCallable对象  FutureTask ft &#x3D; new FutureTask(myCallable); &#x2F;&#x2F;使用FutureTask来包装MyCallable对象  for (int i &#x3D; 0; i &lt; 100; i++) {  System.out.println(Thread.currentThread().getName() + “ “ + i);  if (i &#x3D;&#x3D; 30) {  Thread thread &#x3D; new Thread(ft); &#x2F;&#x2F;FutureTask对象作为Thread对象的target创建新的线程  thread.start(); &#x2F;&#x2F;线程进入到就绪状态  }  }  System.out.println(“主线程for循环执行完毕..”);  try {  int sum &#x3D; ft.get(); &#x2F;&#x2F;取得新创建的新线程中的call()方法返回的结果  System.out.println(“sum &#x3D; “ + sum);  } catch (InterruptedException e) {  e.printStackTrace();  } catch (ExecutionException e) {  e.printStackTrace();  } }</p>
-<p>而使用@Async可视为第4种方法。基于@Async标注的方法，称之为异步方法,这个注解用于标注某个方法或某个类里面的所有方法都是需要异步处理的。被注解的方法被调用的时候，会在新线程中执行，而调用它的方法会在原来的线程中执行。</p>
-<p>application.xml形势的配置：</p>
-<p>第一步配置XML。</p>
-<p>参数解读：</p>
-<p>配置参数：</p>
-<p>id：当配置多个executor时，被@Async(“id”)指定使用；也被作为线程名的前缀。</p>
-<p>pool-size：</p>
-<p>core size：最小的线程数，缺省：1</p>
-<p>max size：最大的线程数，缺省：Integer.MAX_VALUE</p>
-<p>queue-capacity：当最小的线程数已经被占用满后，新的任务会被放进queue里面，当这个queue的capacity也被占满之后，pool里面会创建新线程处理这个任务，直到总线程数达到了max size，这时系统会拒绝这个任务并抛出TaskRejectedException异常(缺省配置的情况下，可以通过rejection-policy来决定如何处理这种情况)。缺省值为：Integer.MAX_VALUE</p>
-<p>keep-alive：超过core size的那些线程，任务完成后，再经过这个时长(秒)会被结束掉</p>
-<p>rejection-policy：当pool已经达到max size的时候，如何处理新任务</p>
-<p>ABORT(缺省)：抛出TaskRejectedException异常，然后不执行DISCARD：不执行，也不抛出异常</p>
-<p>DISCARD_OLDEST：丢弃queue中最旧的那个任务</p>
-<p>CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行</p>
-<p>第二步在类或方法上添加@Async，当调用该方法时，则该方法即是用异常执行的方法单独开个新线程执行。</p>
-<p>@Async(“可以指定执行器id，也可以不指定”)  public static void testAsyncVoid (){  try {  &#x2F;&#x2F;让程序暂停100秒，相当于执行一个很耗时的任务  System.out.println(“异常执行打印字符串”);  Thread.sleep(100000);  } catch (InterruptedException e) {  e.printStackTrace();  }  }</p>
-<p>当在外部调用testAsync方法时即在新线程中执行，由上面执行器去维护线程。</p>
-<p>总结：先用context:component-scan去扫描注解，让spring能识别到@Async注解，然后task:annotation-driven去驱动@Async注解，并可以指定默认的线程执行器executor。那么当用@Async注解的方法或类得到调用时，线程执行器会创建新的线程去执行。</p>
-<p>上面方法是无返回值的情况，还有异常方法有返回值的例子。</p>
-<p>@Async public Future testAsyncReturn () {  System.out.println(“Execute method asynchronously - “  + Thread.currentThread().getName());  try {  Thread.sleep(5000);  return new AsyncResult(“hello world !!!!”);  } catch (InterruptedException e) {  &#x2F;&#x2F;  }  return null; }</p>
-<p>返回的数据类型为Future类型，接口实现类是AsyncResult.</p>
-<p>调用方法如下：</p>
-<p>public void test(){  Future future &#x3D; cc.testAsyncReturn();  while (true) { &#x2F;&#x2F;&#x2F;这里使用了循环判断，等待获取结果信息  if (future.isDone()) { &#x2F;&#x2F;判断是否执行完毕  System.out.println(“Result from asynchronous process - “ + future.get());  break;  }  System.out.println(“Continue doing something else. “);  Thread.sleep(1000);  } }</p>
-<p>通过不停的检查Future的状态来获取当前的异步方法是否执行完毕</p>
-<p>参考文章</p>
-<p>编程的方式使用@Async:</p>
-<p>@Configuration @EnableAsync public class SpringConfig {  private int corePoolSize &#x3D; 10; private int maxPoolSize &#x3D; 200; private int queueCapacity &#x3D; 10; private String ThreadNamePrefix &#x3D; “MyLogExecutor-“;</p>
-<p>@Bean  public Executor logExecutor() {      ThreadPoolTaskExecutor executor &#x3D; new ThreadPoolTaskExecutor();      executor.setCorePoolSize(corePoolSize);      executor.setMaxPoolSize(maxPoolSize);      executor.setQueueCapacity(queueCapacity);      executor.setThreadNamePrefix(ThreadNamePrefix);      &#x2F;&#x2F; rejection-policy：当pool已经达到max size的时候，如何处理新任务      &#x2F;&#x2F; CALLER_RUNS：不在新线程中执行任务，而是有调用者所在的线程来执行      executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());      executor.initialize();      return executor;  }<br>}</p>
-<p>10.@Named<br>@Named和Spring的@Component功能相同。@Named可以有值，如果没有值生成的Bean名称默认和类名相同。比如</p>
-<p>@Named</p>
-<p>public class Person</p>
-<p>或</p>
-<p>@Named(“cc”)</p>
-<p>public class Person</p>
-<ol start="11">
-<li>@Inject<br>使用@Inject需要引用javax.inject.jar，它与Spring没有关系，是jsr330规范。</li>
-</ol>
-<p>与@Autowired有互换性。</p>
-<ol start="12">
-<li>@Singleton<br>只要在类上加上这个注解，就可以实现一个单例类，不需要自己手动编写单例实现类。</li>
-</ol>
-<p>13.@Valid,@Valided<br>@Valid</p>
-<p>网上一大片使用@Valid失效不能用的情况。为什么呢？</p>
-<p>1.@Valid必需使用在以@RequestBody接收参数的情况下。</p>
-<p>2.使用ajax以POST方式提示数据，禁止用Fiddler以及浏览器直接访问的方式测试接口</p>
-<p>3.用添加注解驱动。</p>
-<p>4.@Valid是应用在javabean上的校验。</p>
-<ol start="5">
-<li>org.hibernate  hibernate-validator  4.2.0.Final   com.fasterxml.jackson.core  jackson-annotations  2.5.3    com.fasterxml.jackson.core  jackson-core  2.5.3    com.fasterxml.jackson.core  jackson-databind  2.5.3    org.codehaus.jackson  jackson-mapper-asl  1.9.8    com.fasterxml.jackson.module  jackson-module-jaxb-annotations  2.5.3</li>
-</ol>
-<p>这些jar包是需要的。@Valid是使用hibernate validation的时候使用，可参数下面介绍的@RequestBody</p>
-<p>6.@Valid下后面紧跟BindingResult result，验证结果保存在result</p>
-<p>例如：</p>
-<p>@RequestMapping(“&#x2F;test”)  public String testValid(@Valid User user, BindingResult result){  if (result.hasErrors()){  List errorList &#x3D; result.getAllErrors();  for(ObjectError error : errorList){  System.out.println(error.getDefaultMessage());  }  }  return “test”; }</p>
-<p>在入参User上添加了@Valid做校验，在User类里属性上实行实际的特定校验。</p>
-<p>例如在User的name属性上加</p>
-<p>@NotBlank</p>
-<p>private String name;</p>
-<p>全部参数校验如下：</p>
-<p>空检查</p>
-<p>@Null 验证对象是否为null</p>
-<p>@NotNull 验证对象是否不为null, 无法查检长度为0的字符串</p>
-<p>@NotBlank 检查约束字符串是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格.</p>
-<p>@NotEmpty 检查约束元素是否为NULL或者是EMPTY.</p>
-<p>Booelan检查</p>
-<p>@AssertTrue 验证 Boolean 对象是否为 true</p>
-<p>@AssertFalse 验证 Boolean 对象是否为 false</p>
-<p>长度检查</p>
-<p>@Size(min&#x3D;, max&#x3D;) 验证对象(Array,Collection,Map,String)长度是否在给定的范围之内</p>
-<p>@Length(min&#x3D;, max&#x3D;)验证注解的元素值长度在min和max区间内</p>
-<p>日期检查</p>
-<p>@Past 验证 Date 和 Calendar 对象是否在当前时间之前</p>
-<p>@Future 验证 Date 和 Calendar 对象是否在当前时间之后</p>
-<p>@Pattern 验证 String 对象是否符合正则表达式的规则</p>
-<p>数值检查，建议使用在Stirng,Integer类型，不建议使用在int类型上，因为表单值为“”时无法转换为int，但可以转换为Stirng为””,Integer为null</p>
-<p>@Min(value&#x3D;””) 验证 Number 和 String 对象是否大等于指定的值</p>
-<p>@Max(value&#x3D;””) 验证 Number 和 String 对象是否小等于指定的值</p>
-<p>@DecimalMax(value&#x3D;值) 被标注的值必须不大于约束中指定的最大值. 这个约束的参数是一个通过BigDecimal定义的最大值的字符串表示.小数存在精度</p>
-<p>@DecimalMin(value&#x3D;值) 被标注的值必须不小于约束中指定的最小值. 这个约束的参数是一个通过BigDecimal定义的最小值的字符串表示.小数存在精度</p>
-<p>@Digits 验证 Number 和 String 的构成是否合法</p>
-<p>@Digits(integer&#x3D;,fraction&#x3D;)验证字符串是否是符合指定格式的数字，interger指定整数精度，fraction指定小数精度。</p>
-<p>@Range(min&#x3D;, max&#x3D;) 检查数字是否介于min和max之间.</p>
-<p>@Range(min&#x3D;10000,max&#x3D;50000,message&#x3D;”range.bean.wage”)</p>
-<p>private BigDecimal wage;</p>
-<p>@Valid 递归的对关联对象进行校验, 如果关联对象是个集合或者数组,那么对其中的元素进行递归校验,如果是一个map,则对其中的值部分进行校验.(是否进行递归验证)</p>
-<p>@CreditCardNumber信用卡验证</p>
-<p>@Email 验证是否是邮件地址，如果为null,不进行验证，算通过验证。</p>
-<p>@ScriptAssert(lang&#x3D;,script&#x3D;, alias&#x3D;)</p>
-<p>@URL(protocol&#x3D;,host&#x3D;,port&#x3D;,regexp&#x3D;, flags&#x3D;)</p>
-<p>@Validated</p>
-<p>@Valid是对javabean的校验，如果想对使用@RequestParam方式接收参数方式校验使用@Validated</p>
-<p>使用@Validated的步骤：</p>
-<p>第一步：定义全局异常，让该全局异常处理器能处理所以验证失败的情况，并返回给前台失败提示数据。如下，该类不用在任何xml里配置。 import javax.validation.ValidationException;</p>
-<p>import org.springframework.context.annotation.Bean; import org.springframework.http.HttpStatus; import org.springframework.stereotype.Component; import org.springframework.validation.beanvalidation.MethodValidationPostProcessor; import org.springframework.web.bind.annotation.ControllerAdvice; import org.springframework.web.bind.annotation.ExceptionHandler; import org.springframework.web.bind.annotation.ResponseBody; import org.springframework.web.bind.annotation.ResponseStatus;</p>
-<p>@ControllerAdvice @Component public class GlobalExceptionHandler {  @Bean  public MethodValidationPostProcessor methodValidationPostProcessor() {  return new MethodValidationPostProcessor();  }</p>
-<p>@ExceptionHandler@ResponseBody@ResponseStatus(HttpStatus.BAD_REQUEST)public String handle(ValidationException exception) {    System.out.println(“bad request, “ + exception.getMessage());    return “bad request, “ + exception.getMessage();}<br>} 第二步。在XXController.java头上添加@Validated，然后在@RequestParam后台使用上面介绍的验证注解，比如@NotBlank,@Rank.</p>
-<p>如下：</p>
-<p>@Controller @RequestMapping(“&#x2F;test”) @Validated public class TestController extends BaseController {<br>@RequestMapping(value &#x3D; “testValidated”, method &#x3D; RequestMethod.GET)@ResponseBody@ResponseStatus(HttpStatus.BAD_REQUEST)public Object testValidated(@RequestParam(value &#x3D; “pk”, required &#x3D; true) @Size(min &#x3D; 1, max &#x3D; 3) String pk,        @RequestParam(value &#x3D; “age”, required &#x3D; false) @Range(min &#x3D; 1, max &#x3D; 3) String age) {    try {        return “pk:” + pk + “,age&#x3D;” + age;    } catch (Throwable t) {                return buildFailure(“消息列表查询失败”);    }}<br>}</p>
-<p>当入非法参数是，会被全局处理器拦截到，(Spring切面编程方式)，如果参数非法即刻给前台返回错误数据。</p>
-<p>测试：<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/TestValidate/test/testValidated?pk=2&amp;age=12">http://127.0.0.1:8080/TestValidate/test/testValidated?pk=2&amp;age=12</a></p>
-<p>返回：</p>
-<p>注意</p>
-<p>@Valid是使用hibernateValidation.jar做校验</p>
-<p>@Validated是只用springValidator校验机制使用</p>
-<p>gitHub下载地址</p>
-<p>@Validated与@RequestBody结合使用时，在接口方法里要增加@Valid。例如：</p>
-<p>public Object edit(@Valid @RequestBody AddrRo addrRo) {…..}</p>
-<p>14.@RequestBody<br>@RequestBody(required&#x3D;true)</p>
-<p>:有个默认属性required,默认是true,当body里没内容时抛异常。</p>
-<p>application&#x2F;x-www-form-urlencoded：窗体数据被编码为名称&#x2F;值对。这是标准的编码格式。这是默认的方式 multipart&#x2F;form-data：窗体数据被编码为一条消息，页上的每个控件对应消息中的一个部分。二进制数据传输方式，主要用于上传文件</p>
-<p>注意：必需使用POST方式提交参数，需要使用ajax方式请求，用Fiddler去模拟post请求不能。</p>
-<p>引用jar包：</p>
-<p>Spring相关jar包。</p>
-<p>以及</p>
-<p> com.fasterxml.jackson.core  jackson-annotations  2.5.3    com.fasterxml.jackson.core  jackson-core  2.5.3    com.fasterxml.jackson.core  jackson-databind  2.5.3 </p>
-<p>dispatchServlet-mvc.xml配置 第一种，直接配置MappingJackson2HttpMessageCoverter：</p>
-<p>​    </p>
-<p>第二种：mvc:annotation-driven&#x2F; 就不用配置上面bean,默认会配好。</p>
-<p>Ajax请求：</p>
-<p>function testRequestBody() {  var o &#x3D; {“status”:9};  jQuery.ajax({  type: “POST”,  url: “<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/TestValidate/test/testValid&quot;">http://127.0.0.1:8080/TestValidate/test/testValid&quot;</a>,  xhrFields:{  withCredentials:true  },  data: JSON.stringify(o),  contentType: “application&#x2F;json”,  dataType: “json”,  async: false,  success:function (data) {  console.log(data);  },</p>
-<pre><code>    error: function(res) &#123;         console.log(res);        &#125;    &#125;);
-</code></pre>
-<p>}</p>
-<p>后台XXXcontroller.java:</p>
-<p>@RequestMapping(value&#x3D;”&#x2F; testValid “,method&#x3D;RequestMethod.POST) @ResponseBody public Object setOrderInfo(@RequestBody InfoVO infoVO,HttpServletRequest request, HttpServletResponse response){  InfoVO cVo &#x3D; getInfoVo(infoVO);  return “success”;  } 开发时，不是报415，就是400错误，头都大了。还是细节没做到位，注意下面几个要点：</p>
-<p>Content-Type必需是application&#x2F;json</p>
-<p>需要jackson-databind.jar</p>
-<p>mvc:annotation-driven&#x2F;要配置或直接配置bean</p>
-<p>XXXController.jar在post方式接收数据</p>
-<p>最最重要的，使用ajax以post方式请求。不能用Fiddler模拟,不然会出错。</p>
-<p>15.@CrossOrigin<br>是Cross-Origin ResourceSharing(跨域资源共享)的简写</p>
-<p>作用是解决跨域访问的问题，在Spring4.2以上的版本可直接使用。在类上或方法上添加该注解</p>
-<p>例如：</p>
-<p>@CrossOrigin public class TestController extends BaseController {<br>XXXX<br>}</p>
-<p>如果失效则可能方法没解决是GET还是POST方式，指定即可解决问题。</p>
-<p>16.@RequestParam<br>作用是提取和解析请求中的参数。@RequestParam支持类型转换，类型转换目前支持所有的基本Java类型</p>
-<p>@RequestParam([value&#x3D;”number”], [required&#x3D;false]) String number</p>
-<p>将请求中参数为number映射到方法的number上。required&#x3D;false表示该参数不是必需的，请求上可带可不带。</p>
-<p>17.@PathVariable，@RequestHeader，@CookieValue，@RequestParam, @RequestBody，@SessionAttributes, @ModelAttribute<br>@PathVariable：处理requet uri部分,当使用@RequestMapping URI template 样式映射时， 即someUrl&#x2F;{paramId}, 这时的paramId可通过 @Pathvariable注解绑定它传过来的值到方法的参数上</p>
-<p>例如：</p>
-<p>@Controller @RequestMapping(“&#x2F;owners&#x2F;{a}”) public class RelativePathUriTemplateController { @RequestMapping(“&#x2F;pets&#x2F;{b}”) public void findPet(@PathVariable(“a”) String a,@PathVariable String b, Model model) {  &#x2F;&#x2F; implementation omitted } }</p>
-<p>@RequestHeader，@CookieValue: 处理request header部分的注解</p>
-<p>将头部信息绑定到方法参数上：</p>
-<p>@RequestMapping(“&#x2F;test”) public void displayHeaderInfo(@RequestHeader(“Accept-Encoding”) String encoding,  @RequestHeader(“Keep-Alive”)long keepAlive) {<br>&#x2F;&#x2F;…</p>
-<p>}</p>
-<p>&#x2F;&#x2F;将cookie里JSESSIONID绑定到方法参数上</p>
-<p>@RequestMapping(“&#x2F;test”) public void displayHeaderInfo(@CookieValue(“JSESSIONID”) String cookie) {<br>&#x2F;&#x2F;…</p>
-<p>}</p>
-<p>18.@Scope<br>配置bean的作用域。</p>
-<p>@Controller</p>
-<p>@RequestMapping(“&#x2F;test”)</p>
-<p>@Scope(“prototype”)</p>
-<p>public class TestController {<br>}</p>
-<p>默认是单例模式，即@Scope(“singleton”),</p>
-<p>singleton：单例，即容器里只有一个实例对象。</p>
-<p>prototype：多对象，每一次请求都会产生一个新的bean实例，Spring不无法对一个prototype bean的整个生命周期负责，容器在初始化、配置、装饰或者是装配完一个prototype实例后，将它交给客户端，由程序员负责销毁该对象，不管何种作用域，容器都会调用所有对象的初始化生命周期回调方法，而对prototype而言，任何配置好的析构生命周期回调方法都将不会被调用</p>
-<p>request：对每一次HTTP请求都会产生一个新的bean，同时该bean仅在当前HTTP request内有效</p>
-<p>web.xml增加如下配置： org.springframework.web.context.request.RequestContextListener session：该针对每一次HTTP请求都会产生一个新的bean，同时该bean仅在当前HTTP session内有效。也要在web.xml配置如下代码： org.springframework.web.context.request.RequestContextListener</p>
-<p>global session：作用不大，可不用管他。</p>
-<p>19.@ResponseStatus<br>@ResponseStatus用于修饰一个类或者一个方法，修饰一个类的时候，一般修饰的是一个异常类,当处理器的方法被调用时，@ResponseStatus指定的code和reason会被返回给前端。value属性是http状态码，比如404，500等。reason是错误信息</p>
-<p>当修改类或方法时，只要该类得到调用，那么value和reason都会被添加到response里</p>
-<p>例如：</p>
-<p>@ResponseStatus(value&#x3D;HttpStatus.FORBIDDEN, reason&#x3D;”出现了错误”) public class UserException extends RuntimeException{<br>XXXXX<br>}</p>
-<p>当某处抛出UserException时，则会把value和reason返回给前端。</p>
-<p>@RequestMapping(“&#x2F;testResponseStatus”)  public String testResponseStatus(int i){  if(i&#x3D;&#x3D;0)  throw new UserNotMatchException();  return “hello”; }</p>
-<p>修改方法：</p>
-<p>@ControllerAdvice @Component public class GlobalExceptionHandler {  @Bean  public MethodValidationPostProcessor methodValidationPostProcessor() {  return new MethodValidationPostProcessor();  }</p>
-<p>@ExceptionHandler@ResponseBody@ResponseStatus(value&#x3D;HttpStatus.BAD_REQUEST,reason&#x3D;”哈哈”)public String handle(ValidationException exception) {System.out.println(“bad request, “ + exception.getMessage());return “bad request, “ + exception.getMessage();}<br>}</p>
-<p>结果如下：</p>
-<p>正如上面所说，该方法得到调用，不论是否抛异常，都会把value和reason添加到response里。</p>
-<p>总结：@ResponseStatus是为了在方法或类得到调用时将指定的code和reason添加到response里返前端，就像服务器常给我们报的404错误一样，我们可以自己指定高逼格错误提示。</p>
-<p>20.@RestController<br>@RestController &#x3D; @Controller + @ResponseBody。</p>
-<p>是2个注解的合并效果，即指定了该controller是组件，又指定方法返回的是String或json类型数据，不会解决成jsp页面，注定不够灵活，如果一个Controller即有SpringMVC返回视图的方法，又有返回json数据的方法即使用@RestController太死板。</p>
-<p>灵活的作法是：定义controller的时候，直接使用@Controller，如果需要返回json可以直接在方法中添加@ResponseBody</p>
-<p>21.@ControllerAdvice<br>官方解释是：It is typically used todefine@ExceptionHandler,</p>
-<p>@InitBinder, and@ModelAttribute methods that apply to all@RequestMapping methods</p>
-<p>意思是：即把@ControllerAdvice注解内部使用@ExceptionHandler、@InitBinder、@ModelAttribute注解的方法应用到所有的 @RequestMapping注解的方法。非常简单，不过只有当使用@ExceptionHandler最有用，另外两个用处不大。</p>
-<p>@ControllerAdvice public class GlobalExceptionHandler {  @ExceptionHandler(SQLException.class)  @ResponseStatus(value&#x3D;HttpStatus.INTERNAL_SERVER_ERROR,reason&#x3D;”sql查询错误”)  @ResponseBody  public ExceptionResponse handleSQLException(HttpServletRequest request, Exception ex) {  String message &#x3D; ex.getMessage();  return ExceptionResponse.create(HttpStatus.INTERNAL_SERVER_ERROR.value(), message);  } }</p>
-<p>即表示让Spring捕获到所有抛出的SQLException异常，并交由这个被注解的handleSQLException方法处理，同时使用@ResponseStatus指定了code和reason写到response上，返回给前端。</p>
-<p>22.元注解包括 @Retention @Target @Document @Inherited四种<br>元注解是指注解的注解，比如我们看到的ControllerAdvice注解定义如下。</p>
-<p>@Target(ElementType.TYPE) @Retention(RetentionPolicy.RUNTIME) @Documented @Component public @interface ControllerAdvice {  XXX }</p>
-<p>@Retention: 定义注解的保留策略：</p>
-<p>@Retention(RetentionPolicy.SOURCE) &#x2F;&#x2F;注解仅存在于源码中，在class字节码文件中不包含</p>
-<p>@Retention(RetentionPolicy.CLASS) &#x2F;&#x2F;默认的保留策略，注解会在class字节码文件中存在，但运行时无法获得，</p>
-<p>@Retention(RetentionPolicy.RUNTIME) &#x2F;&#x2F;注解会在class字节码文件中存在，在运行时可以通过反射获取到</p>
-<p>@Target：定义注解的作用目标:</p>
-<p>@Target(ElementType.TYPE) &#x2F;&#x2F;接口、类、枚举、注解</p>
-<p>@Target(ElementType.FIELD) &#x2F;&#x2F;字段、枚举的常量</p>
-<p>@Target(ElementType.METHOD) &#x2F;&#x2F;方法</p>
-<p>@Target(ElementType.PARAMETER) &#x2F;&#x2F;方法参数</p>
-<p>@Target(ElementType.CONSTRUCTOR) &#x2F;&#x2F;构造函数</p>
-<p>@Target(ElementType.LOCAL_VARIABLE)&#x2F;&#x2F;局部变量</p>
-<p>@Target(ElementType.ANNOTATION_TYPE)&#x2F;&#x2F;注解</p>
-<p>@Target(ElementType.PACKAGE) &#x2F;&#x2F;&#x2F;包</p>
-<p>由以上的源码可以知道，他的elementType 可以有多个，一个注解可以为类的，方法的，字段的等等</p>
-<p>@Document：说明该注解将被包含在javadoc中</p>
-<p>@Inherited：说明子类可以继承父类中的该注解</p>
-<p>比如@Valid注解定义是</p>
-<p>表示该注解只能用在方法，属性，构造函数及方法参数上。该注意会被编译到class里可通过反射得到。</p>
-<p>23.@RequestMapping<br>处理映射请求的注解。用于类上，表示类中的所有响应请求的方法都是以该地址作为父路径。有6个属性。</p>
-<p>1、 value， method: value：指定请求的实际地址，指定的地址可以是URI Template 模式； method：指定请求的method类型， GET、POST、PUT、DELETE等； 比如： @RequestMapping(value &#x3D; “&#x2F;testValid”, method &#x3D; RequestMethod.POST) @ResponseBody public Object testValid(@RequestBody @Valid Test test,BindingResult result, HttpServletRequest request, HttpServletResponse response) {  XXX }</p>
-<p>value的uri值为以下三类： A) 可以指定为普通的具体值；如@RequestMapping(value &#x3D;”&#x2F;testValid”) B) 可以指定为含有某变量的一类值;如@RequestMapping(value&#x3D;”&#x2F;{day}”) C) 可以指定为含正则表达式的一类值;如@RequestMapping(value&#x3D;”&#x2F;{textualPart:[a-z-]+}.{numericPart:[d]+}”) 可以匹配..&#x2F;chenyuan122912请求。</p>
-<p>2、 consumes，produces： consumes： 指定处理请求的提交内容类型(Content-Type)，例如@RequestMapping(value &#x3D; “&#x2F;test”, consumes&#x3D;”application&#x2F;json”)处理application&#x2F;json内容类型</p>
-<p>produces: 指定返回的内容类型，仅当request请求头中的(Accept)类型中包含该指定类型才返回；</p>
-<p>3 params、headers： params： 指定request中必须包含某些参数值是，才让该方法处理。</p>
-<p>例如：</p>
-<p>@RequestMapping(value &#x3D; “&#x2F;test”, method &#x3D; RequestMethod.GET, params&#x3D;”name&#x3D;chenyuan”) public void findOrd(String name) {  &#x2F;&#x2F; implementation omitted }</p>
-<p>仅处理请求中包含了名为“name”，值为“chenyuan”的请求.</p>
-<p>headers： 指定request中必须包含某些指定的header值，才能让该方法处理请求。</p>
-<p>@RequestMapping(value &#x3D; “&#x2F;test”, method &#x3D; RequestMethod.GET, headers&#x3D;”Referer&#x3D;<a target="_blank" rel="noopener" href="http://www.baidu.com&quot;/">www.baidu.com&quot;</a>) public void findOrd(String name) {  &#x2F;&#x2F; implementation omitted }</p>
-<p>仅处理request的header中包含了指定“Refer”请求头和对应值为“<a target="_blank" rel="noopener" href="http://www.baidu.com”的请求/">www.baidu.com”的请求</a></p>
-<ol start="24">
-<li><p>@GetMapping和@PostMapping</p>
-<p>@GetMapping(value &#x3D; “page”)等价于@RequestMapping(value &#x3D; “page”, method &#x3D; RequestMethod.GET)</p>
-</li>
-</ol>
-<p>@PostMapping(value &#x3D; “page”)等价于@RequestMapping(value &#x3D; “page”, method &#x3D; RequestMethod.POST)</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-13T10:55:12.000Z" title="2021/5/13 下午6:55:12">2021-05-13</time>发表</span><span class="level-item"><time dateTime="2021-05-13T10:55:12.000Z" title="2021/5/13 下午6:55:12">2021-05-13</time>更新</span><span class="level-item">3 分钟读完 (大约413个字)</span></div></div><div class="content"><h1 id="2-4-1-ApplicationContext"><a href="#2-4-1-ApplicationContext" class="headerlink" title="2.4.1 ApplicationContext"></a>2.4.1 ApplicationContext</h1><h2 id="SpringBoot中获取ApplicationContext的三种方式"><a href="#SpringBoot中获取ApplicationContext的三种方式" class="headerlink" title="SpringBoot中获取ApplicationContext的三种方式"></a>SpringBoot中获取ApplicationContext的三种方式</h2><blockquote>
-<p>ApplicationContext是什么？</p>
-<p>简单来说就是Spring中的容器，可以用来获取容器中的各种bean组件，注册监听事件，加载资源文件等功能。</p>
-</blockquote>
-<h2 id="一、Application-Context获取的几种方式"><a href="#一、Application-Context获取的几种方式" class="headerlink" title="一、Application Context获取的几种方式"></a>一、Application Context获取的几种方式</h2><h3 id="1-直接使用Autowired注入"><a href="#1-直接使用Autowired注入" class="headerlink" title="1 直接使用Autowired注入"></a>1 直接使用Autowired注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Book1</span> &#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> ApplicationContext applicationContext;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-利用-spring4-3-的新特性"><a href="#2-利用-spring4-3-的新特性" class="headerlink" title="2 利用 spring4.3 的新特性"></a>2 利用 spring4.3 的新特性</h3><p>使用spring4.3新特性但是存在一定的局限性，必须满足以下两点：<br>1 构造函数只能有一个，如果有多个，就必须有一个无参数的构造函数，此时，spring会调用无参的构造函数<br>2 构造函数的参数，必须在spring容器中存在</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Book2</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> ApplicationContext applicationContext;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Book2</span><span class="params">(ApplicationContext applicationContext)</span>&#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">        <span class="built_in">this</span>.applicationContext=applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span> <span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-实现spring提供的接口-ApplicationContextAware"><a href="#3-实现spring提供的接口-ApplicationContextAware" class="headerlink" title="3 实现spring提供的接口 ApplicationContextAware"></a>3 实现spring提供的接口 ApplicationContextAware</h3><p>spring 在bean 初始化后会判断是不是<code>ApplicationContextAware</code>的子类，调用<code>setApplicationContext()</code>方法， 会将容器中<code>ApplicationContext</code>传入进去</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Book3</span> <span class="keyword">implements</span> <span class="title class_">ApplicationContextAware</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> ApplicationContext applicationContext;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span> <span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(applicationContext.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException &#123;</span><br><span class="line">        <span class="built_in">this</span>.applicationContext = applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="二、ApplicationContext的常见实现是什么？"><a href="#二、ApplicationContext的常见实现是什么？" class="headerlink" title="二、ApplicationContext的常见实现是什么？"></a>二、ApplicationContext的常见实现是什么？</h2><p>1.FileSystemXmlApplicationContext来容器从XML文件加载bean的定义。必须将XML bean配置文件的完整路径提供给构造函数。</p>
-<p>2.ClassPathXmlApplicationContext的容器还加载从XML文件java bean的定义。在这里，您需要正确设置CLASSPATH，因为此容器将在CLASSPATH中查找bean配置XML文件。</p>
-<p>3.WebXmlApplicationContext：容器从Web应用程序中加载的所有bean类定义的XML文件。</p>
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-12T02:38:21.000Z" title="2021/5/12 上午10:38:21">2021-05-12</time>发表</span><span class="level-item"><time dateTime="2021-05-12T02:38:21.000Z" title="2021/5/12 上午10:38:21">2021-05-12</time>更新</span><span class="level-item">2 分钟读完 (大约354个字)</span></div></div><div class="content"><h2 id="Mac环境目录"><a href="#Mac环境目录" class="headerlink" title="Mac环境目录"></a>Mac环境目录</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 通过phpinfo()打印页面</span><br><span class="line"></span><br><span class="line">1. php.ini文件目录</span><br><span class="line">Loaded Configuration File</span><br><span class="line">/usr/local/etc/php/7.1/php.ini</span><br><span class="line"></span><br><span class="line">2.扩展存放目录</span><br><span class="line">extension_dir</span><br><span class="line">/usr/local/lib/php/pecl/20160303</span><br></pre></td></tr></table></figure>
-
-<h2 id="安装apcu"><a href="#安装apcu" class="headerlink" title="安装apcu"></a>安装apcu</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 1.下载源码  </span><br><span class="line">git <span class="built_in">clone</span> https://github.com/krakjoe/apcu</span><br><span class="line">// 2.编译安装  </span><br><span class="line"><span class="built_in">cd</span> apcu</span><br><span class="line">phpize</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br><span class="line">// 3. 修改php.ini文件</span><br><span class="line">extension=apcu</span><br><span class="line"></span><br><span class="line">php --ini</span><br><span class="line">// apcu.so目录</span><br><span class="line">/opt/homebrew/Cellar/php@7.4/7.4.16/pecl/20190902</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="MacOs"><a href="#MacOs" class="headerlink" title="MacOs"></a>MacOs</h2><blockquote>
-<p>OS11.1 Install Nginx</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install nginx</span><br><span class="line"><span class="comment"># Docroot is:</span></span><br><span class="line">/opt/homebrew/var/www</span><br><span class="line"><span class="comment"># Config files</span></span><br><span class="line">/opt/homebrew/etc/nginx/servers/</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>OS11.1 配置php-fpm</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ php-fpm</span><br><span class="line">ERROR: failed to load configuration file <span class="string">&#x27;/private/etc/php-fpm.conf&#x27;</span></span><br><span class="line">ERROR: FPM initialization failed</span><br><span class="line">$ <span class="built_in">cd</span> /private/etc</span><br><span class="line">$ sudo <span class="built_in">cp</span> php-fpm.conf.default php-fpm.conf</span><br><span class="line">$ php-fpm</span><br><span class="line">WARNING: Nothing matches the include pattern <span class="string">&#x27;/private/etc/php-fpm.d/*.conf&#x27;</span> from /private/etc/php-fpm.conf at line 143</span><br><span class="line">ERROR: failed to open error_log (/usr/var/log/php-fpm.log): No such file or directory (2)</span><br><span class="line">ERROR: failed to post process the configuration</span><br><span class="line">ERROR: FPM initialization failed</span><br><span class="line"><span class="comment"># cd /usr/var/log 发现根本没有这个目录，甚至连 var 目录都没有，加上为了避免权限问题，干脆配置到 /usr/local/var/log 目录。</span></span><br><span class="line"><span class="comment"># 修改 php-fpm.conf error_log 配置为 /usr/local/var/log/php-fpm.log，并把 user 和 group 改为和当前用户一样。</span></span><br><span class="line">$ php-fpm</span><br><span class="line">WARNING: Nothing matches the include pattern <span class="string">&#x27;/private/etc/php-fpm.d/*.conf&#x27;</span> from /private/etc/php-fpm.conf at line 143.</span><br><span class="line">ERROR: No pool defined. at least one pool section must be specified <span class="keyword">in</span> config file</span><br><span class="line">$ <span class="built_in">cd</span> /private/etc/php-fpm.d</span><br><span class="line">$ <span class="built_in">cp</span> www.conf.default www.conf</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>异常</p>
-<p>1.fatal error: ‘pcre2.h’ file not found #include “pcre2.h”</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cp</span> /opt/homebrew/Cellar/pcre2/10.36/include/pcre2.h /opt/homebrew/Cellar/php\@7.4/7.4.16/include/php/ext/pcre/pcre2.h</span><br></pre></td></tr></table></figure>
-
-</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-04-28T01:54:13.000Z" title="2021/4/28 上午9:54:13">2021-04-28</time>发表</span><span class="level-item"><time dateTime="2021-04-28T01:54:13.000Z" title="2021/4/28 上午9:54:13">2021-04-28</time>更新</span><span class="level-item">41 分钟读完 (大约6201个字)</span></div></div><div class="content"><p><img src="/../../images/640.png" alt="图片"></p>
-<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>什么是分布式消息中间件？</li>
-<li>消息中间件的作用是什么？</li>
-<li>消息中间件的使用场景是什么？</li>
-<li>消息中间件选型？</li>
-</ul>
-<p>分布式消息是一种通信机制，和 RPC、HTTP、RMI 等不一样，消息中间件采用分布式中间代理的方式进行通信。如图所示，采用了消息中间件之后，上游业务系统发送消息，先存储在消息中间件，然后由消息中间件将消息分发到对应的业务模块应用（分布式生产者 - 消费者模式）。这种异步的方式，减少了服务之间的耦合程度。</p>
-<p><img src="/../../images/640" alt="图片"></p>
-<p><strong>定义消息中间件：</strong></p>
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.1.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-28T07:17:08.000Z" title="2021/5/28 下午3:17:08">2021-05-28</time>发表</span><span class="level-item"><time dateTime="2021-05-28T07:17:08.000Z" title="2021/5/28 下午3:17:08">2021-05-28</time>更新</span><span class="level-item">19 分钟读完 (大约2795个字)</span></div></div><div class="content"><h1 id="Redis集群的5种使用方式，及各自优缺点对比分析"><a href="#Redis集群的5种使用方式，及各自优缺点对比分析" class="headerlink" title="Redis集群的5种使用方式，及各自优缺点对比分析"></a>Redis集群的5种使用方式，及各自优缺点对比分析</h1><p>本文主要针对 Redis 常见的几种使用方式及其优缺点展开分析。</p>
+<h1 id="一、常见使用方式"><a href="#一、常见使用方式" class="headerlink" title="一、常见使用方式"></a>一、常见使用方式</h1><p>Redis 的几种常见使用方式包括：</p>
 <ul>
-<li>利用高效可靠的消息传递机制进行平台无关的数据交流</li>
-<li>基于数据通信，来进行分布式系统的集成</li>
-<li>通过提供消息传递和消息排队模型，可以在分布式环境下扩展进程间的通信</li>
+<li>Redis 单副本</li>
+<li>Redis 多副本(主从)</li>
+<li>Redis Sentinel(哨兵)</li>
+<li>Redis Cluster</li>
+<li>Redis 自研</li>
 </ul>
-<p>在系统架构中引用额外的组件，必然提高系统的架构复杂度和运维的难度，那么<strong>在系统中使用分布式消息中间件有什么优势呢？消息中间件在系统中起的作用又是什么呢？</strong></p>
+<h1 id="二、各种使用方式的优缺点"><a href="#二、各种使用方式的优缺点" class="headerlink" title="二、各种使用方式的优缺点"></a>二、各种使用方式的优缺点</h1><p><strong>1、Redis 单副本</strong></p>
+<p>Redis 单副本，采用单个 Redis 节点部署架构，没有备用节点实时同步数据，不提供数据持久化和备份策略，适用于数据可靠性要求不高的纯缓存业务场景。</p>
+<p><img src="/../../images/23da1428f47c4de7a6eeeacc5d5fde31.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><strong>优点：</strong></p>
+<p>架构简单，部署方便;</p>
+<p>高性价比：缓存使用时无需备用节点(单实例可用性可以用 supervisor 或 crontab 保证)，当然为了满足业务的高可用性，也可以牺牲一个备用节点，但同时刻只有一个实例对外提供服务;</p>
+<p>高性能。</p>
+<p><strong>缺点：</strong></p>
+<p>不保证数据的可靠性;</p>
+<p>在缓存使用，进程重启后，数据丢失，即使有备用的节点解决高可用性，但是仍然不能解决缓存预热问题，因此不适用于数据可靠性要求高的业务;</p>
+<p>高性能受限于单核 CPU 的处理能力(Redis 是单线程机制)，CPU 为主要瓶颈，所以适合操作命令简单，排序、计算较少的场景。也可以考虑用 Memcached 替代。</p>
+<p><strong>2、Redis 多副本(主从)</strong></p>
+<p>Redis 多副本，采用主从(replication)部署结构，相较于单副本而言最大的特点就是主从实例间数据实时同步，并且提供数据持久化和备份策略。主从实例部署在不同的物理服务器上，根据公司的基础环境配置，可以实现同时对外提供服务和读写分离策略。</p>
+<p><img src="/../../images/8120aa689db94dcf87083f048b64dab9.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><strong>优点：</strong></p>
+<p>高可靠性：一方面，采用双机主备架构，能够在主库出现故障时自动进行主备切换，从库提升为主库提供服务，保证服务平稳运行;另一方面，开启数据持久化功能和配置合理的备份策略，能有效的解决数据误操作和数据异常丢失的问题;</p>
+<p>读写分离策略：从节点可以扩展主库节点的读能力，有效应对大并发量的读操作。</p>
+<p><strong>缺点：</strong></p>
+<p>故障恢复复杂，如果没有 RedisHA 系统(需要开发)，当主库节点出现故障时，需要手动将一个从节点晋升为主节点，同时需要通知业务方变更配置，并且需要让其它从库节点去复制新主库节点，整个过程需要人为干预，比较繁琐;</p>
+<p>主库的写能力受到单机的限制，可以考虑分片;</p>
+<p>主库的存储能力受到单机的限制，可以考虑 Pika;</p>
+<p>原生复制的弊端在早期的版本中也会比较突出，如：Redis 复制中断后，Slave 会发起 psync，此时如果同步不成功，则会进行全量同步，主库执行全量备份的同时可能会造成毫秒或秒级的卡顿;又由于 COW 机制，导致极端情况下的主库内存溢出，程序异常退出或宕机;主库节点生成备份文件导致服务器磁盘 IO 和 CPU(压缩)资源消耗;发送数 GB 大小的备份文件导致服务器出口带宽暴增，阻塞请求，建议升级到最新版本。</p>
+<p><strong>3、Redis Sentinel(哨兵)</strong></p>
+<p>Redis Sentinel 是社区版本推出的原生高可用解决方案，其部署架构主要包括两部分：Redis Sentinel 集群和 Redis 数据集群。</p>
+<p>其中 Redis Sentinel 集群是由若干 Sentinel 节点组成的分布式集群，可以实现故障发现、故障自动转移、配置中心和客户端通知。Redis Sentinel 的节点数量要满足 2n+1(n&gt;&#x3D;1)的奇数个。</p>
+<p><img src="/../../images/667e7d7682cc4b02b287be6211b071ab.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><img src="/../../images/797018f905474ef2bad4e086848b1695.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><strong>优点：</strong></p>
+<p>Redis Sentinel 集群部署简单;</p>
+<p>能够解决 Redis 主从模式下的高可用切换问题;</p>
+<p>很方便实现 Redis 数据节点的线形扩展，轻松突破 Redis 自身单线程瓶颈，可极大满足 Redis 大容量或高性能的业务需求;</p>
+<p>可以实现一套 Sentinel 监控一组 Redis 数据节点或多组数据节点。</p>
+<p><strong>缺点：</strong></p>
+<p>部署相对 Redis 主从模式要复杂一些，原理理解更繁琐;</p>
+<p>资源浪费，Redis 数据节点中 slave 节点作为备份节点不提供服务;</p>
+<p>Redis Sentinel 主要是针对 Redis 数据节点中的主节点的高可用切换，对 Redis 的数据节点做失败判定分为主观下线和客观下线两种，对于 Redis 的从节点有对节点做主观下线操作，并不执行故障转移。</p>
+<p>不能解决读写分离问题，实现起来相对复杂。</p>
+<p><strong>建议：</strong></p>
+<p>如果监控同一业务，可以选择一套 Sentinel 集群监控多组 Redis 数据节点的方案，反之选择一套 Sentinel 监控一组 Redis 数据节点的方案。</p>
+<p>sentinel monitor配置中的建议设置成 Sentinel 节点的一半加 1，当 Sentinel 部署在多个 IDC 的时候，单个 IDC 部署的 Sentinel 数量不建议超过(Sentinel 数量 – quorum)。</p>
+<p>合理设置参数，防止误切，控制切换灵敏度控制：</p>
+<p>a. quorum</p>
+<p>b. down-after-milliseconds 30000</p>
+<p>c. failover-timeout 180000</p>
+<p>d. maxclient</p>
+<p>e. timeout</p>
+<p>部署的各个节点服务器时间尽量要同步，否则日志的时序性会混乱。</p>
+<p>Redis 建议使用 pipeline 和 multi-keys 操作，减少 RTT 次数，提高请求效率。</p>
+<p>自行搞定配置中心(zookeeper)，方便客户端对实例的链接访问。</p>
+<p><strong>4、Redis Cluster</strong></p>
+<p>Redis Cluster 是社区版推出的 Redis 分布式集群解决方案，主要解决 Redis 分布式方面的需求，比如，当遇到单机内存，并发和流量等瓶颈的时候，Redis Cluster 能起到很好的负载均衡的目的。</p>
+<p>Redis Cluster 集群节点最小配置 6 个节点以上(3 主 3 从)，其中主节点提供读写操作，从节点作为备用节点，不提供请求，只作为故障转移使用。</p>
+<p>Redis Cluster 采用虚拟槽分区，所有的键根据哈希函数映射到 0～16383 个整数槽内，每个节点负责维护一部分槽以及槽所印映射的键值数据。</p>
+<p><img src="/../../images/990dc2eb3b1747c2805bab1daa1cba95.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><strong>优点：</strong></p>
+<p>无中心架构;</p>
+<p>数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布;</p>
+<p>可扩展性：可线性扩展到 1000 多个节点，节点可动态添加或删除;</p>
+<p>高可用性：部分节点不可用时，集群仍可用。通过增加 Slave 做 standby 数据副本，能够实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制完成 Slave 到 Master 的角色提升;</p>
+<p>降低运维成本，提高系统的扩展性和可用性。</p>
+<p><strong>缺点：</strong></p>
+<p>Client 实现复杂，驱动要求实现 Smart Client，缓存 slots mapping 信息并及时更新，提高了开发难度，客户端的不成熟影响业务的稳定性。目前仅 JedisCluster 相对成熟，异常处理部分还不完善，比如常见的“max redirect exception”。</p>
+<p>节点会因为某些原因发生阻塞(阻塞时间大于 clutser-node-timeout)，被判断下线，这种 failover 是没有必要的。</p>
+<p>数据通过异步复制，不保证数据的强一致性。</p>
+<p>多个业务使用同一套集群时，无法根据统计区分冷热数据，资源隔离性较差，容易出现相互影响的情况。</p>
+<p>Slave 在集群中充当“冷备”，不能缓解读压力，当然可以通过 SDK 的合理设计来提高 Slave 资源的利用率。</p>
+<p>Key 批量操作限制，如使用 mset、mget 目前只支持具有相同 slot 值的 Key 执行批量操作。对于映射为不同 slot 值的 Key 由于 Keys 不支持跨 slot 查询，所以执行 mset、mget、sunion 等操作支持不友好。</p>
+<p>Key 事务操作支持有限，只支持多 key 在同一节点上的事务操作，当多个 Key 分布于不同的节点上时无法使用事务功能。</p>
+<p>Key 作为数据分区的最小粒度，不能将一个很大的键值对象如 hash、list 等映射到不同的节点。</p>
+<p>不支持多数据库空间，单机下的 redis 可以支持到 16 个数据库，集群模式下只能使用 1 个数据库空间，即 db 0。</p>
+<p>复制结构只支持一层，从节点只能复制主节点，不支持嵌套树状复制结构。</p>
+<p>避免产生 hot-key，导致主库节点成为系统的短板。</p>
+<p>避免产生 big-key，导致网卡撑爆、慢查询等。</p>
+<p>重试时间应该大于 cluster-node-time 时间。</p>
+<p>Redis Cluster 不建议使用 pipeline 和 multi-keys 操作，减少 max redirect 产生的场景。</p>
+<p><strong>5、Redis 自研</strong></p>
+<p>Redis 自研的高可用解决方案，主要体现在配置中心、故障探测和 failover 的处理机制上，通常需要根据企业业务的实际线上环境来定制化。</p>
+<p><img src="/../../images/50ba483ccef444e6aca9723f1956b00b.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><img src="/../../images/f9b70a2e7afb4631aad48adaca70c03a.jpeg" alt="Redis集群的5种使用方式，及各自优缺点对比分析"></p>
+<p><strong>优点：</strong></p>
+<p>高可靠性、高可用性;</p>
+<p>自主可控性高;</p>
+<p>贴切业务实际需求，可缩性好，兼容性好。</p>
+<p><strong>缺点：</strong></p>
+<p>实现复杂，开发成本高;</p>
+<p>需要建立配套的周边设施，如监控，域名服务，存储元数据信息的数据库等;</p>
+<p>维护成本高。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-27T11:39:07.000Z" title="2021/5/27 下午7:39:07">2021-05-27</time>发表</span><span class="level-item"><time dateTime="2021-05-27T11:39:07.000Z" title="2021/5/27 下午7:39:07">2021-05-27</time>更新</span><span class="level-item">17 分钟读完 (大约2560个字)</span></div></div><div class="content"><h1 id="2-6-30-签到功能"><a href="#2-6-30-签到功能" class="headerlink" title="2.6.30 签到功能"></a>2.6.30 签到功能</h1><p>常见的场景如下：</p>
 <ul>
-<li>解耦</li>
-<li>冗余（存储）</li>
-<li>扩展性</li>
-<li>削峰</li>
-<li>可恢复性</li>
-<li>顺序保证</li>
-<li>缓冲</li>
-<li>异步通信</li>
+<li>给一个 userId ，判断用户登陆状态；</li>
+<li>显示用户某个月的签到次数和首次签到时间；</li>
+<li>两亿用户最近 7 天的签到情况，统计 7 天内连续签到的用户总数；</li>
 </ul>
-<p>面试时，面试官经常会关心面试者对开源组件的选型能力，这既可以考验面试者知识的广度，也可以考验面试者对某类系统的知识的认识深度，而且也可以看出面试者对系统整体把握和系统架构设计的能力。开源分布式消息系统有很多，不同的消息系统的特性也不一样，选择怎样的消息系统，不仅需要对各消息系统有一定的了解，也需要对自身系统需求有清晰的认识。</p>
-<p><strong>下面是常见的几种分布式消息系统的对比：</strong><br><img src="/../../images/640-20210428095405910" alt="图片">选择</p>
-<h3 id="答案关键字"><a href="#答案关键字" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
-<li>什么是分布式消息中间件？通信，队列，分布式，生产消费者模式。</li>
-<li>消息中间件的作用是什么？解耦、峰值处理、异步通信、缓冲。</li>
-<li>消息中间件的使用场景是什么？异步通信，消息存储处理。</li>
-<li>消息中间件选型？语言，协议、HA、数据可靠性、性能、事务、生态、简易、推拉模式。</li>
-</ul>
-<h2 id="Kafka-基本概念和架构"><a href="#Kafka-基本概念和架构" class="headerlink" title="Kafka 基本概念和架构"></a>Kafka 基本概念和架构</h2><h3 id="问题-1"><a href="#问题-1" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>简单讲下 Kafka 的架构？</li>
-<li>Kafka 是推模式还是拉模式，推拉的区别是什么？</li>
-<li>Kafka 如何广播消息？</li>
-<li>Kafka 的消息是否是有序的？</li>
-<li>Kafka 是否支持读写分离？</li>
-<li>Kafka 如何保证数据高可用？</li>
-<li>Kafka 中 zookeeper 的作用？</li>
-<li>是否支持事务？</li>
-<li>分区数是否可以减少？</li>
-</ul>
-<p><strong>Kafka 架构中的一般概念：</strong></p>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/FbXJ7UCc6O1oicl7z78fR9ibRGPNMBfV0ezicXtDDiaMbIKIjibSf05dOIKmBzicuuEhrRkbuESn0DNrfEFOCsTtYTTw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="图片">架构</p>
-<ul>
-<li>Producer：生产者，也就是发送消息的一方。生产者负责创建消息，然后将其发送到 Kafka。</li>
-<li>Consumer：消费者，也就是接受消息的一方。消费者连接到 Kafka 上并接收消息，进而进行相应的业务逻辑处理。</li>
-<li>Consumer Group：一个消费者组可以包含一个或多个消费者。使用多分区 + 多消费者方式可以极大提高数据下游的处理速度，同一消费组中的消费者不会重复消费消息，同样的，不同消费组中的消费者消息消息时互不影响。Kafka 就是通过消费组的方式来实现消息 P2P 模式和广播模式。</li>
-<li>Broker：服务代理节点。Broker 是 Kafka 的服务节点，即 Kafka 的服务器。</li>
-<li>Topic：Kafka 中的消息以 Topic 为单位进行划分，生产者将消息发送到特定的 Topic，而消费者负责订阅 Topic 的消息并进行消费。</li>
-<li>Partition：Topic 是一个逻辑的概念，它可以细分为多个分区，每个分区只属于单个主题。同一个主题下不同分区包含的消息是不同的，分区在存储层面可以看作一个可追加的日志（Log）文件，消息在被追加到分区日志文件的时候都会分配一个特定的偏移量（offset）。</li>
-<li>Offset：offset 是消息在分区中的唯一标识，Kafka 通过它来保证消息在分区内的顺序性，不过 offset 并不跨越分区，也就是说，Kafka 保证的是分区有序性而不是主题有序性。</li>
-<li>Replication：副本，是 Kafka 保证数据高可用的方式，Kafka 同一 Partition 的数据可以在多 Broker 上存在多个副本，通常只有主副本对外提供读写服务，当主副本所在 broker 崩溃或发生网络一场，Kafka 会在 Controller 的管理下会重新选择新的 Leader 副本对外提供读写服务。</li>
-<li>Record：实际写入 Kafka 中并可以被读取的消息记录。每个 record 包含了 key、value 和 timestamp。</li>
-</ul>
-<p><strong>Kafka Topic Partitions Layout</strong></p>
-<p><img src="/../../images/640-20210428095405405" alt="图片">主题</p>
-<p>Kafka 将 Topic 进行分区，分区可以并发读写。</p>
-<p><strong>Kafka Consumer Offset</strong></p>
-<p><img src="/../../images/640-20210428095405632" alt="图片">consumer offset</p>
-<h3 id="zookeeper"><a href="#zookeeper" class="headerlink" title="zookeeper"></a>zookeeper</h3><p><img src="/../../images/640-20210428095405909.png" alt="图片">zookeeper</p>
-<ul>
-<li>Broker 注册：Broker 是分布式部署并且之间相互独立，Zookeeper 用来管理注册到集群的所有 Broker 节点。</li>
-<li>Topic 注册：在 Kafka 中，同一个 Topic 的消息会被分成多个分区并将其分布在多个 Broker 上，这些分区信息及与 Broker 的对应关系也都是由 Zookeeper 在维护</li>
-<li>生产者负载均衡：由于同一个 Topic 消息会被分区并将其分布在多个 Broker 上，因此，生产者需要将消息合理地发送到这些分布式的 Broker 上。</li>
-<li>消费者负载均衡：与生产者类似，Kafka 中的消费者同样需要进行负载均衡来实现多个消费者合理地从对应的 Broker 服务器上接收消息，每个消费者分组包含若干消费者，每条消息都只会发送给分组中的一个消费者，不同的消费者分组消费自己特定的 Topic 下面的消息，互不干扰。</li>
-</ul>
-<h3 id="答案关键字-1"><a href="#答案关键字-1" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
-<li><p>简单讲下 Kafka 的架构？</p>
-<blockquote>
-<p>Producer、Consumer、Consumer Group、Topic、Partition</p>
-</blockquote>
-</li>
-<li><p>Kafka 是推模式还是拉模式，推拉的区别是什么？</p>
-<blockquote>
-<p>Kafka Producer 向 Broker 发送消息使用 Push 模式，Consumer 消费采用的 Pull 模式。拉取模式，让 consumer 自己管理 offset，可以提供读取性能</p>
-</blockquote>
-</li>
-<li><p>Kafka 如何广播消息？</p>
-<blockquote>
-<p>Consumer group</p>
-</blockquote>
-</li>
-<li><p>Kafka 的消息是否是有序的？</p>
-<blockquote>
-<p>Topic 级别无序，Partition 有序</p>
-</blockquote>
-</li>
-<li><p>Kafka 是否支持读写分离？</p>
-<blockquote>
-<p>不支持，只有 Leader 对外提供读写服务</p>
-</blockquote>
-</li>
-<li><p>Kafka 如何保证数据高可用？</p>
-<blockquote>
-<p>副本，ack，HW</p>
-</blockquote>
-</li>
-<li><p>Kafka 中 zookeeper 的作用？</p>
-<blockquote>
-<p>集群管理，元数据管理</p>
-</blockquote>
-</li>
-<li><p>是否支持事务？</p>
-<blockquote>
-<p>0.11 后支持事务，可以实现”exactly once“</p>
-</blockquote>
-</li>
-<li><p>分区数是否可以减少？</p>
-<blockquote>
-<p>不可以，会丢失数据</p>
-</blockquote>
-</li>
-</ul>
-<h2 id="Kafka-使用"><a href="#Kafka-使用" class="headerlink" title="Kafka 使用"></a>Kafka 使用</h2><h3 id="问题-2"><a href="#问题-2" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>Kafka 有哪些命令行工具？你用过哪些？</li>
-<li>Kafka Producer 的执行过程？</li>
-<li>Kafka Producer 有哪些常见配置？</li>
-<li>如何让 Kafka 的消息有序？</li>
-<li>Producer 如何保证数据发送不丢失？</li>
-<li>如何提升 Producer 的性能？</li>
-<li>如果同一 group 下 consumer 的数量大于 part 的数量，kafka 如何处理？</li>
-<li>Kafka Consumer 是否是线程安全的？</li>
-<li>讲一下你使用 Kafka Consumer 消费消息时的线程模型，为何如此设计？</li>
-<li>Kafka Consumer 的常见配置？</li>
-<li>Consumer 什么时候会被踢出集群？</li>
-<li>当有 Consumer 加入或退出时，Kafka 会作何反应？</li>
-<li>什么是 Rebalance，何时会发生 Rebalance？</li>
-</ul>
-<h3 id="命令行工具"><a href="#命令行工具" class="headerlink" title="命令行工具"></a>命令行工具</h3><p>Kafka 的命令行工具在 Kafka 包的<code>/bin</code>目录下，主要包括服务和集群管理脚本，配置脚本，信息查看脚本，Topic 脚本，客户端脚本等。</p>
-<ul>
-<li>kafka-configs.sh：配置管理脚本</li>
-<li>kafka-console-consumer.sh：kafka 消费者控制台</li>
-<li>kafka-console-producer.sh：kafka 生产者控制台</li>
-<li>kafka-consumer-groups.sh：kafka 消费者组相关信息</li>
-<li>kafka-delete-records.sh：删除低水位的日志文件</li>
-<li>kafka-log-dirs.sh：kafka 消息日志目录信息</li>
-<li>kafka-mirror-maker.sh：不同数据中心 kafka 集群复制工具</li>
-<li>kafka-preferred-replica-election.sh：触发 preferred replica 选举</li>
-<li>kafka-producer-perf-test.sh：kafka 生产者性能测试脚本</li>
-<li>kafka-reassign-partitions.sh：分区重分配脚本</li>
-<li>kafka-replica-verification.sh：复制进度验证脚本</li>
-<li>kafka-server-start.sh：启动 kafka 服务</li>
-<li>kafka-server-stop.sh：停止 kafka 服务</li>
-<li>kafka-topics.sh：topic 管理脚本</li>
-<li>kafka-verifiable-consumer.sh：可检验的 kafka 消费者</li>
-<li>kafka-verifiable-producer.sh：可检验的 kafka 生产者</li>
-<li>zookeeper-server-start.sh：启动 zk 服务</li>
-<li>zookeeper-server-stop.sh：停止 zk 服务</li>
-<li>zookeeper-shell.sh：zk 客户端</li>
-</ul>
-<p>我们通常可以使用<code>kafka-console-consumer.sh</code>和<code>kafka-console-producer.sh</code>脚本来测试 Kafka 生产和消费，<code>kafka-consumer-groups.sh</code>可以查看和管理集群中的 Topic，<code>kafka-topics.sh</code>通常用于查看 Kafka 的消费组情况。</p>
-<h3 id="Kafka-Producer"><a href="#Kafka-Producer" class="headerlink" title="Kafka Producer"></a>Kafka Producer</h3><p>Kafka producer 的正常生产逻辑包含以下几个步骤：</p>
+<p>通常情况下，我们面临的用户数量以及访问量都是巨大的，比如百万、千万级别的用户数量，或者千万级别、甚至亿级别的访问信息。</p>
+<p>所以，我们必须要选择能够非常高效地统计大量数据（例如亿级）的集合类型。</p>
+<p><strong>如何选择合适的数据集合，我们首先要了解常用的统计模式，并运用合理的数据类型来解决实际问题。</strong></p>
+<p>四种统计类型：</p>
 <ol>
-<li>配置生产者客户端参数常见生产者实例。</li>
-<li>构建待发送的消息。</li>
-<li>发送消息。</li>
-<li>关闭生产者实例。</li>
+<li>二值状态统计；</li>
+<li>聚合统计；</li>
+<li>排序统计；</li>
+<li>基数统计。</li>
 </ol>
-<p>Producer 发送消息的过程如下图所示，需要经过<code>拦截器</code>，<code>序列化器</code>和<code>分区器</code>，最终由<code>累加器</code>批量发送至 Broker。</p>
-<p><img src="/../../images/640-20210428095405435.png" alt="图片">producer</p>
-<p>Kafka Producer 需要以下必要参数：</p>
+<p>本文将由<strong>二值状态统计类型</strong>作为实战篇系列的开篇，文中将用到 String、Set、Zset、List、hash 以外的拓展数据类型 Bitmap 来实现。</p>
+<p>文章涉及到的指令可以通过在线 Redis 客户端运行调试，地址：<a target="_blank" rel="noopener" href="https://try.redis.io/%EF%BC%8C%E8%B6%85%E6%96%B9%E4%BE%BF%E7%9A%84%E8%AF%B4%E3%80%82">https://try.redis.io/，超方便的说。</a></p>
+<h1 id="寄语"><a href="#寄语" class="headerlink" title="寄语"></a>寄语</h1><blockquote>
+<p>❝</p>
+<p>多分享多付出，前期多给别人创造价值并且不计回报，从长远来看，这些付出都会成倍的回报你。</p>
+<p>特别是刚开始跟别人合作的时候，不要去计较短期的回报，没有太大意义，更多的是锻炼自己的视野、视角以及解决问题的能力。</p>
+</blockquote>
+<h1 id="二值状态统计"><a href="#二值状态统计" class="headerlink" title="二值状态统计"></a>二值状态统计</h1><blockquote>
+<p>❝</p>
+<p>码哥，什么是二值状态统计呀？</p>
+</blockquote>
+<p>也就是集合中的元素的值只有 0 和 1 两种，在签到打卡和用户是否登陆的场景中，只需记录签到(1)或 未签到(0)，已登录(1)或未登陆(0)。</p>
+<p>假如我们在判断用户是否登陆的场景中使用 Redis 的 String 类型实现（<strong>key -&gt; userId，value -&gt; 0 表示下线，1 - 登陆</strong>），假如存储 100 万个用户的登陆状态，如果以字符串的形式存储，就需要存储 100 万个字符串了，内存开销太大。</p>
+<blockquote>
+<p>❝</p>
+<p>码哥，为什么 String 类型内存开销大？</p>
+</blockquote>
+<p>String 类型除了记录实际数据以外，还需要额外的内存记录数据长度、空间使用等信息。</p>
+<p>当保存的数据包含字符串，String 类型就使用简单动态字符串（SDS）结构体来保存，如下图所示：</p>
+<p><img src="/../../images/1389f0f4d72e4575a9e4aacdc4720f64.png" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>SDS</p>
 <ul>
-<li>bootstrap.server：指定 Kafka 的 Broker 的地址</li>
-<li>key.serializer：key 序列化器</li>
-<li>value.serializer：value 序列化器</li>
+<li><strong>len</strong>：占 4 个字节，表示 buf 的已用长度。</li>
+<li><strong>alloc</strong>：占 4 个字节，表示 buf 实际分配的长度，通常 &gt; len。</li>
+<li><strong>buf</strong>：字节数组，保存实际的数据，Redis 自动在数组最后加上一个 “\0”，额外占用一个字节的开销。</li>
 </ul>
-<p>常见参数：</p>
-<ul>
-<li><p>batch.num.messages</p>
+<p>所以，在 SDS 中除了 buf 保存实际的数据， len 与 alloc 就是额外的开销。</p>
+<p>另外，还有一个 <strong>RedisObject 结构的开销</strong>，因为 Redis 的数据类型有很多，而且，不同数据类型都有些相同的元数据要记录（比如最后一次访问的时间、被引用的次数等）。</p>
+<p>所以，Redis 会用一个 RedisObject 结构体来统一记录这些元数据，同时指向实际数据。</p>
+<p><img src="/../../images/bad86e4a31e145caa9f5c891a8ad3141.jpeg" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>对于二值状态场景，我们就可以利用 Bitmap 来实现。比如登陆状态我们用一个 bit 位表示，一亿个用户也只占用 一亿 个 bit 位内存 ≈ （100000000 &#x2F; 8&#x2F; 1024&#x2F;1024）12 MB。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">大概的空间占用计算公式是：($offset/8/1024/1024) MB</span><br></pre></td></tr></table></figure>
+
 <blockquote>
-<p>默认值：200，每次批量消息的数量，只对 asyc 起作用。</p>
+<p>❝</p>
+<p>什么是 Bitmap 呢？</p>
 </blockquote>
-</li>
-<li><p>request.required.acks</p>
+<p>Bitmap 的底层数据结构用的是 String 类型的 SDS 数据结构来保存位数组，Redis 把每个字节数组的 8 个 bit 位利用起来，每个 bit 位 表示一个元素的二值状态（不是 0 就是 1）。</p>
+<p>可以将 Bitmap 看成是一个 bit 为单位的数组，数组的每个单元只能存储 0 或者 1，数组的下标在 Bitmap 中叫做 offset 偏移量。</p>
+<p>为了直观展示，我们可以理解成 buf 数组的每个字节用一行表示，每一行有 8 个 bit 位，8 个格子分别表示这个字节中的 8 个 bit 位，如下图所示：</p>
+<p><img src="/../../images/df9a85c4301b46c28e3cc5eda4fe4cec.png" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>Bitmap</p>
+<p><strong>8 个 bit 组成一个 Byte，所以 Bitmap 会极大地节省存储空间。</strong> 这就是 Bitmap 的优势。</p>
+<h1 id="判断用户登陆态"><a href="#判断用户登陆态" class="headerlink" title="判断用户登陆态"></a>判断用户登陆态</h1><blockquote>
+<p>❝</p>
+<p>怎么用 Bitmap 来判断海量用户中某个用户是否在线呢？</p>
+</blockquote>
+<p>Bitmap 提供了 GETBIT、SETBIT 操作，通过一个偏移值 offset 对 bit 数组的 offset 位置的 bit 位进行读写操作，需要注意的是 offset 从 0 开始。</p>
+<p>只需要一个 key &#x3D; login_status 表示存储用户登陆状态集合数据， 将用户 ID 作为 offset，在线就设置为 1，下线设置 0。通过 GETBIT判断对应的用户是否在线。50000 万 用户只需要 6 MB 的空间。</p>
+<p><strong>SETBIT 命令</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT &lt;key&gt; &lt;offset&gt; &lt;value&gt;</span><br></pre></td></tr></table></figure>
+
+<p>设置或者清空 key 的 value 在 offset 处的 bit 值（只能是 0 或者 1）。</p>
+<p><strong>GETBIT 命令</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GETBIT &lt;key&gt; &lt;offset&gt;</span><br></pre></td></tr></table></figure>
+
+<p>获取 key 的 value 在 offset 处的 bit 位的值，当 key 不存在时，返回 0。</p>
+<p>假如我们要判断 ID &#x3D; 10086 的用户的登陆情况：</p>
+<p>第一步，执行以下指令，表示用户已登录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT login_status 10086 1</span><br></pre></td></tr></table></figure>
+
+<p>第二步，检查该用户是否登陆，返回值 1 表示已登录。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GETBIT login_status 10086</span><br></pre></td></tr></table></figure>
+
+<p>第三步，登出，将 offset 对应的 value 设置成 0。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT login_status 10086 0</span><br></pre></td></tr></table></figure>
+
+<h1 id="用户每个月的签到情况"><a href="#用户每个月的签到情况" class="headerlink" title="用户每个月的签到情况"></a>用户每个月的签到情况</h1><p>在签到统计中，每个用户每天的签到用 1 个 bit 位表示，一年的签到只需要 365 个 bit 位。一个月最多只有 31 天，只需要 31 个 bit 位即可。</p>
 <blockquote>
-<p>默认值：0，0 表示 producer 毋须等待 leader 的确认，1 代表需要 leader 确认写入它的本地 log 并立即确认，-1 代表所有的备份都完成后确认。只对 async 模式起作用，这个参数的调整是数据不丢失和发送效率的 tradeoff，如果对数据丢失不敏感而在乎效率的场景可以考虑设置为 0，这样可以大大提高 producer 发送数据的效率。</p>
+<p>❝</p>
+<p>比如统计编号 89757 的用户在 2021 年 5 月份的打卡情况要如何进行？</p>
 </blockquote>
-</li>
-<li><p>request.timeout.ms</p>
+<p>key 可以设计成 uid:sign:{userId}:{yyyyMM}，月份的每一天的值 - 1 可以作为 offset（因为 offset 从 0 开始，所以 offset &#x3D; 日期 - 1）。</p>
+<p>第一步，执行下面指令表示记录用户在 2021 年 5 月 16 号打卡。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SETBIT uid:sign:89757:202105 15 1</span><br></pre></td></tr></table></figure>
+
+<p>第二步，判断编号 89757 用户在 2021 年 5 月 16 号是否打卡。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GETBIT uid:sign:89757:202105 15</span><br></pre></td></tr></table></figure>
+
+<p>第三步，统计该用户在 5 月份的打卡次数，使用 BITCOUNT 指令。该指令用于统计给定的 bit 数组中，值 &#x3D; 1 的 bit 位的数量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BITCOUNT uid:sign:89757:202105</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就可以实现用户每个月的打卡情况了，是不是很赞。</p>
 <blockquote>
-<p>默认值：10000，确认超时时间。</p>
+<p>❝</p>
+<p>如何统计这个月首次打卡时间呢？</p>
 </blockquote>
-</li>
-<li><p>partitioner.class</p>
-<blockquote>
-<p>默认值：kafka.producer.DefaultPartitioner，必须实现 kafka.producer.Partitioner，根据 Key 提供一个分区策略。<em>有时候我们需要相同类型的消息必须顺序处理，这样我们就必须自定义分配策略，从而将相同类型的数据分配到同一个分区中。</em></p>
+<p>Redis 提供了 BITPOS key bitValue [start] [end]指令，返回数据表示 Bitmap 中第一个值为 bitValue 的 offset 位置。</p>
+<p>在默认情况下， 命令将检测整个位图， 用户可以通过可选的 start 参数和 end 参数指定要检测的范围。</p>
+<p>所以我们可以通过执行以下指令来获取 userID &#x3D; 89757 在 2021 年 5 月份<strong>首次打卡</strong>日期：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BITPOS uid:sign:89757:202105 1</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是，我们需要将返回的 value + 1 ，因为 offset 从 0 开始。</p>
+<h1 id="连续签到用户总数"><a href="#连续签到用户总数" class="headerlink" title="连续签到用户总数"></a>连续签到用户总数</h1><blockquote>
+<p>❝</p>
+<p>在记录了一个亿的用户连续 7 天的打卡数据，如何统计出这连续 7 天连续打卡用户总数呢？</p>
 </blockquote>
-</li>
-<li><p>producer.type</p>
-<blockquote>
-<p>默认值：sync，指定消息发送是同步还是异步。异步 asyc 成批发送用 kafka.producer.AyncProducer， 同步 sync 用 kafka.producer.SyncProducer。同步和异步发送也会影响消息生产的效率。</p>
-</blockquote>
-</li>
-<li><p>compression.topic</p>
-<blockquote>
-<p>默认值：none，消息压缩，默认不压缩。其余压缩方式还有，”gzip”、”snappy”和”lz4”。对消息的压缩可以极大地减少网络传输量、降低网络 IO，从而提高整体性能。</p>
-</blockquote>
-</li>
-<li><p>compressed.topics</p>
-<blockquote>
-<p>默认值：null，在设置了压缩的情况下，可以指定特定的 topic 压缩，未指定则全部压缩。</p>
-</blockquote>
-</li>
-<li><p>message.send.max.retries</p>
-<blockquote>
-<p>默认值：3，消息发送最大尝试次数。</p>
-</blockquote>
-</li>
-<li><p>retry.backoff.ms</p>
-<blockquote>
-<p>默认值：300，每次尝试增加的额外的间隔时间。</p>
-</blockquote>
-</li>
-<li><p>topic.metadata.refresh.interval.ms</p>
-<blockquote>
-<p>默认值：600000，定期的获取元数据的时间。当分区丢失，leader 不可用时 producer 也会主动获取元数据，如果为 0，则每次发送完消息就获取元数据，不推荐。如果为负值，则只有在失败的情况下获取元数据。</p>
-</blockquote>
-</li>
-<li><p>queue.buffering.max.ms</p>
-<blockquote>
-<p>默认值：5000，在 producer queue 的缓存的数据最大时间，仅仅 for asyc。</p>
-</blockquote>
-</li>
-<li><p>queue.buffering.max.message</p>
-<blockquote>
-<p>默认值：10000，producer 缓存的消息的最大数量，仅仅 for asyc。</p>
-</blockquote>
-</li>
-<li><p>queue.enqueue.timeout.ms</p>
-<blockquote>
-<p>默认值：-1，0 当 queue 满时丢掉，负值是 queue 满时 block, 正值是 queue 满时 block 相应的时间，仅仅 for asyc。</p>
-</blockquote>
-</li>
-</ul>
-<h3 id="Kafka-Consumer"><a href="#Kafka-Consumer" class="headerlink" title="Kafka Consumer"></a>Kafka Consumer</h3><p>Kafka 有消费组的概念，每个消费者只能消费所分配到的分区的消息，每一个分区只能被一个消费组中的一个消费者所消费，所以同一个消费组中消费者的数量如果超过了分区的数量，将会出现有些消费者分配不到消费的分区。消费组与消费者关系如下图所示：</p>
-<p><img src="/../../images/640-20210428095405419" alt="图片">consumer group</p>
-<p>Kafka Consumer Client 消费消息通常包含以下步骤：</p>
+<p>我们把每天的日期作为 Bitmap 的 key，userId 作为 offset，若是打卡则将 offset 位置的 bit 设置成 1。</p>
+<p>key 对应的集合的每个 bit 位的数据则是一个用户在该日期的打卡记录。</p>
+<p>一共有 7 个这样的 Bitmap，如果我们能对这 7 个 Bitmap 的对应的 bit 位做 『与』运算。</p>
+<p>同样的 UserID offset 都是一样的，当一个 userID 在 7 个 Bitmap 对应对应的 offset 位置的 bit &#x3D; 1 就说明该用户 7 天连续打卡。</p>
+<p>结果保存到一个新 Bitmap 中，我们再通过 BITCOUNT 统计 bit &#x3D; 1 的个数便得到了连续打卡 7 天的用户总数了。</p>
+<p>Redis 提供了 BITOP operation destkey key [key …]这个指令用于对一个或者多个 键 &#x3D; key 的 Bitmap 进行位元操作。</p>
+<p>opration 可以是 and、OR、NOT、XOR。当 BITOP 处理不同长度的字符串时，较短的那个字符串所缺少的部分会被看作 0 。空的 key 也被看作是包含 0 的字符串序列。</p>
+<p>便于理解，如下图所示：</p>
+<p><img src="/../../images/13b56db85d50458caf2cd87e21a87949.png" alt="Redis 实战篇：巧用 Bitmap 实现亿级海量数据统计"></p>
+<p>BITOP</p>
+<p>3 个 Bitmap，对应的 bit 位做「与」操作，结果保存到新的 Bitmap 中。</p>
+<p>操作指令表示将 三个 bitmap 进行 AND 操作，并将结果保存到 destmap 中。接着对 destmap 执行 BITCOUNT 统计。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 与操作</span><br><span class="line">BITOP AND destmap bitmap:01 bitmap:02 bitmap:03</span><br><span class="line">// 统计 bit 位 =  1 的个数</span><br><span class="line">BITCOUNT destmap</span><br></pre></td></tr></table></figure>
+
+<p>简单计算下 一个一亿个位的 Bitmap占用的内存开销，大约占 12 MB 的内存（10^8&#x2F;8&#x2F;1024&#x2F;1024），7 天的 Bitmap 的内存开销约为 84 MB。同时我们最好给 Bitmap 设置过期时间，让 Redis 删除过期的打卡数据，节省内存。</p>
+<h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>思路才是最重要，当我们遇到的统计场景只需要统计数据的二值状态，比如用户是否存在、 ip 是否是黑名单、以及签到打卡统计等场景就可以考虑使用 Bitmap。</p>
+<p>只需要一个 bit 位就能表示 0 和 1。在统计海量数据的时候将大大减少内存占用。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-27T06:13:05.000Z" title="2021/5/27 下午2:13:05">2021-05-27</time>发表</span><span class="level-item"><time dateTime="2021-05-27T06:13:05.000Z" title="2021/5/27 下午2:13:05">2021-05-27</time>更新</span><span class="level-item">17 分钟读完 (大约2544个字)</span></div></div><div class="content"><h1 id="ThreadLocal内存溢出代码演示和原因分析"><a href="#ThreadLocal内存溢出代码演示和原因分析" class="headerlink" title="ThreadLocal内存溢出代码演示和原因分析"></a>ThreadLocal内存溢出代码演示和原因分析</h1><p>ThreadLocal 翻译成中文是线程本地变量的意思，也就是说它是线程中的私有变量，每个线程只能操作自己的私有变量，所以不会造成线程不安全的问题。</p>
+<p>所谓的线程不安全是指，多个线程在同一时刻对同一个全局变量做写操作时（读操作不会涉及线程不安全问题），如果执行的结果和我们预期的结果不一致就称之为线程不安全，反之，则称为线程安全。</p>
+<p><strong>在 Java 语言中解决线程不安全的问题通常有两种手段</strong>：</p>
 <ol>
-<li>配置客户端，创建消费者</li>
-<li>订阅主题</li>
-<li>拉去消息并消费</li>
-<li>提交消费位移</li>
-<li>关闭消费者实例</li>
+<li>使用锁（使用 synchronized 或 Lock）；</li>
+<li>使用 ThreadLocal。</li>
 </ol>
-<p><img src="/../../images/640-20210428095405428" alt="图片">过程</p>
-<p>因为 Kafka 的 Consumer 客户端是线程不安全的，为了保证线程安全，并提升消费性能，可以在 Consumer 端采用类似 Reactor 的线程模型来消费数据。</p>
-<p><img src="/../../images/640-20210428095405430" alt="图片">消费模型</p>
-<h4 id="Kafka-consumer-参数"><a href="#Kafka-consumer-参数" class="headerlink" title="Kafka consumer 参数"></a>Kafka consumer 参数</h4><ul>
-<li>bootstrap.servers：连接 broker 地址，<code>host：port</code> 格式。</li>
-<li>group.id：消费者隶属的消费组。</li>
-<li>key.deserializer：与生产者的<code>key.serializer</code>对应，key 的反序列化方式。</li>
-<li>value.deserializer：与生产者的<code>value.serializer</code>对应，value 的反序列化方式。</li>
-<li>session.timeout.ms：coordinator 检测失败的时间。默认 10s 该参数是 Consumer Group 主动检测 （组内成员 comsummer) 崩溃的时间间隔，类似于心跳过期时间。</li>
-<li>auto.offset.reset：该属性指定了消费者在读取一个没有偏移量后者偏移量无效（消费者长时间失效当前的偏移量已经过时并且被删除了）的分区的情况下，应该作何处理，默认值是 latest，也就是从最新记录读取数据（消费者启动之后生成的记录），另一个值是 earliest，意思是在偏移量无效的情况下，消费者从起始位置开始读取数据。</li>
-<li>enable.auto.commit：否自动提交位移，如果为<code>false</code>，则需要在程序中手动提交位移。对于精确到一次的语义，最好手动提交位移</li>
-<li>fetch.max.bytes：单次拉取数据的最大字节数量</li>
-<li>max.poll.records：单次 poll 调用返回的最大消息数，如果处理逻辑很轻量，可以适当提高该值。但是<code>max.poll.records</code>条数据需要在在 session.timeout.ms 这个时间内处理完 。默认值为 500</li>
-<li>request.timeout.ms：一次请求响应的最长等待时间。如果在超时时间内未得到响应，kafka 要么重发这条消息，要么超过重试次数的情况下直接置为失败。</li>
-</ul>
-<h4 id="Kafka-Rebalance"><a href="#Kafka-Rebalance" class="headerlink" title="Kafka Rebalance"></a>Kafka Rebalance</h4><p>rebalance 本质上是一种协议，规定了一个 consumer group 下的所有 consumer 如何达成一致来分配订阅 topic 的每个分区。比如某个 group 下有 20 个 consumer，它订阅了一个具有 100 个分区的 topic。正常情况下，Kafka 平均会为每个 consumer 分配 5 个分区。这个分配的过程就叫 rebalance。</p>
-<p><strong>什么时候 rebalance？</strong></p>
-<p>这也是经常被提及的一个问题。rebalance 的触发条件有三种：</p>
-<ul>
-<li>组成员发生变更（新 consumer 加入组、已有 consumer 主动离开组或已有 consumer 崩溃了——这两者的区别后面会谈到）</li>
-<li>订阅主题数发生变更</li>
-<li>订阅主题的分区数发生变更</li>
-</ul>
-<p><strong>如何进行组内分区分配？</strong></p>
-<p>Kafka 默认提供了两种分配策略：Range 和 Round-Robin。当然 Kafka 采用了可插拔式的分配策略，你可以创建自己的分配器以实现不同的分配策略。</p>
-<h3 id="答案关键字-2"><a href="#答案关键字-2" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
-<li>Kafka 有哪些命令行工具？你用过哪些？<code>/bin</code>目录，管理 kafka 集群、管理 topic、生产和消费 kafka</li>
-<li>Kafka Producer 的执行过程？拦截器，序列化器，分区器和累加器</li>
-<li>Kafka Producer 有哪些常见配置？broker 配置，ack 配置，网络和发送参数，压缩参数，ack 参数</li>
-<li>如何让 Kafka 的消息有序？Kafka 在 Topic 级别本身是无序的，只有 partition 上才有序，所以为了保证处理顺序，可以自定义分区器，将需顺序处理的数据发送到同一个 partition</li>
-<li>Producer 如何保证数据发送不丢失？ack 机制，重试机制</li>
-<li>如何提升 Producer 的性能？批量，异步，压缩</li>
-<li>如果同一 group 下 consumer 的数量大于 part 的数量，kafka 如何处理？多余的 Part 将处于无用状态，不消费数据</li>
-<li>Kafka Consumer 是否是线程安全的？不安全，单线程消费，多线程处理</li>
-<li>讲一下你使用 Kafka Consumer 消费消息时的线程模型，为何如此设计？拉取和处理分离</li>
-<li>Kafka Consumer 的常见配置？broker, 网络和拉取参数，心跳参数</li>
-<li>Consumer 什么时候会被踢出集群？奔溃，网络异常，处理时间过长提交位移超时</li>
-<li>当有 Consumer 加入或退出时，Kafka 会作何反应？进行 Rebalance</li>
-<li>什么是 Rebalance，何时会发生 Rebalance？topic 变化，consumer 变化</li>
-</ul>
-<h2 id="高可用和性能"><a href="#高可用和性能" class="headerlink" title="高可用和性能"></a>高可用和性能</h2><h3 id="问题-3"><a href="#问题-3" class="headerlink" title="问题"></a>问题</h3><ul>
-<li>Kafka 如何保证高可用？</li>
-<li>Kafka 的交付语义？</li>
-<li>Replic 的作用？</li>
-<li>什么事 AR，ISR？</li>
-<li>Leader 和 Flower 是什么？</li>
-<li>Kafka 中的 HW、LEO、LSO、LW 等分别代表什么？</li>
-<li>Kafka 为保证优越的性能做了哪些处理？</li>
-</ul>
-<h3 id="分区与副本"><a href="#分区与副本" class="headerlink" title="分区与副本"></a>分区与副本</h3><p><img src="/../../images/640-20210428095405441" alt="图片">分区副本</p>
-<p>在分布式数据系统中，通常使用分区来提高系统的处理能力，通过副本来保证数据的高可用性。多分区意味着并发处理的能力，这多个副本中，只有一个是 leader，而其他的都是 follower 副本。仅有 leader 副本可以对外提供服务。多个 follower 副本通常存放在和 leader 副本不同的 broker 中。通过这样的机制实现了高可用，当某台机器挂掉后，其他 follower 副本也能迅速”转正“，开始对外提供服务。</p>
-<p><strong>为什么 follower 副本不提供读服务？</strong></p>
-<p>这个问题本质上是对性能和一致性的取舍。试想一下，如果 follower 副本也对外提供服务那会怎么样呢？首先，性能是肯定会有所提升的。但同时，会出现一系列问题。类似数据库事务中的幻读，脏读。比如你现在写入一条数据到 kafka 主题 a，消费者 b 从主题 a 消费数据，却发现消费不到，因为消费者 b 去读取的那个分区副本中，最新消息还没写入。而这个时候，另一个消费者 c 却可以消费到最新那条数据，因为它消费了 leader 副本。Kafka 通过 WH 和 Offset 的管理来决定 Consumer 可以消费哪些数据，已经当前写入的数据。</p>
-<p><img src="/../../images/640-20210428095405438" alt="图片">watermark</p>
-<p><strong>只有 Leader 可以对外提供读服务，那如何选举 Leader</strong></p>
-<p>kafka 会将与 leader 副本保持同步的副本放到 ISR 副本集合中。当然，leader 副本是一直存在于 ISR 副本集合中的，在某些特殊情况下，ISR 副本中甚至只有 leader 一个副本。当 leader 挂掉时，kakfa 通过 zookeeper 感知到这一情况，在 ISR 副本中选取新的副本成为 leader，对外提供服务。但这样还有一个问题，前面提到过，有可能 ISR 副本集合中，只有 leader，当 leader 副本挂掉后，ISR 集合就为空，这时候怎么办呢？这时候如果设置 unclean.leader.election.enable 参数为 true，那么 kafka 会在非同步，也就是不在 ISR 副本集合中的副本中，选取出副本成为 leader。</p>
-<p><strong>副本的存在就会出现副本同步问题</strong></p>
-<p>Kafka 在所有分配的副本 (AR) 中维护一个可用的副本列表 (ISR)，Producer 向 Broker 发送消息时会根据<code>ack</code>配置来确定需要等待几个副本已经同步了消息才相应成功，Broker 内部会<code>ReplicaManager</code>服务来管理 flower 与 leader 之间的数据同步。</p>
-<p><img src="/../../images/640-20210428095405450" alt="图片">sync</p>
-<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
-<li>partition 并发</li>
-<li>顺序读写磁盘</li>
-<li>page cache：按页读写</li>
-<li>预读：Kafka 会将将要消费的消息提前读入内存</li>
-<li>高性能序列化（二进制）</li>
-<li>内存映射</li>
-<li>无锁 offset 管理：提高并发能力</li>
-<li>Java NIO 模型</li>
-<li>批量：批量读写</li>
-<li>压缩：消息压缩，存储压缩，减小网络和 IO 开销</li>
-</ul>
-<h4 id="Partition-并发"><a href="#Partition-并发" class="headerlink" title="Partition 并发"></a>Partition 并发</h4><p>一方面，由于不同 Partition 可位于不同机器，因此可以充分利用集群优势，实现机器间的并行处理。另一方面，由于 Partition 在物理上对应一个文件夹，即使多个 Partition 位于同一个节点，也可通过配置让同一节点上的不同 Partition 置于不同的 disk drive 上，从而实现磁盘间的并行处理，充分发挥多磁盘的优势。</p>
-<h4 id="顺序读写"><a href="#顺序读写" class="headerlink" title="顺序读写"></a>顺序读写</h4><p>Kafka 每一个 partition 目录下的文件被平均切割成大小相等（默认一个文件是 500 兆，可以手动去设置）的数据文件， 每一个数据文件都被称为一个段（segment file）, 每个 segment 都采用 append 的方式追加数据。</p>
-<p><img src="/../../images/640-20210428095405444.png" alt="图片">追加数据</p>
-<h3 id="答案关键字-3"><a href="#答案关键字-3" class="headerlink" title="答案关键字"></a>答案关键字</h3><ul>
-<li><p>Kafka 如何保证高可用？</p>
+<p>锁的实现方案是在多线程写入全局变量时，通过排队一个一个来写入全局变量，从而就可以避免线程不安全的问题了。比如当我们使用线程不安全的 SimpleDateFormat 对时间进行格式化时，如果使用锁来解决线程不安全的问题，实现的流程就是这样的：</p>
+<p><img src="/../../images/ddbfe8f5018f43bcaacd033989906a77.png" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
+<p>从上述图片可以看出，通过加锁的方式虽然可以解决线程不安全的问题，但同时带来了新的问题，使用锁时线程需要排队执行，因此会带来一定的性能开销。然而，<strong>如果使用的是 ThreadLocal 的方式，则是给每个线程创建一个 SimpleDateFormat 对象，这样就可以避免排队执行的问题了</strong>，它的实现流程如下图所示：</p>
+<p><img src="/../../images/18c54d8438e44034a601aeb710f2db13.png" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
 <blockquote>
-<p>通过副本来保证数据的高可用，producer ack、重试、自动 Leader 选举，Consumer 自平衡</p>
+<p>PS：创建 SimpleDateFormat 也会消耗一定的时间和空间，如果线程复用 SimpleDateFormat 的频率比较高的情况下，使用 ThreadLocal 的优势比较大，反之则可以考虑使用锁。</p>
 </blockquote>
-</li>
-<li><p>Kafka 的交付语义？</p>
+<p>然而，在我们使用 ThreadLocal 的过程中，很容易就会出现内存溢出的问题，如下面的这个事例。</p>
+<h1 id="什么是内存溢出？"><a href="#什么是内存溢出？" class="headerlink" title="什么是内存溢出？"></a>什么是内存溢出？</h1><p><strong>内存溢出（Out Of Memory，简称 OOM）是指无用对象（不再使用的对象）持续占有内存，或无用对象的内存得不到及时释放，从而造成的内存空间浪费的行为就称之为内存泄露。</strong></p>
+<h1 id="内存溢出代码演示"><a href="#内存溢出代码演示" class="headerlink" title="内存溢出代码演示"></a>内存溢出代码演示</h1><p>在开始演示 ThreadLocal 内存溢出的问题之前，我们先使用“-Xmx50m”的参数来设置一下 Idea，它表示将程序运行的最大内存设置为 50m，如果程序的运行超过这个值就会出现内存溢出的问题，设置方法如下：</p>
+<p><img src="/../../images/7cf13f5f8acf48709e6f7bc2e68f7758.png" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
+<p>设置后的最终效果这样的：</p>
+<p><img src="/../../images/d524e641683d4930a12d75cbe3c05fab.png" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
 <blockquote>
-<p>交付语义一般有<code>at least once</code>、<code>at most once</code>和<code>exactly once</code>。kafka 通过 ack 的配置来实现前两种。</p>
+<p>PS：因为我使用的 Idea 是社区版，所以可能和你的界面不一样，你只需要点击“Edit Configurations…”找到“VM options”选项，设置上“-Xmx50m”参数就可以了。</p>
 </blockquote>
-</li>
-<li><p>Replic 的作用？</p>
-<blockquote>
-<p>实现数据的高可用</p>
-</blockquote>
-</li>
-<li><p>什么是 AR，ISR？</p>
-<blockquote>
-<p>AR：Assigned Replicas。AR 是主题被创建后，分区创建时被分配的副本集合，副本个 数由副本因子决定。ISR：In-Sync Replicas。Kafka 中特别重要的概念，指代的是 AR 中那些与 Leader 保 持同步的副本集合。在 AR 中的副本可能不在 ISR 中，但 Leader 副本天然就包含在 ISR 中。关于 ISR，还有一个常见的面试题目是如何判断副本是否应该属于 ISR。目前的判断 依据是：Follower 副本的 LEO 落后 Leader LEO 的时间，是否超过了 Broker 端参数 replica.lag.time.max.ms 值。如果超过了，副本就会被从 ISR 中移除。</p>
-</blockquote>
-</li>
-<li><p>Leader 和 Flower 是什么？</p>
-</li>
-<li><p>Kafka 中的 HW 代表什么？</p>
-<blockquote>
-<p>高水位值 (High watermark)。这是控制消费者可读取消息范围的重要字段。一 个普通消费者只能“看到”Leader 副本上介于 Log Start Offset 和 HW（不含）之间的 所有消息。水位以上的消息是对消费者不可见的。</p>
-</blockquote>
-</li>
-<li><p>Kafka 为保证优越的性能做了哪些处理？</p>
-<blockquote>
-<p>partition 并发、顺序读写磁盘、page cache 压缩、高性能序列化（二进制）、内存映射 无锁 offset 管理、Java NIO 模型</p>
-</blockquote>
-</li>
-</ul>
-</div></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/10/">上一页</a></div><div class="pagination-next"><a href="/page/12/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/10/">10</a></li><li><a class="pagination-link is-current" href="/page/11/">11</a></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><a class="pagination-link" href="/page/13/">13</a></li><li><a class="pagination-link" href="/page/14/">14</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">132</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">8</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">17</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">中间件</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="level-start"><span class="level-item">数据库</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">5</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">24</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">12</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Bean/"><span class="tag">Bean</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySql/"><span class="tag">MySql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Netty/"><span class="tag">Netty</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Stream/"><span class="tag">Stream</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZooKeeper/"><span class="tag">ZooKeeper</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"><span class="tag">代码优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/"><span class="tag">公众号</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"><span class="tag">单点登录</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"><span class="tag">大数据</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tag">线程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/"><span class="tag">自动装配</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T01:46:49.745Z">2022-05-07</time></p><p class="title"><a href="/2022/05/07/90000%E6%96%87%E7%AB%A0/90012Bean%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2%E7%A5%9E%E5%99%A8Mapstruct/">自动转换神器 Mapstruct</a></p><p class="categories"><a href="/categories/Spring/">Spring</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/90000%E6%96%87%E7%AB%A0/90000Hexo%E9%85%8D%E7%BD%AE%E4%B8%8EIcarus%E4%B8%BB%E9%A2%98/">Hexo配置与Icarus主题</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-05T16:00:00.000Z">2022-05-06</time></p><p class="title"><a href="/2022/05/06/213Linux/Docker/Ubuntu%20LNMP/">Ubuntu LNMP</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-04T16:29:42.493Z">2022-05-05</time></p><p class="title"><a href="/2022/05/05/90000%E6%96%87%E7%AB%A0/90005Stream%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/">90005Stream代码优化</a></p><p class="categories"><a href="/categories/Java/">Java</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-04-29T15:15:26.673Z">2022-04-29</time></p><p class="title"><a href="/2022/04/29/30000Spring/30101%20SecurityContextHolder/"> </a></p></div></article></div></div><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a><p class="is-size-7"><span>&copy; 2022 Tonygeli</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+<p>配置完 Idea 之后，接下来我们来实现一下业务代码。在代码中我们会创建一个大对象，这个对象中会有一个 10m 大的数组，然后我们将这个大对象存储在 ThreadLocal 中，再使用线程池执行大于 5 次添加任务，因为设置了最大运行内存是 50m，所以理想的情况是执行 5 次添加操作之后，就会出现内存溢出的问题，实现代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.LinkedBlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadLocalOOMExample</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义一个 10m 大的类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">MyTask</span> &#123;</span><br><span class="line">        <span class="comment">// 创建一个 10m 的数组（单位转换是 1M -&gt; 1024KB -&gt; 1024*1024B）</span></span><br><span class="line">        <span class="keyword">private</span> <span class="type">byte</span>[] bytes = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 定义 ThreadLocal</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadLocal&lt;MyTask&gt; taskThreadLocal = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 主测试代码</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="comment">// 创建线程池</span></span><br><span class="line">        <span class="type">ThreadPoolExecutor</span> <span class="variable">threadPoolExecutor</span> <span class="operator">=</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">5</span>, <span class="number">5</span>, <span class="number">60</span>,</span><br><span class="line">                        TimeUnit.SECONDS, <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;&gt;(<span class="number">100</span>));</span><br><span class="line">        <span class="comment">// 执行 10 次调用</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="comment">// 执行任务</span></span><br><span class="line">            executeTask(threadPoolExecutor);</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 线程池执行任务</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> threadPoolExecutor 线程池</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">executeTask</span><span class="params">(ThreadPoolExecutor threadPoolExecutor)</span> &#123;</span><br><span class="line">        <span class="comment">// 执行任务</span></span><br><span class="line">        threadPoolExecutor.execute(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;创建对象&quot;</span>);</span><br><span class="line">                <span class="comment">// 创建对象（10M）</span></span><br><span class="line">                <span class="type">MyTask</span> <span class="variable">myTask</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask</span>();</span><br><span class="line">                <span class="comment">// 存储 ThreadLocal</span></span><br><span class="line">                taskThreadLocal.set(myTask);</span><br><span class="line">                <span class="comment">// 将对象设置为 null，表示此对象不在使用了</span></span><br><span class="line">                myTask = <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上程序的执行结果如下：</p>
+<p><img src="/../../images/5a26a62ce75247cfa1a3703f5b9af38c.png" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
+<p>从上述图片可看出，当程序执行到第 5 次添加对象时就出现内存溢出的问题了，这是因为设置了最大的运行内存是 50m，每次循环会占用 10m 的内存，加上程序启动会占用一定的内存，因此在执行到第 5 次添加任务时，就会出现内存溢出的问题。</p>
+<h1 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h1><p>内存溢出的问题和解决方案比较简单，重点在于“原因分析”，我们要通过内存溢出的问题搞清楚，为什么 ThreadLocal 会这样？是什么原因导致了内存溢出？</p>
+<p>要搞清楚这个问题（内存溢出的问题），我们需要从 ThreadLocal 源码入手，所以我们首先打开 set 方法的源码（在示例中使用到了 set 方法），如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(T value)</span> &#123;</span><br><span class="line">    <span class="comment">// 得到当前线程</span></span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="comment">// 根据线程获取到 ThreadMap 变量</span></span><br><span class="line">    <span class="type">ThreadLocalMap</span> <span class="variable">map</span> <span class="operator">=</span> getMap(t);</span><br><span class="line">    <span class="keyword">if</span> (map != <span class="literal">null</span>)</span><br><span class="line">        map.set(<span class="built_in">this</span>, value); <span class="comment">// 将内容存储到 map 中</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        createMap(t, value); <span class="comment">// 创建 map 并将值存储到 map 中</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上述代码我们可以看出 Thread、ThreadLocalMap 和 set 方法之间的关系<strong>：每个线程 Thread 都拥有一个数据存储容器 ThreadLocalMap，当执行 ThreadLocal.set 方法执行时，会将要存储的值放到 ThreadLocalMap 容器中</strong>，所以接下来我们再看一下 ThreadLocalMap 的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">ThreadLocalMap</span> &#123;</span><br><span class="line">    <span class="comment">// 实际存储数据的数组</span></span><br><span class="line">    <span class="keyword">private</span> Entry[] table;</span><br><span class="line">    <span class="comment">// 存数据的方法</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">(ThreadLocal&lt;?&gt; key, Object value)</span> &#123;</span><br><span class="line">        Entry[] tab = table;</span><br><span class="line">        <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> tab.length;</span><br><span class="line">        <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> key.threadLocalHashCode &amp; (len-<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">Entry</span> <span class="variable">e</span> <span class="operator">=</span> tab[i];</span><br><span class="line">                e != <span class="literal">null</span>;</span><br><span class="line">                e = tab[i = nextIndex(i, len)]) &#123;</span><br><span class="line">            ThreadLocal&lt;?&gt; k = e.get();</span><br><span class="line">            <span class="comment">// 如果有对应的 key 直接更新 value 值</span></span><br><span class="line">            <span class="keyword">if</span> (k == key) &#123;</span><br><span class="line">                e.value = value;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 发现空位插入 value</span></span><br><span class="line">            <span class="keyword">if</span> (k == <span class="literal">null</span>) &#123;</span><br><span class="line">                replaceStaleEntry(key, value, i);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 新建一个 Entry 插入数组中</span></span><br><span class="line">        tab[i] = <span class="keyword">new</span> <span class="title class_">Entry</span>(key, value);</span><br><span class="line">        <span class="type">int</span> <span class="variable">sz</span> <span class="operator">=</span> ++size;</span><br><span class="line">        <span class="comment">// 判断是否需要进行扩容</span></span><br><span class="line">        <span class="keyword">if</span> (!cleanSomeSlots(i, sz) &amp;&amp; sz &gt;= threshold)</span><br><span class="line">            rehash();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// ... 忽略其他源码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上述源码我们可以看出：<strong>ThreadMap 中有一个 Entry[] 数组用来存储所有的数据，而 Entry 是一个包含 key 和 value 的键值对，其中 key 为 ThreadLocal 本身，而 value 则是要存储在 ThreadLocal 中的值</strong>。</p>
+<p>根据上面的内容，我们可以得出 ThreadLocal 相关对象的关系图，如下所示：</p>
+<p><img src="/../../images/943dd3c1ecdc4ef0929c0872aa155e1f.png" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
+<p>也就是说<strong>它们之间的引用关系是这样的：Thread -&gt; ThreadLocalMap -&gt; Entry -&gt; Key,Value，因此当我们使用线程池来存储对象时，因为线程池有很长的生命周期，所以线程池会一直持有 value 值，那么垃圾回收器就无法回收 value，所以就会导致内存一直被占用，从而导致内存溢出问题的发生</strong>。</p>
+<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>ThreadLocal 内存溢出的解决方案很简单，我们只需要在使用完 ThreadLocal 之后，执行 remove 方法就可以避免内存溢出问题的发生了，比如以下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.concurrent.LinkedBlockingQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ThreadPoolExecutor;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">App</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 定义一个 10m 大的类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">MyTask</span> &#123;</span><br><span class="line">        <span class="comment">// 创建一个 10m 的数组（单位转换是 1M -&gt; 1024KB -&gt; 1024*1024B）</span></span><br><span class="line">        <span class="keyword">private</span> <span class="type">byte</span>[] bytes = <span class="keyword">new</span> <span class="title class_">byte</span>[<span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 定义 ThreadLocal</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadLocal&lt;MyTask&gt; taskThreadLocal = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试代码</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="comment">// 创建线程池</span></span><br><span class="line">        <span class="type">ThreadPoolExecutor</span> <span class="variable">threadPoolExecutor</span> <span class="operator">=</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ThreadPoolExecutor</span>(<span class="number">5</span>, <span class="number">5</span>, <span class="number">60</span>,</span><br><span class="line">                        TimeUnit.SECONDS, <span class="keyword">new</span> <span class="title class_">LinkedBlockingQueue</span>&lt;&gt;(<span class="number">100</span>));</span><br><span class="line">        <span class="comment">// 执行 n 次调用</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            <span class="comment">// 执行任务</span></span><br><span class="line">            executeTask(threadPoolExecutor);</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 线程池执行任务</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> threadPoolExecutor 线程池</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">executeTask</span><span class="params">(ThreadPoolExecutor threadPoolExecutor)</span> &#123;</span><br><span class="line">        <span class="comment">// 执行任务</span></span><br><span class="line">        threadPoolExecutor.execute(<span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;创建对象&quot;</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 创建对象（10M）</span></span><br><span class="line">                    <span class="type">MyTask</span> <span class="variable">myTask</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MyTask</span>();</span><br><span class="line">                    <span class="comment">// 存储 ThreadLocal</span></span><br><span class="line">                    taskThreadLocal.set(myTask);</span><br><span class="line">                    <span class="comment">// 其他业务代码...</span></span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    <span class="comment">// 释放内存</span></span><br><span class="line">                    taskThreadLocal.remove();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上程序的执行结果如下：</p>
+<p><img src="/../../images/e824c264285d4dc88bba78f6b1788bd1.jpeg" alt="ThreadLocal内存溢出代码演示和原因分析"></p>
+<p>从上述结果可以看出我们只需要在 finally 中执行 ThreadLocal 的 remove 方法之后就不会在出现内存溢出的问题了。</p>
+<h1 id="remove的秘密"><a href="#remove的秘密" class="headerlink" title="remove的秘密"></a>remove的秘密</h1><p>那 remove 方法为什么会有这么大的魔力呢？我们打开 remove 的源码看一下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public void remove() &#123;</span><br><span class="line">    ThreadLocalMap m = getMap(Thread.currentThread());</span><br><span class="line">    if (m != null)</span><br><span class="line">        m.remove(this);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上述源码中我们可以看出，当调用了 remove 方法之后，会直接将 Thread 中的 ThreadLocalMap 对象移除掉，这样 Thread 就不再持有 ThreadLocalMap 对象了，所以即使 Thread 一直存活，也不会造成因为（ThreadLocalMap）内存占用而导致的内存溢出问题了。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本篇我们使用代码的方式演示了 ThreadLocal 内存溢出的问题，严格来讲内存溢出并不是 ThreadLocal 的问题，而是因为没有正确使用 ThreadLocal 所带来的问题。想要避免 ThreadLocal 内存溢出的问题，只需要在使用完 ThreadLocal 后调用 remove 方法即可。不过通过 ThreadLocal 内存溢出的问题，让我们搞清楚了 ThreadLocal 的具体实现，方便我们日后更好的使用 ThreadLocal，以及更好的应对面试。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-25T08:56:01.000Z" title="2021/5/25 下午4:56:01">2021-05-25</time>发表</span><span class="level-item"><time dateTime="2021-05-25T08:56:01.000Z" title="2021/5/25 下午4:56:01">2021-05-25</time>更新</span><span class="level-item">几秒读完 (大约4个字)</span></div></div><div class="content"><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjweaver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.9.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-25T08:47:56.000Z" title="2021/5/25 下午4:47:56">2021-05-25</time>发表</span><span class="level-item"><time dateTime="2021-05-25T08:47:56.000Z" title="2021/5/25 下午4:47:56">2021-05-25</time>更新</span><span class="level-item">9 分钟读完 (大约1384个字)</span></div></div><div class="content"><h1 id="Annotations注释"><a href="#Annotations注释" class="headerlink" title="Annotations注释"></a>Annotations注释</h1><p>Java平台始终具有各种临时注释机制。例如，<code>transient</code>修饰符是一个临时注释，指示字段应被序列化子系统忽略，而 <code>@deprecated</code> javadoc标记是一个临时注释，指示该方法不再使用。从5.0版开始，该平台具有通用注释（也称为<em>元数据</em>）功能，该功能允许您定义和使用自己的注释类型。该工具包括用于声明注释类型的语法，用于注释声明的语法，用于读取注释的API，用于注释的类文件表示以及注释处理工具。</p>
+<p>注释不会直接影响程序的语义，但会影响工具和库对程序的处理方式，进而会影响正在运行的程序的语义。可以从1源文件，2class文件读取注释，也可以在3运行时通过反射读取注释。</p>
+<p>注释是对javadoc标签的补充。通常，如果标记旨在影响或产生文档，则标记可能应该是javadoc标记；否则，标记应为javadoc标记。否则，它应该是一个注释。</p>
+<p>注释：在interface关键字之前加一个符号（@）。每个方法声明都定义了注释类型的<code> element</code>。方法声明必须没有任何参数或<code>throws</code>子句。返回类型仅限于原语，<code>String</code>，<code>enums</code>，<code>annotations</code> 和 <code>arrays</code>。方法可以具有<em>默认值</em>。这是注释类型声明的示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 带注释的API进行增强请求 Request-For-Enhancement(RFE) </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RequestForEnhancement &#123;</span><br><span class="line">    <span class="type">int</span>    <span class="title function_">id</span><span class="params">()</span>;</span><br><span class="line">    String <span class="title function_">synopsis</span><span class="params">()</span>;</span><br><span class="line">    String <span class="title function_">engineer</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;[unassigned]&quot;</span>; </span><br><span class="line">    String <span class="title function_">date</span><span class="params">()</span> <span class="keyword">default</span> <span class="string">&quot;[unimplemented]&quot;</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义注释类型后，您可以使用它来注释声明。 注释是一种特殊的修饰符，使用方式和其他修饰符（例如 <code>public</code>，<code> static</code>或<code>final</code>）。 按照惯例，注释在其他修饰符之前。 注释包括一个符号（@），后跟一个注释类型和一个键-值对的括号列表。 该值必须是编译时常量。 这是带有与上面声明的注释类型相对应的注释的方法声明： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestForEnhancement(</span></span><br><span class="line"><span class="meta">    id       = 2868724,</span></span><br><span class="line"><span class="meta">    synopsis = &quot;Enable time-travel&quot;,</span></span><br><span class="line"><span class="meta">    engineer = &quot;Mr. Peabody&quot;,</span></span><br><span class="line"><span class="meta">    date     = &quot;4/1/3007&quot;</span></span><br><span class="line"><span class="meta">)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">travelThroughTime</span><span class="params">(Date destination)</span> &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>没有元素的注释类型称为<code>marker</code>注释类型，例如： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 指示带注释的API元素的规范是初步的，随时可能更改。 */</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Preliminary &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以省略标记注释中的括号，如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Preliminary</span> <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TimeTravel</span> &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在具有单个元素的注释中，该元素应命名<code>value</code>，如下所示： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Copyright &#123;</span><br><span class="line">    String <span class="title function_">value</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>允许在元素名称<code>value</code>的单元素注释中省略元素名称和等号（<code>=</code>），如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Copyright(&quot;2002 Yoyodyne Propulsion Systems&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OscillationOverthruster</span> &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>将代码联系在一起，我们将构建一个简单的基于注释的测试框架。 首先，我们需要一个标记注释类型来指示一个方法是一种测试方法，并且应该由测试工具来运行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.lang.annotation.*;</span><br><span class="line"><span class="comment">/** 指示带注释的方法是测试方法。此注释仅应在无参数静态方法上使用。*/</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Target(ElementType.METHOD)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Test &#123; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，注释类型声明本身是带注释的。 这种注释称为<code>元注释</code>。 第一个（<code>@Retention(RetentionPolicy.RUNTIME)</code>）表示该类型的注释将由VM保留，以便可以在运行时以反射方式读取它们。 第二个（<code>@Target(ElementType.METHOD)</code>）指示此注释类型只能用于方法声明。</p>
+<p>RetentionPolicy有3个值：<code>CLASS RUNTIME  SOURCE</code><br>按生命周期来划分可分为3类：<br>1.<code>RetentionPolicy.SOURCE</code>：注解只保留在源文件，当Java文件编译成class文件的时候，注解被遗弃；<br>2.<code>RetentionPolicy.CLASS</code>：注解被保留到class文件，但jvm加载class文件时候被遗弃，这是默认的生命周期；<br>3.<code>RetentionPolicy.RUNTIME</code>：注解不仅被保存到class文件中，jvm加载class文件之后，仍然存在；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Foo</span> &#123;</span><br><span class="line">   <span class="meta">@Test</span> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m1</span><span class="params">()</span> &#123; &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m2</span><span class="params">()</span> &#123; &#125;</span><br><span class="line">   <span class="meta">@Test</span> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m3</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Boom&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m4</span><span class="params">()</span> &#123; &#125;</span><br><span class="line">   <span class="meta">@Test</span> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m5</span><span class="params">()</span> &#123; &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m6</span><span class="params">()</span> &#123; &#125;</span><br><span class="line">   <span class="meta">@Test</span> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m7</span><span class="params">()</span> &#123;</span><br><span class="line">       <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Crash&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">m8</span><span class="params">()</span> &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RunTests</span> &#123;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">   <span class="type">int</span> <span class="variable">passed</span> <span class="operator">=</span> <span class="number">0</span>, failed = <span class="number">0</span>;</span><br><span class="line">   <span class="keyword">for</span> (Method m : Class.forName(args[<span class="number">0</span>]).getMethods()) &#123;</span><br><span class="line">      <span class="keyword">if</span> (m.isAnnotationPresent(Test.class)) &#123;</span><br><span class="line">         <span class="keyword">try</span> &#123;</span><br><span class="line">            m.invoke(<span class="literal">null</span>);</span><br><span class="line">            passed++;</span><br><span class="line">         &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">            System.out.printf(<span class="string">&quot;Test %s failed: %s %n&quot;</span>, m, ex.getCause());</span><br><span class="line">            failed++;</span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   System.out.printf(<span class="string">&quot;Passed: %d, Failed %d%n&quot;</span>, passed, failed);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该工具将类名作为命令行参数，并遍历命名类的所有方法，以尝试调用用<code>@Test</code>注释类型（上面定义）进行注释的每个方法。 反映性查询以绿色突出显示以找出方法是否具有<code>@Test</code>注释。 如果测试方法调用引发异常，则认为测试已失败，并打印失败报告。 最后，将打印摘要，显示通过和失败的测试数量。 这是在<code>Foo</code>程序上运行测试工具时的外观（上图）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ java RunTests Foo</span><br><span class="line">Test <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> Foo.m3() failed: java.lang.RuntimeException: Boom </span><br><span class="line">Test <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> Foo.m7() failed: java.lang.RuntimeException: Crash </span><br><span class="line">Passed: <span class="number">2</span>, Failed <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>尽管此测试工具显然是玩具，但它演示了注释的功能，可以轻松扩展以克服其局限性。 </p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-24T06:08:25.000Z" title="2021/5/24 下午2:08:25">2021-05-24</time>发表</span><span class="level-item"><time dateTime="2021-05-24T06:08:25.000Z" title="2021/5/24 下午2:08:25">2021-05-24</time>更新</span><span class="level-item">9 分钟读完 (大约1290个字)</span></div></div><div class="content"><p><a href="#1.JVM%E4%B8%AD%E7%9A%84%E5%AF%B9%E8%B1%A1%E5%88%86%E9%85%8D%E8%BF%87%E7%A8%8B">1.JVM中的对象分配过程</a></p>
+<h2 id="1-JVM中的对象分配过程"><a href="#1-JVM中的对象分配过程" class="headerlink" title="1.JVM中的对象分配过程"></a>1.JVM中的对象分配过程</h2><h3 id="1-1检查加载"><a href="#1-1检查加载" class="headerlink" title="1.1检查加载"></a>1.1检查加载</h3><p>先执行相应的类加载过程。如果没有，则进行类加载</p>
+<h3 id="1-2分配内存"><a href="#1-2分配内存" class="headerlink" title="1.2分配内存"></a>1.2分配内存</h3><p>根据方法区的信息确定为该类分配的内存空间大小</p>
+<p><strong>指针碰撞</strong> (java堆内存空间规整的情况下使用):<br>接下来虚拟机将为新生对象分配内存。为对象分配空间的任务等同于把一块确定大小的内存从Java堆中划分出来。<br>如果Java堆中内存是绝对规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放着一个指针作为分界点的指示器，那所分配内存就仅仅是把那个指针向空闲空间那边挪动一段与对象大小相等的距离，这种分配方式称为“指针碰撞”。</p>
+<p><strong>空闲列表</strong>(java堆空间不规整的情况下使用)：<br>如果Java堆中的内存并不是规整的，已使用的内存和空闲的内存相互交错，那就没有办法简单地进行指针碰撞了，虚拟机就必须维护一个列表，记录上哪些内存块是可用的，在分配的时候从列表中找到一块足够大的空间划分给对象实例，并更新列表上的记录，这种分配方式称为“空闲列表”。</p>
+<h3 id="1-2-1并发安全"><a href="#1-2-1并发安全" class="headerlink" title="1.2.1并发安全"></a>1.2.1并发安全</h3><p>除如何划分可用空间之外，还有另外一个需要考虑的问题是对象创建在虚拟机中是非常频繁的行为，即使是仅仅修改一个指针所指向的位置，在并发情况下也并不是线程安全的，可能出现正在给对象A分配内存，指针还没来得及修改，对象B又同时使用了原来的指针来分配内存的情况。</p>
+<p>并发安全的解决方案有：CAS机制与分配缓存。</p>
+<p><strong>CAS机制</strong>： 解决这个问题有两种方案，一种是对分配内存空间的动作进行同步处理——实际上虚拟机采用CAS配上失败重试的方式保证更新操作的原子性；<br><strong>分配缓冲</strong>：另一种是把内存分配的动作按照线程划分在不同的空间之中进行，即每个线程在Java堆中预先分配一小块私有内存，也就是本地线程分配缓冲（Thread Local Allocation Buffer,TLAB），如果设置了虚拟机参数 <code>-XX:+UseTLAB</code>，在线程初始化时，同时也会申请一块指定大小的内存，只给当前线程使用，这样每个线程都单独拥有一个Buffer，如果需要分配内存，就在自己的Buffer上分配，这样就不存在竞争的情况，可以大大提升分配效率，当Buffer容量不够的时候，再重新从Eden区域申请一块继续使用。</p>
+<p>TLAB的目的是在为新对象分配内存空间时，让每个Java应用线程能在使用自己专属的分配指针来分配空间（Eden区，默认Eden的1%），减少同步开销。</p>
+<p>TLAB只是让每个线程有私有的分配指针，但底下存对象的内存空间还是给所有线程访问的，只是其它线程无法在这个区域分配而已。当一个TLAB用满（分配指针top撞上分配极限end了），就新申请一个TLAB。</p>
+<h3 id="1-3内存空间初始化"><a href="#1-3内存空间初始化" class="headerlink" title="1.3内存空间初始化"></a>1.3内存空间初始化</h3><p>（注意不是构造方法）内存分配完成后，虚拟机需要将分配到的内存空间都初始化为零值(如int值为0，boolean值为false等等)。这一步操作保证了对象的实例字段在Java代码中可以不赋初始值就直接使用，程序能访问到这些字段的数据类型所对应的零值。</p>
+<h3 id="1-4设置"><a href="#1-4设置" class="headerlink" title="1.4设置"></a>1.4设置</h3><p>接下来，虚拟机要对对象进行必要的设置，例如这个对象是哪个类的实例、如何才能找到类的元数据信息、对象的哈希码、对象的GC分代年龄等信息。这些信息存放在对象的对象头之中。</p>
+<h3 id="1-5对象初始化"><a href="#1-5对象初始化" class="headerlink" title="1.5对象初始化"></a>1.5对象初始化</h3><p>在上面工作都完成之后，从虚拟机的视角来看，一个新的对象已经产生了，但从Java程序的视角来看，对象创建才刚刚开始，所有的字段都还为零值。所以，一般来说，执行new指令之后会接着把对象按照程序员的意愿进行初始化，这样一个真正可用的对象才算完全产生出来。</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-21T03:26:07.000Z" title="2021/5/21 上午11:26:07">2021-05-21</time>发表</span><span class="level-item"><time dateTime="2021-05-21T03:26:07.000Z" title="2021/5/21 上午11:26:07">2021-05-21</time>更新</span><span class="level-item">几秒读完 (大约55个字)</span></div></div><div class="content"><p>事务执行</p>
+<p>订阅发布</p>
+<p>主从复制</p>
+<p>哨兵模式</p>
+<p>Spring Boot  Spring Cloud</p>
+<p>位运算</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ setbit year_record 1 1</span><br><span class="line">$ setbit year_record 2 1</span><br><span class="line">$ setbit year_record 4 1				</span><br><span class="line">// year_record  01101000</span><br><span class="line">$ get year_record</span><br><span class="line">&gt; <span class="string">&quot;h&quot;</span>							// 返回字符串h</span><br><span class="line">$ bitcount year_record 0 8    // 统计0-8位1的数量</span><br><span class="line">&gt; (<span class="built_in">integer</span>) 3</span><br></pre></td></tr></table></figure>
+
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-21T01:42:52.000Z" title="2021/5/21 上午9:42:52">2021-05-21</time>发表</span><span class="level-item"><time dateTime="2022-03-30T07:53:56.202Z" title="2022/3/30 下午3:53:56">2022-03-30</time>更新</span><span class="level-item">12 分钟读完 (大约1825个字)</span></div></div><div class="content"><p>[TOC]</p>
+<h2 id="Redis-线程IO模型"><a href="#Redis-线程IO模型" class="headerlink" title="Redis 线程IO模型"></a>Redis 线程IO模型</h2><h3 id="Redis-是个单线程程序！这点必须铭记。"><a href="#Redis-是个单线程程序！这点必须铭记。" class="headerlink" title="Redis 是个单线程程序！这点必须铭记。"></a><strong>Redis</strong> <strong>是个单线程程序！</strong>这点必须铭记。</h3><p>也许你会怀疑高并发的 Redis 中间件怎么可能是单线程。很抱歉，它就是单线程，你的怀疑暴露了你基础知识的不足。莫要瞧不起单线程，除了 Redis 之外，Node.js 也是单线程，Nginx 也是单线程，但是它们都是服务器高性能的典范。</p>
+<h3 id="Redis-单线程为什么还能这么快？"><a href="#Redis-单线程为什么还能这么快？" class="headerlink" title="Redis 单线程为什么还能这么快？"></a><strong>Redis</strong> <strong>单线程为什么还能这么快？</strong></h3><p>因为它所有的数据都在内存中，所有的运算都是内存级别的运算。正因为 Redis 是单线程，所以要小心使用 Redis 指令，对于那些时间复杂度为 O(n) 级别的指令，一定要谨慎使用，一不小心就可能会导致 Redis 卡顿。</p>
+<h3 id="Redis-单线程如何处理那么多的并发客户端连接？"><a href="#Redis-单线程如何处理那么多的并发客户端连接？" class="headerlink" title="Redis 单线程如何处理那么多的并发客户端连接？"></a><strong>Redis</strong> <strong>单线程如何处理那么多的并发客户端连接？</strong></h3><p>这个问题，有很多中高级程序员都无法回答，因为他们没听过多路复用这个词汇，不知道 select 系列的事件轮询 API，没用过非阻塞 IO。</p>
+<h2 id="非阻塞-IO"><a href="#非阻塞-IO" class="headerlink" title="非阻塞 IO"></a><strong>非阻塞</strong> <strong>IO</strong></h2><p>当我们调用套接字的读写方法，默认它们是阻塞的，比如 read 方法要传递进去一个参数n，表示读取这么多字节后再返回，如果没有读够线程就会卡在那里，直到新的数据到来或者连接关闭了，read 方法才可以返回，线程才能继续处理。而 write 方法一般来说不会阻塞，除非内核为套接字分配的写缓冲区已经满了，write 方法就会阻塞，直到缓存区中有空闲空间挪出来了。</p>
+<p><img src="/../images/image-20210115161227603.png" alt="image-20210115161227603"></p>
+<p>​    非阻塞 IO 在套接字对象上提供了一个选项 Non_Blocking，当这个选项打开时，读写方法不会阻塞，而是能读多少读多少，能写多少写多少。能读多少取决于内核为套接字分配的读缓冲区内部的数据字节数，能写多少取决于内核为套接字分配的写缓冲区的空闲空间字节数。读方法和写方法都会通过返回值来告知程序实际读写了多少字节。</p>
+<p>​    有了非阻塞 IO 意味着线程在读写 IO 时可以不必再阻塞了，读写可以瞬间完成然后线程可以继续干别的事了。</p>
+<h2 id="事件轮询-多路复用"><a href="#事件轮询-多路复用" class="headerlink" title="事件轮询(多路复用)"></a>事件轮询(多路复用)</h2><p>非阻塞 IO 有个问题，那就是线程要读数据，结果读了一部分就返回了，线程如何知道何时才应该继续读。也就是当数据到来时，线程如何得到通知。写也是一样，如果缓冲区满了，写不完，剩下的数据何时才应该继续写，线程也应该得到通知。</p>
+<p><img src="/../images/image-20210115161526048.png" alt="image-20210115161526048"></p>
+<p>事件轮询 API 就是用来解决这个问题的，最简单的事件轮询 API 是 select 函数，它是操作系统提供给用户程序的 API。输入是读写描述符列表 read_fds &amp; write_fds，输出是与之对应的可读可写事件。同时还提供了一个 timeout 参数，如果没有任何事件到来，那么就最多等待 timeout 时间，线程处于阻塞状态。一旦期间有任何事件到来，就可以立即返回。时间过了之后还是没有任何事件到来，也会立即返回。拿到事件后，线程就可以继续挨个处理相应的事件。处理完了继续过来轮询。于是线程就进入了一个死循环，我们把这个死循环称为事件循环，一个循环为一个周期。</p>
+<p>每个客户端套接字 socket 都有对应的读写文件描述符。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">read_events, write_events = select(read_fds, write_fds, timeout)</span><br><span class="line">for event in read_events:</span><br><span class="line">	handle_read(event.fd)</span><br><span class="line">for event in write_events:</span><br><span class="line">	handle_write(event.fd)</span><br><span class="line">handle_others() # 处理其它事情，如定时任务等</span><br></pre></td></tr></table></figure>
+
+<p>因为我们通过 select 系统调用同时处理多个通道描述符的读写事件，因此我们将这类系统调用称为多路复用 API。现代操作系统的多路复用 API 已经不再使用 select 系统调用，而改用 epoll(linux)和 kqueue(freebsd &amp; macosx)，因为 select 系统调用的性能在描述符特别多时性能会非常差。它们使用起来可能在形式上略有差异，但是本质上都是差不多的，都可以使用上面的伪代码逻辑进行理解。</p>
+<p>服务器套接字 serversocket 对象的读操作是指调用 accept 接受客户端新连接。何时有新连接到来，也是通过 select 系统调用的读事件来得到通知的。</p>
+<p>事件轮询 API 就是 Java 语言里面的 NIO 技术</p>
+<p>Java 的 NIO 并不是 Java 特有的技术，其它计算机语言都有这个技术，只不过换了一个词汇，不叫 NIO 而已。</p>
+<h2 id="指令队列"><a href="#指令队列" class="headerlink" title="指令队列"></a>指令队列</h2><p>Redis 会将每个客户端套接字都关联一个指令队列。客户端的指令通过队列来排队进行顺序处理，先到先服务。</p>
+<h2 id="响应队列"><a href="#响应队列" class="headerlink" title="响应队列"></a>响应队列</h2><p>Redis 同样也会为每个客户端套接字关联一个响应队列。Redis 服务器通过响应队列来将指令的返回结果回复给客户端。 如果队列为空，那么意味着连接暂时处于空闲状态，不需要去获取写事件，也就是可以将当前的客户端描述符从 write_fds 里面移出来。等到队列有数据了，再将描述符放进去。避免 select 系统调用立即返回写事件，结果发现没什么数据可以写出。这种情况的线程会飙高 CPU。 </p>
+<h2 id="定时任务"><a href="#定时任务" class="headerlink" title="定时任务"></a>定时任务</h2><p>服务器处理要响应 IO 事件外，还要处理其它事情。比如定时任务就是非常重要的一件事。如果线程阻塞在 select 系统调用上，定时任务将无法得到准时调度。那 Redis 是如何解决这个问题的呢？</p>
+<p>Redis 的定时任务会记录在一个称为最小堆的数据结构中。这个堆中，最快要执行的任务排在堆的最上方。在每个循环周期，Redis 都会将最小堆里面已经到点的任务立即进行处理。处理完毕后，将最快要执行的任务还需要的时间记录下来，这个时间就是 select 系统调用的 timeout 参数。因为 Redis 知道未来 timeout 时间内，没有其它定时任务需要处理，所以可以安心睡眠 timeout 的时间。</p>
+<p>Nginx 和 Node 的事件处理原理和 Redis 也是类似的</p>
+</div></article></div><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-19T06:54:24.000Z" title="2021/5/19 下午2:54:24">2021-05-19</time>发表</span><span class="level-item"><time dateTime="2021-05-19T06:54:24.000Z" title="2021/5/19 下午2:54:24">2021-05-19</time>更新</span><span class="level-item">几秒读完 (大约43个字)</span></div></div><div class="content"><h1 id="2-9-1-房产防爬加密策略设计与实践"><a href="#2-9-1-房产防爬加密策略设计与实践" class="headerlink" title="2.9.1 房产防爬加密策略设计与实践"></a>2.9.1 房产防爬加密策略设计与实践</h1><p><img src="/../../images/WX20210519-144905@2x.png" alt="WX20210519-144905@2x"></p>
+<p><img src="/../../images/WX20210519-145028@2x.png" alt="WX20210519-145028@2x"></p>
+<p><img src="/../../images/WX20210519-145125@2x.png" alt="WX20210519-145125@2x"></p>
+<p><img src="/../../images/WX20210519-145302@2x.png" alt="WX20210519-145302@2x"></p>
+<p><img src="/../../images/WX20210519-145418@2x.png" alt="WX20210519-145418@2x"></p>
+</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2021/05/18/14000JAVA/4001%20%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BB%8E10%E4%BA%BF%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E6%9F%90%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%EF%BC%9F/"><img class="fill" src="/../../images/cover1.jpg" alt="面试官：如何从10亿数据中快速判断是否存在某一个元素？"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2021-05-18T06:52:33.000Z" title="2021/5/18 下午2:52:33">2021-05-18</time>发表</span><span class="level-item"><time dateTime="2022-05-08T11:53:20.368Z" title="2022/5/8 下午7:53:20">2022-05-08</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E9%9D%A2%E8%AF%95/">面试</a></span><span class="level-item">22 分钟读完 (大约3259个字)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2021/05/18/14000JAVA/4001%20%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BB%8E10%E4%BA%BF%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E6%9F%90%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%EF%BC%9F/">面试官：如何从10亿数据中快速判断是否存在某一个元素？</a></h1><div class="content"><h1 id="2-8-1-面试官：如何从10亿数据中快速判断是否存在某一个元素？"><a href="#2-8-1-面试官：如何从10亿数据中快速判断是否存在某一个元素？" class="headerlink" title="2.8.1 面试官：如何从10亿数据中快速判断是否存在某一个元素？"></a>2.8.1 面试官：如何从10亿数据中快速判断是否存在某一个元素？</h1><h2 id="1-缓存雪崩"><a href="#1-缓存雪崩" class="headerlink" title="1 缓存雪崩"></a>1 缓存雪崩</h2><p>缓存雪崩指的是 Redis 当中的大量缓存在同一时间全部失效，而假如恰巧这一段时间同时又有大量请求被发起，那么就会造成请求直接访问到数据库，可能会把数据库冲垮。</p>
+<p>缓存雪崩一般形容的是缓存中没有而数据库中有的数据，而因为时间到期导致请求直达数据库。</p></div><a class="article-more button is-small is-size-7" href="/2021/05/18/14000JAVA/4001%20%E9%9D%A2%E8%AF%95%E5%AE%98%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BB%8E10%E4%BA%BF%E6%95%B0%E6%8D%AE%E4%B8%AD%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%AD%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E6%9F%90%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%EF%BC%9F/#more">阅读更多</a></article></div><nav class="pagination" role="navigation" aria-label="pagination"><div class="pagination-previous"><a href="/page/10/">上一页</a></div><div class="pagination-next"><a href="/page/12/">下一页</a></div><ul class="pagination-list is-hidden-mobile"><li><a class="pagination-link" href="/">1</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/10/">10</a></li><li><a class="pagination-link is-current" href="/page/11/">11</a></li><li><a class="pagination-link" href="/page/12/">12</a></li><li><span class="pagination-ellipsis">&hellip;</span></li><li><a class="pagination-link" href="/page/15/">15</a></li></ul></nav></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar" src="/img/avatar.png" alt="Tonygeli"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">Tonygeli</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>SH</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives"><p class="title">146</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories"><p class="title">10</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags"><p class="title">18</p></a></div></div></nav><div class="level"><a class="level-item button is-primary is-rounded" href="https://github.com/tonygeli" target="_blank" rel="noopener">关注我</a></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">分类</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/Java/"><span class="level-start"><span class="level-item">Java</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Linux/"><span class="level-start"><span class="level-item">Linux</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/Spring/"><span class="level-start"><span class="level-item">Spring</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/SpringBoot/"><span class="level-start"><span class="level-item">SpringBoot</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E4%B8%AD%E9%97%B4%E4%BB%B6/"><span class="level-start"><span class="level-item">中间件</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="level-start"><span class="level-item">数据库</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/"><span class="level-start"><span class="level-item">时间管理</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C/"><span class="level-start"><span class="level-item">网络</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E8%AF%BB%E4%B9%A6/"><span class="level-start"><span class="level-item">读书</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/categories/%E9%9D%A2%E8%AF%95/"><span class="level-start"><span class="level-item">面试</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">归档</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2022/05/"><span class="level-start"><span class="level-item">五月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/04/"><span class="level-start"><span class="level-item">四月 2022</span></span><span class="level-end"><span class="level-item tag">8</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/03/"><span class="level-start"><span class="level-item">三月 2022</span></span><span class="level-end"><span class="level-item tag">19</span></span></a></li><li><a class="level is-mobile" href="/archives/2022/02/"><span class="level-start"><span class="level-item">二月 2022</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/12/"><span class="level-start"><span class="level-item">十二月 2021</span></span><span class="level-end"><span class="level-item tag">7</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/11/"><span class="level-start"><span class="level-item">十一月 2021</span></span><span class="level-end"><span class="level-item tag">9</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">九月 2021</span></span><span class="level-end"><span class="level-item tag">6</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/08/"><span class="level-start"><span class="level-item">八月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/07/"><span class="level-start"><span class="level-item">七月 2021</span></span><span class="level-end"><span class="level-item tag">10</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/06/"><span class="level-start"><span class="level-item">六月 2021</span></span><span class="level-end"><span class="level-item tag">20</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">五月 2021</span></span><span class="level-end"><span class="level-item tag">24</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/04/"><span class="level-start"><span class="level-item">四月 2021</span></span><span class="level-end"><span class="level-item tag">13</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">三月 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/02/"><span class="level-start"><span class="level-item">二月 2021</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/01/"><span class="level-start"><span class="level-item">一月 2021</span></span><span class="level-end"><span class="level-item tag">4</span></span></a></li><li><a class="level is-mobile" href="/archives/2020/11/"><span class="level-start"><span class="level-item">十一月 2020</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Bean/"><span class="tag">Bean</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Hexo/"><span class="tag">Hexo</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Icarus/"><span class="tag">Icarus</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/MySql/"><span class="tag">MySql</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Netty/"><span class="tag">Netty</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Stream/"><span class="tag">Stream</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TCP/"><span class="tag">TCP</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/ZooKeeper/"><span class="tag">ZooKeeper</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/k8s/"><span class="tag">k8s</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E4%BB%A3%E7%A0%81%E4%BC%98%E5%8C%96/"><span class="tag">代码优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%85%AC%E4%BC%97%E5%8F%B7/"><span class="tag">公众号</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/"><span class="tag">分布式事务</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/"><span class="tag">单点登录</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/"><span class="tag">大数据</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BA%BF%E7%A8%8B/"><span class="tag">线程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D/"><span class="tag">自动装配</span><span class="tag">1</span></a></div></div></div></div></div><div class="column-right-shadow is-hidden-widescreen"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3"><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">最新文章</h3><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-10T06:58:05.176Z">2022-05-10</time></p><p class="title"><a href="/2022/05/10/3.%E8%AF%BB%E4%B9%A6/%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E6%97%B6%E9%97%B4/">职场上如何管理时间</a></p><p class="categories"><a href="/categories/%E6%97%B6%E9%97%B4%E7%AE%A1%E7%90%86/">时间管理</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-09T06:10:31.715Z">2022-05-09</time></p><p class="title"><a href="/2022/05/09/15000%E5%AE%B9%E5%99%A8%E8%BF%90%E7%BB%B4/15030k8s-Master/">Kubernetes架构与工作流程及核心概念</a></p><p class="categories"><a href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-08T15:13:17.249Z">2022-05-08</time></p><p class="title"><a href="/2022/05/08/213Linux/13001Linux%E5%91%BD%E4%BB%A4lsof/">Linux虚拟文件系统</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-08T13:02:44.791Z">2022-05-08</time></p><p class="title"><a href="/2022/05/08/3.%E8%AF%BB%E4%B9%A6/Kubernetes%E4%BB%8E%E5%85%A5%E9%97%A8%E5%88%B0%E5%AE%9E%E8%B7%B5/">Kubernetes从入门到实践</a></p><p class="categories"><a href="/categories/%E8%AF%BB%E4%B9%A6/">读书</a></p></div></article><article class="media"><div class="media-content"><p class="date"><time dateTime="2022-05-07T01:46:49.745Z">2022-05-07</time></p><p class="title"><a href="/2022/05/07/90000%E6%96%87%E7%AB%A0/90012Bean%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2%E7%A5%9E%E5%99%A8Mapstruct/">自动转换神器 Mapstruct</a></p><p class="categories"><a href="/categories/Spring/">Spring</a></p></div></article></div></div><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.svg" alt="LILAIQUN" height="28"></a><p class="is-size-7"><span>&copy; 2022 Tonygeli</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
             article: {
                 highlight: {
                     clipboard: true,
